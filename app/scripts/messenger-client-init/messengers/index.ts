@@ -159,6 +159,7 @@ import {
   getMoneyAccountUpgradeControllerMessenger,
   getMoneyAccountUpgradeControllerInitMessenger,
 } from './money-account-upgrade-controller-messenger';
+import { getMarketingConsentSyncServiceMessenger } from './marketing-consent-sync-service-messenger';
 import {
   getMoneyAccountLifecycleControllerMessenger,
   getMoneyAccountLifecycleControllerInitMessenger,
@@ -221,6 +222,7 @@ export {
   getMoneyAccountUpgradeControllerMessenger,
   getMoneyAccountUpgradeControllerInitMessenger,
 } from './money-account-upgrade-controller-messenger';
+export { getMarketingConsentSyncServiceMessenger } from './marketing-consent-sync-service-messenger';
 export {
   getMoneyAccountLifecycleControllerMessenger,
   getMoneyAccountLifecycleControllerInitMessenger,
@@ -385,6 +387,10 @@ export const MESSENGER_FACTORIES = {
   },
   MoneyAccountBalanceService: {
     getMessenger: getMoneyAccountBalanceServiceMessenger,
+    getInitMessenger: noop,
+  },
+  MarketingConsentSyncService: {
+    getMessenger: getMarketingConsentSyncServiceMessenger,
     getInitMessenger: noop,
   },
   MoneyAccountController: {

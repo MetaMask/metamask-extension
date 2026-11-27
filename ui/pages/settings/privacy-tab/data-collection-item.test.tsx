@@ -7,10 +7,28 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from '../../../../shared/constants/metametrics';
 import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockOptInToMarketing = jest.fn();
 const mockOptOutOfMarketing = jest.fn();
+const mockTrackAnalyticsEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackAnalyticsEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../selectors/first-time-flow', () => {
   const actual = jest.requireActual<
@@ -130,10 +148,7 @@ describe('DataCollectionToggleItem', () => {
   });
 
   it('is enabled when metrics participation is off', () => {
-    const mockStore = createMockStore({
-      optedIn: false,
-      optedInToMarketing: false,
-    });
+    const mockStore = createMockStore({ optedIn: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     const toggle = screen.getByRole('checkbox');
@@ -142,6 +157,14 @@ describe('DataCollectionToggleItem', () => {
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
     expect(mockOptInToMarketing).toHaveBeenCalled();
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: expect.objectContaining({
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+        }),
+      }),
+    );
   });
 
   it('writes marketing consent through OAuth without reading it when social login flow is active', () => {

@@ -3655,6 +3655,32 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setDataCollectionForMarketing', () => {
+    it('saves the preference through the consent sync service and updates local state', async () => {
+      const store = mockStore();
+      const messengerCallStub = sinon.stub().resolves();
+      setBackgroundConnection({
+        ...background,
+        messengerCall: messengerCallStub,
+      });
+
+      await store.dispatch(actions.setDataCollectionForMarketing(true));
+
+      expect(
+        messengerCallStub.calledOnceWithExactly(
+          'MarketingConsentSyncService:setMarketingConsent',
+          [true],
+        ),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        {
+          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+          value: true,
+        },
+      ]);
+    });
+  });
+
   describe('#optOutOfMarketing', () => {
     it('calls the analytics controller directly to opt out of marketing', async () => {
       const store = mockStore();

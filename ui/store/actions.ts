@@ -4512,6 +4512,24 @@ export function setParticipateInMetaMetrics(
   };
 }
 
+export function setDataCollectionForMarketing(
+  dataCollectionPreference: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.MarketingConsentSyncService:setMarketingConsent`);
+    // The service applies the consent to AnalyticsController and saves it to
+    // AUS, so the call rejects if AUS did not save it.
+    await submitRequestToBackground('messengerCall', [
+      'MarketingConsentSyncService:setMarketingConsent',
+      [dataCollectionPreference],
+    ]);
+    dispatch({
+      type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
+      value: dataCollectionPreference,
+    });
+  };
+}
+
 export function optInToMarketing(): ThunkAction<
   Promise<void>,
   MetaMaskReduxState,

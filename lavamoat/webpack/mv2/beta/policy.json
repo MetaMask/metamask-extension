@@ -496,16 +496,18 @@
     "@metamask/notification-services-controller>firebase>@firebase/app": {
       "globals": {
         "FinalizationRegistry": true,
-        "console.warn": true
+        "console.error": true,
+        "console.warn": true,
+        "trustedTypes": true
       },
       "packages": {
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/logger": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
       }
     },
-    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": {
+    "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": {
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/util": true
       }
@@ -524,12 +526,12 @@
       },
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/app": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
       }
     },
-    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": {
+    "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/logger": {
       "globals": {
         "console": true
       }
@@ -553,16 +555,17 @@
         "document": true,
         "fetch": true,
         "indexedDB": true,
+        "location.host": true,
         "location.href": true,
         "location.origin": true,
         "navigator": true,
         "origin.replace": true,
-        "registration.showNotification": true,
+        "registration": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/app": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": true,
         "@metamask/notification-services-controller>firebase>@firebase/installations": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
@@ -570,13 +573,17 @@
     },
     "@metamask/notification-services-controller>firebase>@firebase/util": {
       "globals": {
+        "TextEncoder": true,
+        "URL": true,
         "WorkerGlobalScope": true,
         "atob": true,
         "browser": true,
         "btoa": true,
         "chrome": true,
         "console": true,
+        "crypto.subtle.digest": true,
         "document": true,
+        "fetch": true,
         "indexedDB": true,
         "navigator": true,
         "process": true,
@@ -1979,29 +1986,6 @@
         "@metamask/providers>readable-stream": true
       }
     },
-    "@metamask/profile-sync-controller>@metamask/key-tree": {
-      "globals": {
-        "crypto.subtle": true,
-        "ed25519": true,
-        "ed25519Bip32": true,
-        "secp256k1": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import.",
-          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/byte-utils' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "@metamask/utils>@metamask/byte-utils": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/utils>@metamask/type-utils": true,
-        "@metamask/utils": true,
-        "@noble/curves": true,
-        "@noble/hashes": true,
-        "@scure/base": true
-      }
-    },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "packages": {
         "@metamask/utils>@metamask/byte-utils": true,
@@ -2136,6 +2120,14 @@
       "packages": {
         "@metamask/logo>gl-mat4": true,
         "@metamask/logo>gl-vec3": true
+      }
+    },
+    "@metamask/marketing-consent-sync-service": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/analytics-controller": true
       }
     },
     "@metamask/message-manager": {
@@ -2730,7 +2722,7 @@
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/snaps-utils>@metamask/cryptography": true,
         "@metamask/utils>@metamask/error-utils": true,
-        "@metamask/profile-sync-controller>@metamask/key-tree": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils>@metamask/type-utils": true,
@@ -7496,7 +7488,8 @@
     },
     "@metamask/notification-services-controller>uuid": {
       "globals": {
-        "crypto": true
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true
       }
     },
     "@metamask/perps-controller>uuid": {

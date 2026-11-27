@@ -54,8 +54,11 @@ describe('Notification List - View Items and Details', function () {
     }
     await withFixtures(
       {
+        // Feature announcements are a marketing channel: without marketing
+        // consent the consent sync turns them off in AUS.
         fixtures: new FixtureBuilderV2()
           .withAuthenticationController({ isSignedIn: true })
+          .withAnalyticsController({ dataCollectionForMarketing: true })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {

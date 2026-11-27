@@ -6,7 +6,10 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsUserTrait,
+} from '../../../../shared/constants/metametrics';
 import { MetametricsToggleItem } from './metametrics-item';
 
 const mockTrackAnalyticsEvent = jest.fn();
@@ -57,7 +60,6 @@ const createMockStore = (overrides = {}) =>
       optedIn: false,
       marketingConsentDecisionMade: true,
       optedInToMarketing: false,
-      isSignedIn: false,
       ...overrides,
     },
   });
@@ -139,6 +141,14 @@ describe('MetametricsToggleItem', () => {
     await waitFor(() => {
       expect(mockDisableMetametrics).toHaveBeenCalled();
     });
+    expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: expect.objectContaining({
+          [MetaMetricsUserTrait.HasMarketingConsent]: true,
+        }),
+      }),
+    );
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 

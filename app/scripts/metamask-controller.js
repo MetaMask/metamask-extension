@@ -325,6 +325,7 @@ import {
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
+import { MarketingConsentSyncServiceInit } from './messenger-client-init/marketing-consent-sync-service-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
 import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
@@ -599,6 +600,7 @@ export default class MetamaskController extends EventEmitter {
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
+      MarketingConsentSyncService: MarketingConsentSyncServiceInit,
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
@@ -742,6 +744,8 @@ export default class MetamaskController extends EventEmitter {
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
+    this.marketingConsentSyncService =
+      messengerClientsByName.MarketingConsentSyncService;
     this.notificationServicesPushController =
       messengerClientsByName.NotificationServicesPushController;
     this.deFiPositionsController =
@@ -905,6 +909,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     this.notificationServicesController.init();
+    this.marketingConsentSyncService.initialize();
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
@@ -5097,6 +5102,7 @@ export default class MetamaskController extends EventEmitter {
 
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
+      this.controllerMessenger.call('MarketingConsentSyncService:refresh');
     } else {
       this.controllerMessenger.call('BackendWebSocketService:disconnect');
     }
