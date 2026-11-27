@@ -18,8 +18,10 @@ const mockArgs = {
   generatePolicy: false,
 } as unknown as Args;
 
-const mockChunk = (name: string | undefined): Chunk =>
-  ({ name }) as unknown as Chunk;
+const mockChunk = (
+  name: string | undefined,
+  files = new Set<string>(),
+): Chunk => ({ name, files }) as unknown as Chunk;
 
 describe('LavamoatPlugin', () => {
   describe('lavamoatUnsafeLayerRule', () => {
@@ -111,6 +113,7 @@ describe('LavamoatPlugin', () => {
     // LavaMoatPlugin stores on every instance.
     const plugin = lavamoatPlugin(mockArgs) as unknown as {
       options: {
+        inlineLockdown: RegExp;
         runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => unknown;
       };
     };
@@ -169,6 +172,84 @@ describe('LavamoatPlugin', () => {
           `${name} should remain null_unsafe`,
         );
       }
+    });
+
+    it('inlines lockdown for the emitted service worker, content script and shared runtime', () => {
+      for (const [name, filename] of [
+        ['service-worker.ts', 'service-worker.js'],
+        ['scripts/contentscript.js', 'scripts/contentscript.js'],
+        ['runtime', 'runtime.custom-hash.js'],
+      ] as const) {
+        runtimeConfig(mockChunk(name, new Set([filename])));
+        assert.ok(plugin.options.inlineLockdown.test(filename));
+      }
+    });
+
+    it('inlines lockdown and scuttles discovered workers without exceptions', () => {
+      const isolates = new Set<string>();
+      const isolatedWorkerPlugin = lavamoatPlugin(mockArgs, {
+        isolates,
+      }) as unknown as typeof plugin;
+      isolates.add('workers/example.worker.ts');
+      const {
+        inlineLockdown,
+        runtimeConfigurationPerChunk_experimental: workerRuntimeConfig,
+      } = isolatedWorkerPlugin.options;
+      const files = new Set<string>();
+      assert.deepStrictEqual(
+        workerRuntimeConfig(mockChunk('workers/example.worker.ts', files)),
+        {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: { enabled: true, exceptions: [] },
+          },
+        },
+      );
+
+      const filename = 'workers/example.worker.emitted.js';
+      assert.ok(!inlineLockdown.test(filename));
+      files.add(filename);
+      files.add(`${filename}.map`);
+      assert.ok(inlineLockdown.test(filename));
+      assert.ok(!inlineLockdown.test(`${filename}.map`));
+      assert.ok(!inlineLockdown.test('workers/example.worker.js'));
+      assert.deepStrictEqual(
+        workerRuntimeConfig(
+          mockChunk(
+            'workers/unlisted.worker.ts',
+            new Set(['workers/unlisted.worker.js']),
+          ),
+        ),
+        { mode: 'safe' },
+      );
+      assert.ok(!inlineLockdown.test('workers/unlisted.worker.js'));
+    });
+
+    it('inlines lockdown and keeps browser exceptions for isolated HTML scripts', () => {
+      const framePlugin = lavamoatPlugin(mockArgs, {
+        isolates: new Set(['frame']),
+      }) as unknown as typeof plugin;
+      const filename = 'html/frame.custom-hash.js';
+      const result =
+        framePlugin.options.runtimeConfigurationPerChunk_experimental(
+          mockChunk('frame', new Set([filename])),
+        ) as {
+          mode: string;
+          embeddedOptions?: {
+            scuttleGlobalThis?: {
+              enabled: boolean;
+              exceptions: (string | RegExp)[];
+            };
+          };
+        };
+
+      const scuttle = result.embeddedOptions?.scuttleGlobalThis;
+      assert.strictEqual(result.mode, 'safe');
+      assert.ok(scuttle?.enabled);
+      for (const exception of ['Headers', 'browser', 'chrome']) {
+        assert.ok(scuttle.exceptions.includes(exception));
+      }
+      assert.ok(framePlugin.options.inlineLockdown.test(filename));
     });
 
     it('uses safe mode for unrecognised chunks', () => {

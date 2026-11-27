@@ -105,30 +105,13 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
 ];
 
-type IsolatedHtmlEntries = {
-  isIsolatedHtmlEntry: (name?: string | null) => boolean;
-  getIsolatedHtmlEntryNames: () => string[];
-};
-
-const lockdownBase = [
-  String.raw`runtime\.[0-9a-h]{20}\.js`,
-  String.raw`scripts\/contentscript\.js`,
-  String.raw`service-worker\.js`,
-];
-
-function lockdownPattern(isolatedHtmlNames: string[]) {
-  const isolated = isolatedHtmlNames.map(
-    (name) =>
-      `${name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}(?:\\.[0-9a-h]{20})?\\.js`,
-  );
-  return new RegExp(`^(?:${[...lockdownBase, ...isolated].join('|')})$`, 'u');
-}
-
 export const lavamoatPlugin = (
   args: Args,
-  isolatedHtml?: IsolatedHtmlEntries,
-) =>
-  new LavaMoatPlugin({
+  manifestPlugin?: { readonly isolates: ReadonlySet<string> },
+) => {
+  const inlineLockdownChunks = new Set<Chunk>();
+
+  return new LavaMoatPlugin({
     rootDir,
     policyLocation: join(
       'lavamoat',
@@ -140,14 +123,18 @@ export const lavamoatPlugin = (
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // Apply lockdown to shared runtimes and self-contained extension entrypoints.
-    // LavaMoat copies options at construct time, before WAR HTML entries exist,
-    // so this must resolve names when `.test` runs during emit.
+    // Webpack populates chunk.files after LavaMoat selects chunk runtimes.
     inlineLockdown: {
-      test: (file: string) =>
-        lockdownPattern(isolatedHtml?.getIsolatedHtmlEntryNames() ?? []).test(
-          file,
-        ),
+      test: (filename: string) => {
+        if (filename.endsWith('.js')) {
+          for (const chunk of inlineLockdownChunks) {
+            if (chunk.files.has(filename)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      },
     } as RegExp,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
@@ -160,14 +147,16 @@ export const lavamoatPlugin = (
       reporting: 'none',
     },
     runtimeConfigurationPerChunk_experimental: (chunk: Chunk) => {
-      if (chunk.name && nullUnsafeEntries.has(chunk.name)) {
+      const { name } = chunk;
+      if (name && nullUnsafeEntries.has(name)) {
         // nullUnsafeEntries run fully outside of LavaMoat, no runtime added
         return { mode: 'null_unsafe' };
-      } else if (chunk.name === 'service-worker.ts') {
+      } else if (name === 'service-worker.ts') {
         // The SW entry module and its static bootstrap imports are excluded
         // from wrapping (the 'unsafe' layer), but this chunk must run in 'safe'
         // mode so it carries the LavaMoat runtime. The imported `background` bundle
         // is wrapped and relies on it.
+        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -181,7 +170,8 @@ export const lavamoatPlugin = (
             },
           },
         };
-      } else if (chunk.name === 'scripts/contentscript.js') {
+      } else if (name === 'scripts/contentscript.js') {
+        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           embeddedOptions: {
@@ -192,21 +182,25 @@ export const lavamoatPlugin = (
             },
           },
         };
-      } else if (isolatedHtml?.isIsolatedHtmlEntry(chunk.name)) {
+      } else if (name && manifestPlugin?.isolates.has(name)) {
+        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           embeddedOptions: {
             scuttleGlobalThis: {
               enabled: true,
-              exceptions: [
-                ...getScuttleGlobalThisExceptions(args),
-                'browser',
-                'chrome',
-              ],
+              exceptions: name.endsWith('.ts')
+                ? []
+                : [
+                    ...getScuttleGlobalThisExceptions(args),
+                    'browser',
+                    'chrome',
+                  ],
             },
           },
         };
-      } else if (chunk.name === 'runtime') {
+      } else if (name === 'runtime') {
+        inlineLockdownChunks.add(chunk);
         return {
           mode: 'safe',
           // If snow is enabled, it needs to run before LavaMoat
@@ -227,6 +221,7 @@ export const lavamoatPlugin = (
       exceptions: getScuttleGlobalThisExceptions(args),
     },
   });
+};
 
 // Matches the app's `background` root module, which the service worker imports.
 // This is the boundary at which the 'unsafe' layer must stop, so that `background`

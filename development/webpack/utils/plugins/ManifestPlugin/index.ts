@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, type Dirent } from 'node:fs';
 import path from 'node:path';
 import webpackApi from 'webpack';
 import type { Compilation, Compiler, Asset, EntryOptions } from 'webpack';
@@ -41,6 +41,11 @@ type CollectedBundleSizeStats = {
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
+const WORKERS_DIRECTORY = 'workers';
+
+function isWorkerAsset(assetName: string): boolean {
+  return assetName.startsWith(`${WORKERS_DIRECTORY}/`);
+}
 
 function isJavaScriptAsset(assetName: string): boolean {
   return (
@@ -117,7 +122,7 @@ export class ManifestPlugin<Z extends boolean> {
     BACKGROUND_CLIENT_ENTRY_NAME,
   ]);
 
-  private isolatedHtmlEntries: Set<string> = new Set();
+  private readonly isolatedEntries = new Set<string>();
 
   private bundleSizeCategoriesByEntrypoint: Map<
     string,
@@ -142,10 +147,10 @@ export class ManifestPlugin<Z extends boolean> {
     return !name || !this.selfContainedScripts.has(name);
   };
 
-  isIsolatedHtmlEntry = (name?: string | null) =>
-    Boolean(name && this.isolatedHtmlEntries.has(name));
-
-  getIsolatedHtmlEntryNames = () => [...this.isolatedHtmlEntries];
+  /** Chunk names that need their own LavaMoat runtime. */
+  get isolates(): ReadonlySet<string> {
+    return this.isolatedEntries;
+  }
 
   private isWebAccessibleHtml(filename: string) {
     for (const manifest of this.manifests.values()) {
@@ -422,24 +427,28 @@ export class ManifestPlugin<Z extends boolean> {
     const compressionOptions: ZipCompressionOptions = { level };
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
-    const hasAdditionalBrowsers = browsers.length > 1;
+    const workerBrowsers = this.getWorkerBrowsers(browsers);
     const assetNames = Object.keys(assets);
-    const zipEligibleAssetCount = assetNames.filter(
-      (assetName) => !excludeExtensions.includes(path.extname(assetName)),
-    ).length;
+    const assetWork = assetNames.reduce((total, assetName) => {
+      if (excludeExtensions.includes(path.extname(assetName))) {
+        return total;
+      }
+      return (
+        total + (isWorkerAsset(assetName) ? workerBrowsers : browsers).length
+      );
+    }, 0);
 
     let filesProcessed = 0;
     const totalWork = browsers.reduce(
       (total, browser) =>
         total +
-        zipEligibleAssetCount +
         Object.keys(
           this.browserAssets.get(browser) as Record<
             string,
             webpackApi.sources.RawSource
           >,
         ).length,
-      0,
+      assetWork,
     );
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
@@ -469,13 +478,17 @@ export class ManifestPlugin<Z extends boolean> {
     });
 
     for (const assetName of assetNames) {
+      const targetBrowsers = isWorkerAsset(assetName)
+        ? workerBrowsers
+        : browsers;
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
       const extName = path.extname(assetName);
       const isSourceMapAsset =
         moveSourceMapsToDedicatedDirectory && assetName.endsWith('.map');
-      const shouldZip = !excludeExtensions.includes(extName);
+      const shouldZip =
+        targetBrowsers.length > 0 && !excludeExtensions.includes(extName);
       const shouldCache =
-        shouldZip || (hasAdditionalBrowsers && !isSourceMapAsset);
+        shouldZip || (targetBrowsers.length > 1 && !isSourceMapAsset);
       let { source } = assetDetails;
 
       if (shouldCache && !(source instanceof CachedSource)) {
@@ -489,12 +502,19 @@ export class ManifestPlugin<Z extends boolean> {
       }
 
       if (shouldZip) {
-        zipBuilders.forEach(({ builder }) =>
-          builder.addAsset(assetName, source),
-        );
+        for (const { browser, builder } of zipBuilders) {
+          if (targetBrowsers.includes(browser)) {
+            builder.addAsset(assetName, source);
+          }
+        }
       }
 
-      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
+      this.moveAssetToBrowsers(
+        compilation,
+        assetDetails,
+        source,
+        targetBrowsers,
+      );
     }
 
     this.emitBrowserAssets(compilation, browsers);
@@ -509,6 +529,12 @@ export class ManifestPlugin<Z extends boolean> {
         development: true,
       });
     }
+  }
+
+  private getWorkerBrowsers(browsers: readonly Browser[]): Browser[] {
+    return browsers.filter(
+      (browser) => this.manifests.get(browser)?.manifest_version === 3,
+    );
   }
 
   /**
@@ -527,6 +553,10 @@ export class ManifestPlugin<Z extends boolean> {
     browsers: readonly Browser[],
   ): void {
     const { name, info } = asset;
+    if (browsers.length === 0) {
+      compilation.deleteAsset(name);
+      return;
+    }
     if (
       compilation.options.devtool === 'hidden-source-map' &&
       name.endsWith('.map')
@@ -573,9 +603,12 @@ export class ManifestPlugin<Z extends boolean> {
     const moveSourceMapsToDedicatedDirectory =
       compilation.options.devtool === 'hidden-source-map';
     const { browsers } = options;
-    const hasAdditionalBrowsers = browsers.length > 1;
+    const workerBrowsers = this.getWorkerBrowsers(browsers);
 
     for (const assetName of Object.keys(assets)) {
+      const targetBrowsers = isWorkerAsset(assetName)
+        ? workerBrowsers
+        : browsers;
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
 
       const isSourceMapAsset =
@@ -583,7 +616,7 @@ export class ManifestPlugin<Z extends boolean> {
       let { source } = assetDetails;
 
       if (
-        hasAdditionalBrowsers &&
+        targetBrowsers.length > 1 &&
         !isSourceMapAsset &&
         !(source instanceof CachedSource)
       ) {
@@ -596,7 +629,12 @@ export class ManifestPlugin<Z extends boolean> {
         });
       }
 
-      this.moveAssetToBrowsers(compilation, assetDetails, source, browsers);
+      this.moveAssetToBrowsers(
+        compilation,
+        assetDetails,
+        source,
+        targetBrowsers,
+      );
     }
 
     this.emitBrowserAssets(compilation, browsers);
@@ -740,7 +778,7 @@ export class ManifestPlugin<Z extends boolean> {
     this.bundleSizeCategoriesByHtmlResource = new Map();
   }
 
-  private addManifestScript = ({
+  private addSelfContainedScript = ({
     compiler,
     entries,
     filename,
@@ -792,14 +830,14 @@ export class ManifestPlugin<Z extends boolean> {
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
     if (this.isWebAccessibleHtml(filename)) {
-      this.isolatedHtmlEntries.add(parsedFileName);
+      this.isolatedEntries.add(parsedFileName);
 
       // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
       // names its imported frame script `frame`. Both entries must be isolated so
       // Webpack does not split the iframe bundle.
       if (parsedFileName === 'cashtag-widget') {
         this.selfContainedScripts.add('frame');
-        this.isolatedHtmlEntries.add('frame');
+        this.isolatedEntries.add('frame');
       }
     }
   };
@@ -809,13 +847,13 @@ export class ManifestPlugin<Z extends boolean> {
     entries: Record<string, EntryDescriptionNormalized>,
   ): void {
     this.resetBundleSizeEntrypointMetadata();
-    this.isolatedHtmlEntries.clear();
+    this.isolatedEntries.clear();
 
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: script,
@@ -827,7 +865,7 @@ export class ManifestPlugin<Z extends boolean> {
       if (manifest.manifest_version === 2) {
         // collect MV2 background scripts
         for (const script of manifest.background?.scripts ?? []) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: script,
@@ -837,7 +875,7 @@ export class ManifestPlugin<Z extends boolean> {
         // collect MV2 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
           if (resource.endsWith('.js')) {
-            this.addManifestScript({
+            this.addSelfContainedScript({
               compiler,
               entries,
               filename: resource,
@@ -848,7 +886,7 @@ export class ManifestPlugin<Z extends boolean> {
       } else if (manifest.manifest_version === 3) {
         // collect MV3 service worker
         if (manifest.background?.service_worker) {
-          this.addManifestScript({
+          this.addSelfContainedScript({
             compiler,
             entries,
             filename: manifest.background.service_worker,
@@ -860,7 +898,7 @@ export class ManifestPlugin<Z extends boolean> {
         for (const resource of manifest.web_accessible_resources ?? []) {
           for (const filename of resource.resources) {
             if (filename.endsWith('.js')) {
-              this.addManifestScript({
+              this.addSelfContainedScript({
                 compiler,
                 entries,
                 filename,
@@ -900,6 +938,45 @@ export class ManifestPlugin<Z extends boolean> {
           this.addHtml({ compiler, entries, directory, filename, category });
         }
       }
+    }
+
+    if (
+      ![...this.manifests.values()].some(
+        (manifest) => manifest.manifest_version === 3,
+      )
+    ) {
+      return;
+    }
+
+    const directory = path.resolve(compiler.context, WORKERS_DIRECTORY);
+    let workerFiles: Dirent[];
+    try {
+      workerFiles = readdirSync(directory, { withFileTypes: true });
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        error.code === 'ENOENT'
+      ) {
+        return;
+      }
+      throw error;
+    }
+
+    for (const file of workerFiles) {
+      if (!file.isFile() || !file.name.endsWith('.worker.ts')) {
+        continue;
+      }
+
+      const filename = path.posix.join(WORKERS_DIRECTORY, file.name);
+      this.isolatedEntries.add(filename);
+      this.addSelfContainedScript({
+        compiler,
+        entries,
+        filename,
+        category: 'other',
+        opts: { runtime: false, asyncChunks: false },
+      });
     }
   }
 

@@ -2,6 +2,8 @@ import { createRequire, syncBuiltinESMExports } from 'node:module';
 import { execFileSync } from 'node:child_process';
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
+import { cpSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
 import webpackApi from 'webpack';
@@ -391,6 +393,68 @@ describe('ManifestPlugin', () => {
         );
       }
     });
+
+    for (const zip of [false, true]) {
+      it(`packages worker assets only for MV3 browsers with zip=${zip}`, async () => {
+        const workerAssets = [
+          'workers/example.worker.js',
+          'workers/example.worker.js.map',
+        ];
+        const assetNames = ['shared.js', ...workerAssets];
+        const { compiler, compilation, promise } = mockWebpack(
+          assetNames,
+          assetNames.map(() => ''),
+          assetNames.map(() => null),
+        );
+        compiler.context = join(
+          __dirname,
+          'fixtures/ManifestPlugin/entrypoints',
+        );
+        const manifestPlugin = new ManifestPlugin({
+          browsers: ['firefox', 'chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          ...(zip
+            ? {
+                zip: true as const,
+                zipOptions: {
+                  level: 0,
+                  mtime: 1711141205825,
+                  excludeExtensions: [],
+                  outFilePath: '[browser]/extension.zip',
+                },
+              }
+            : { zip: false as const }),
+        });
+
+        manifestPlugin.apply(compiler);
+        await promise;
+
+        for (const browser of ['chrome', 'firefox'] as const) {
+          const expectedAssets =
+            browser === 'chrome' ? assetNames : ['shared.js'];
+          for (const name of assetNames) {
+            assert.strictEqual(
+              Object.hasOwn(compilation.assets, `${browser}/${name}`),
+              expectedAssets.includes(name),
+              `${browser} directory: ${name}`,
+            );
+          }
+          if (zip) {
+            const zipEntries = await readZipEntries(
+              compilation.assets[`${browser}/extension.zip`],
+            );
+            assert.deepStrictEqual(
+              new Set(zipEntries.keys()),
+              new Set(['manifest.json', ...expectedAssets]),
+            );
+          }
+        }
+      });
+    }
 
     it('moves source maps to the sourcemaps directory when zipping hidden-source-map builds', async () => {
       const files = [
@@ -1599,6 +1663,7 @@ describe('ManifestPlugin', () => {
           undefined,
           'should skip offscreen.html for MV2',
         );
+        assert.strictEqual(entries['workers/example.worker.ts'], undefined);
 
         // Non-HTML files should be excluded
         assert.strictEqual(
@@ -1670,6 +1735,15 @@ describe('ManifestPlugin', () => {
         assert.ok(entries.notification, 'should have notification HTML entry');
         assert.ok(entries.home, 'should have home HTML entry');
         assert.ok(entries.offscreen, 'should include offscreen.html for MV3');
+        const worker = entries['workers/example.worker.ts'];
+        assert.ok(worker, 'discovers the isolated worker');
+        assert.strictEqual(worker.filename, 'workers/example.worker.js');
+        assert.strictEqual(worker.runtime, false);
+        assert.strictEqual(worker.asyncChunks, false);
+        assert.strictEqual(worker.chunkLoading, false);
+        assert.ok(!plugin.canBeChunked({ name: 'workers/example.worker.ts' }));
+        assert.ok(plugin.isolates.has('workers/example.worker.ts'));
+        assert.ok(!plugin.isolates.has('service-worker.ts'));
         assert.ok(
           entries['trezor-usb-permissions'],
           'should include trezor-usb-permissions.html',
@@ -1688,6 +1762,82 @@ describe('ManifestPlugin', () => {
           undefined,
           'should skip non-html files',
         );
+      });
+
+      it('only registers files ending in .worker.ts as worker entrypoints', async (testContext) => {
+        const context = mkdtempSync(join(tmpdir(), 'manifest-plugin-'));
+        testContext.after(() =>
+          rmSync(context, { recursive: true, force: true }),
+        );
+        cpSync(entrypointsContext, context, { recursive: true });
+        writeFileSync(join(context, 'workers', 'example.ts'), '');
+        writeFileSync(join(context, 'workers', 'example-worker.ts'), '');
+        writeFileSync(join(context, 'workers', 'example.worker.test.ts'), '');
+
+        const { compiler, entries, promise } = mockWebpack([], [], []);
+        compiler.context = context;
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        assert.deepStrictEqual(
+          Object.keys(entries).filter((name) => name.startsWith('workers/')),
+          ['workers/example.worker.ts'],
+        );
+      });
+
+      it('propagates the read error when the workers path is a file', (testContext) => {
+        const context = mkdtempSync(join(tmpdir(), 'manifest-plugin-'));
+        testContext.after(() =>
+          rmSync(context, { recursive: true, force: true }),
+        );
+        cpSync(join(__dirname, 'fixtures/ManifestPlugin/empty'), context, {
+          recursive: true,
+        });
+        writeFileSync(join(context, 'workers'), '');
+
+        const { compiler } = mockWebpack([], [], []);
+        compiler.context = context;
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        assert.throws(() => plugin.apply(compiler), { code: 'ENOTDIR' });
+      });
+
+      it('skips isolated workers when Firefox overrides MV3 to MV2', async () => {
+        const { compiler, entries, promise } = mockWebpack([], [], []);
+        compiler.context = entrypointsContext;
+
+        const plugin = new ManifestPlugin({
+          browsers: ['firefox'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        assert.strictEqual(entries['workers/example.worker.ts'], undefined);
       });
 
       it('should not add duplicate script entries across multiple browsers', async () => {
