@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import type { Manifest } from 'webextension-polyfill';
+import type browser from 'webextension-polyfill';
 
 /**
  * Flags that we use to control runtime behavior of the extension. Typically
@@ -159,28 +159,9 @@ export type ManifestFlags = {
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- you can't extend a type, we want this to be an interface
-interface WebExtensionManifestWithFlags extends Manifest.WebExtensionManifest {
+interface WebExtensionManifestWithFlags
+  extends browser.Manifest.WebExtensionManifest {
   _flags?: ManifestFlags;
-}
-
-type ExtensionRuntime = {
-  getManifest?: () => Manifest.WebExtensionManifest;
-};
-
-/**
- * `runtime.getManifest`, bound, off whichever extension global exists.
- * Never value-import `webextension-polyfill` here: it throws at module scope
- * outside an extension, and six e2e benchmark flows load this module in Node.
- */
-function getManifest(): ExtensionRuntime['getManifest'] {
-  const globals = globalThis as unknown as {
-    browser?: { runtime?: ExtensionRuntime };
-    chrome?: { runtime?: ExtensionRuntime };
-  };
-
-  const runtime = globals.browser?.runtime ?? globals.chrome?.runtime;
-
-  return runtime?.getManifest?.bind(runtime);
 }
 
 /**
@@ -194,10 +175,16 @@ export function getManifestFlags(): ManifestFlags {
     return {};
   }
 
-  const readManifest = getManifest();
-  if (!readManifest) {
+  // Loaded here, not at module scope: the polyfill throws when loaded outside
+  // an extension, and e2e benchmark flows import this module in Node.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- load conditionally
+  const extension: typeof browser = require('webextension-polyfill');
+  if (!extension.runtime.getManifest) {
     return {};
   }
 
-  return (readManifest() as WebExtensionManifestWithFlags)._flags || {};
+  return (
+    (extension.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
+    {}
+  );
 }
