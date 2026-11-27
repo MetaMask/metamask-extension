@@ -402,11 +402,6 @@
       "count": 3
     }
   },
-  "ui/components/ui/jazzicon/jazzicon.component.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 2
-    }
-  },
   "ui/components/ui/popover/popover.component.js": {
     "react-hooks/static-components": {
       "count": 1

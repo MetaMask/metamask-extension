@@ -1388,7 +1388,7 @@
         "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom": true,
         "@metamask/design-system-react>@floating-ui/react-dom": true,
         "@metamask/design-system-shared": true,
-        "@metamask/jazzicon": true,
+        "@metamask/design-system-react>@metamask/jazzicon": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
@@ -1887,14 +1887,14 @@
         "@metamask/controller-utils": true
       }
     },
-    "@metamask/jazzicon": {
+    "@metamask/design-system-react>@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
         "document.createElementNS": true
       },
       "packages": {
-        "@metamask/jazzicon>color": true,
-        "@metamask/jazzicon>mersenne-twister": true
+        "@metamask/design-system-react>@metamask/jazzicon>color": true,
+        "@metamask/design-system-react>@metamask/jazzicon>mersenne-twister": true
       }
     },
     "@metamask/json-rpc-engine": {
@@ -4862,7 +4862,7 @@
         "browserify>string_decoder": true
       }
     },
-    "@metamask/jazzicon>color>clone": {
+    "@metamask/design-system-react>@metamask/jazzicon>color>clone": {
       "globals": {
         "Buffer": true
       },
@@ -4895,21 +4895,21 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/jazzicon>color>color-convert": {
+    "@metamask/design-system-react>@metamask/jazzicon>color>color-convert": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
+        "@metamask/design-system-react>@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@metamask/jazzicon>color>color-string": {
+    "@metamask/design-system-react>@metamask/jazzicon>color>color-string": {
       "packages": {
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/jazzicon>color": {
+    "@metamask/design-system-react>@metamask/jazzicon>color": {
       "packages": {
-        "@metamask/jazzicon>color>clone": true,
-        "@metamask/jazzicon>color>color-convert": true,
-        "@metamask/jazzicon>color>color-string": true
+        "@metamask/design-system-react>@metamask/jazzicon>color>clone": true,
+        "@metamask/design-system-react>@metamask/jazzicon>color>color-convert": true,
+        "@metamask/design-system-react>@metamask/jazzicon>color>color-string": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
