@@ -106,6 +106,23 @@ function getInitRequestMock(
   return requestMock;
 }
 
+/**
+ * Gives the mocked controller the state the API reads.
+ *
+ * @param messengerClient - Mocked TransactionPayController.
+ * @param transactionData - Transaction data keyed by transaction ID.
+ */
+function setControllerStateMock(
+  messengerClient: TransactionPayController,
+  transactionData: Record<string, { paymentToken?: { assetId: string } }> = {},
+): void {
+  (
+    messengerClient as unknown as {
+      state: { transactionData: typeof transactionData };
+    }
+  ).state = { transactionData };
+}
+
 describe('TransactionPayControllerInit', () => {
   it('initializes the controller', () => {
     const { messengerClient } =
@@ -123,7 +140,6 @@ describe('TransactionPayControllerInit', () => {
       getBalance: expect.any(Function),
       getDelegationTransaction: expect.any(Function),
       getPaymentOverrideData: expect.any(Function),
-      getStrategy: expect.any(Function),
       infuraProjectId: 'test-infura-project-id',
       messenger: expect.any(Object),
       state: undefined,
@@ -234,10 +250,11 @@ describe('TransactionPayControllerInit', () => {
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
+      setControllerStateMock(messengerClient);
       const setTransactionConfigMock = jest.mocked(
         messengerClient.setTransactionConfig,
       );
-      return { api, setTransactionConfigMock };
+      return { api, messengerClient, setTransactionConfigMock };
     }
 
     it('sets isMaxAmount without touching atomic by default', () => {
@@ -279,6 +296,25 @@ describe('TransactionPayControllerInit', () => {
       updater(config as never);
 
       expect(config).toEqual({ isMaxAmount: true, atomic: undefined });
+    });
+
+    it('keeps a money-account deposit paid with a Solana token non-atomic when clearing max', () => {
+      const { api, messengerClient, setTransactionConfigMock } = initApi();
+      setControllerStateMock(messengerClient, {
+        'tx-1': { paymentToken: { assetId: SOL_ASSET_ID_MOCK } },
+      });
+
+      api.setTransactionPayIsMaxAmount('tx-1', false, {
+        isMoneyAccountDeposit: true,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: { isMaxAmount?: boolean; atomic?: boolean } = {
+        atomic: false,
+      };
+      updater(config as never);
+
+      expect(config).toEqual({ isMaxAmount: false, atomic: false });
     });
 
     it('restores the default atomic mode when clearing max on a money-account deposit', () => {
@@ -487,6 +523,7 @@ describe('TransactionPayControllerInit', () => {
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
+      setControllerStateMock(messengerClient);
       const setTransactionConfigMock = jest.mocked(
         messengerClient.setTransactionConfig,
       );
