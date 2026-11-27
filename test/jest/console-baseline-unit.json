@@ -469,9 +469,6 @@
     "ui/hooks/useMultiPolling.test.ts": {
       "error: Error: Network error": 1
     },
-    "ui/hooks/useMultichainAccountTotalFiatBalance.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
-    },
     "ui/hooks/useTokenInsightsData.test.ts": {
       "React: Act warnings (component updates not wrapped)": 2
     },
