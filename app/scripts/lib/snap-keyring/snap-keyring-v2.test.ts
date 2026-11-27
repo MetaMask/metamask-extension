@@ -237,7 +237,9 @@ describe('snapKeyringV2Builder', () => {
     const v1BuilderFactory = snapKeyringV2AdaptedAsV1Builder(
       createControllerMessenger(),
     );
-    const adapter = v1BuilderFactory();
+    const adapter = v1BuilderFactory({
+      update: async (_keyring, action) => action(),
+    });
     const inner = (adapter as unknown as KeyringV1Adapter).unwrap();
 
     const builder = snapKeyringV2Builder();

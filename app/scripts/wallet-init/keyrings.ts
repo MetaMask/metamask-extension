@@ -1,6 +1,7 @@
 import {
   keyringBuilderFactory,
   type KeyringV2Builder,
+  type KeyringBuilder,
 } from '@metamask/keyring-controller';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { QrKeyring as QrKeyringV2 } from '@metamask/eth-qr-keyring/v2';
@@ -155,7 +156,7 @@ export function getKeyringBuilders(
       }
     : {};
 
-  const keyrings = [
+  const keyrings: KeyringBuilder[] = [
     qrKeyringBuilderFactory(
       QrKeyring as unknown as KeyringClass,
       overrides?.qrBridge || QrKeyringScannerBridge,
