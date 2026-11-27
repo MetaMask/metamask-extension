@@ -3303,9 +3303,6 @@
   "dataCollectionForMarketingDescription": {
     "message": "当社は、お一人ひとりに合った情報をお送りするため、当社のマーケティングコミュニケーションに対するお客様の反応に関するデータを収集します。"
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "製品の最新情報やヒント、ニュースをメールでお届けします。最適な情報をお届けするため、お客様のやり取りに関するデータを利用する場合があります。"
-  },
   "dataUnavailable": {
     "message": "データが利用できません"
   },

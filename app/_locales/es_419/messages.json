@@ -3303,9 +3303,6 @@
   "dataCollectionForMarketingDescription": {
     "message": "Recopilaremos datos sobre cómo interactúas con nuestras comunicaciones de marketing para personalizar las actualizaciones que te enviamos."
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Recibe actualizaciones de productos, consejos y noticias, incluso por correo electrónico. Podemos usar tus interacciones para mejorar lo que compartimos."
-  },
   "dataUnavailable": {
     "message": "datos no disponibles"
   },

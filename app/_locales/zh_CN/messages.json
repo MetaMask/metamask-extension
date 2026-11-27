@@ -3303,9 +3303,6 @@
   "dataCollectionForMarketingDescription": {
     "message": "我们会收集您如何与我们的营销传播互动的数据，以便为您发送个性化更新。"
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "获取产品更新、提示和新闻（包括电子邮件推送）。我们可能会利用您的互动信息来优化我们分享的内容。"
-  },
   "dataUnavailable": {
     "message": "数据不可用"
   },

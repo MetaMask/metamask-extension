@@ -6,7 +6,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import type { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
-import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   MetaMetricsEventName,
@@ -40,16 +39,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
       trackEvent: mockTrackAnalyticsEvent,
       createEventBuilder,
     }),
-  };
-});
-
-jest.mock('../../../selectors/first-time-flow', () => {
-  const actual = jest.requireActual<
-    typeof import('../../../selectors/first-time-flow')
-  >('../../../selectors/first-time-flow');
-  return {
-    ...actual,
-    getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
   };
 });
 
@@ -130,7 +119,6 @@ describe('DataCollectionToggleItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
     mockMarketingPreferences = {
       pushNotificationsEnabled: false,
       inAppNotificationsEnabled: false,
@@ -155,7 +143,7 @@ describe('DataCollectionToggleItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders description', () => {
+  it('renders the shared marketing description', () => {
     const mockStore = createMockStore();
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
@@ -451,22 +439,7 @@ describe('DataCollectionToggleItem', () => {
     );
   });
 
-  it('opts in locally for social login users without calling the OAuth consent API', () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
-    const mockStore = createMockStore({ optedInToMarketing: false });
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    expect(mockOptInToMarketing).not.toHaveBeenCalled();
-    expect(mockOptOutOfMarketing).not.toHaveBeenCalled();
-
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
-
-    expect(mockOptInToMarketing).toHaveBeenCalledTimes(1);
-    expect(mockMessengerCall).not.toHaveBeenCalled();
-  });
-
-  it('writes the confirmed opt-out through AUS without touching OAuth consent for social login', async () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
+  it('writes the confirmed opt-out through AUS without touching OAuth consent', async () => {
     mockMarketingPreferences = {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: false,
@@ -491,8 +464,7 @@ describe('DataCollectionToggleItem', () => {
     );
   });
 
-  it('opts out locally for social login users without calling the OAuth consent API', async () => {
-    (getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
+  it('opts out without calling the OAuth consent API', async () => {
     const mockStore = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
@@ -504,7 +476,7 @@ describe('DataCollectionToggleItem', () => {
     expect(mockMessengerCall).not.toHaveBeenCalled();
   });
 
-  it('does not write marketing consent through OAuth when social login flow is inactive', () => {
+  it('opts in without calling the OAuth consent API', () => {
     const mockStore = createMockStore({ optedInToMarketing: false });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 

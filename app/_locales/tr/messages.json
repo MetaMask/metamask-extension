@@ -3303,9 +3303,6 @@
   "dataCollectionForMarketingDescription": {
     "message": "Size gönderdiğimiz güncellemeleri kişiselleştirmek için pazarlama iletişimlerimizle etkileşiminiz hakkında veri toplarız."
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "E-posta yoluyla dahil olmak üzere ürün güncellemeleri, ipuçları ve haberleri alın. Etkileşimlerinizi yaptığımız paylaşımları iyileştirmek için kullanabiliriz."
-  },
   "dataUnavailable": {
     "message": "veri mevcut değil"
   },

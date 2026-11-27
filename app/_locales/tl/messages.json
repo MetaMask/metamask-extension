@@ -3303,9 +3303,6 @@
   "dataCollectionForMarketingDescription": {
     "message": "Kokolektahin namin ang data kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing para maisapersonal ang mga update na ipapadala namin sa iyo."
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Tumanggap ng mga update ng produkto, tip at balita - kabilang sa pamamagitan ng email. Maaari naming gamitin ang mga interaksyon mo para mapahusay ang mga ibinabahagi namin."
-  },
   "dataUnavailable": {
     "message": "hindi available ang data"
   },

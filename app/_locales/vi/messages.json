@@ -3303,9 +3303,6 @@
   "dataCollectionForMarketingDescription": {
     "message": "Chúng tôi sẽ thu thập dữ liệu về cách bạn tương tác với các nội dung tiếp thị để cá nhân hóa những thông tin cập nhật gửi cho bạn."
   },
-  "dataCollectionForMarketingDescriptionSocialLogin": {
-    "message": "Nhận thông tin cập nhật về sản phẩm, lời khuyên và tin tức - bao gồm qua email. Chúng tôi có thể sử dụng cách tương tác của bạn để cải thiện nội dung chia sẻ."
-  },
   "dataUnavailable": {
     "message": "dữ liệu không khả dụng"
   },
