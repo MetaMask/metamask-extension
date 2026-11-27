@@ -349,7 +349,7 @@ describe('trace with no caller after the background pageload ends (real SDK)', (
     });
   });
 
-  it('leaves a document pageload trace unchanged', () => {
+  it('does not track a document pageload', () => {
     inContext('/home.html');
     const pageloadTraceId = endPageload({ pageload: 0, noCaller: 1 });
 

@@ -91,4 +91,42 @@ describe('trace state shared across module instances', () => {
 
     expect(traceId).not.toBe(endedTraceId);
   });
+
+  it('lets trace() in one instance see the route recorded by another in a UI document', () => {
+    delete testGlobal.ServiceWorkerGlobalScope;
+    const { getEnvironmentType: actual } =
+      jest.requireActual('./environment-type');
+    jest
+      .mocked(getEnvironmentType)
+      .mockImplementation(() => actual('chrome-extension://id/home.html'));
+
+    // The instance `setupSentry` calls, and the instance every caller uses.
+    const setupSentryInstance = loadInstance();
+    const callerInstance = loadInstance();
+
+    const client = new Sentry.BrowserClient({
+      dsn: 'https://public@example.ingest.sentry.io/1',
+      transport: () => ({
+        send: () => Promise.resolve({}),
+        flush: () => Promise.resolve(true),
+      }),
+      stackParser: Sentry.defaultStackParser,
+      tracesSampleRate: 1,
+      integrations: [Sentry.browserTracingIntegration()],
+    });
+    Sentry.getCurrentScope().setClient(client);
+    client.init();
+    setupSentryInstance.trackDocumentRouteTrace(client);
+
+    const pageload = Sentry.getActiveSpan() as Sentry.Span;
+    expect(Sentry.spanToJSON(pageload).op).toBe('pageload');
+    pageload.end();
+
+    const traceId = callerInstance.trace(
+      { name: callerInstance.TraceName.AccountList },
+      (span) => (span as Sentry.Span).spanContext().traceId,
+    );
+
+    expect(traceId).not.toBe(pageload.spanContext().traceId);
+  });
 });
