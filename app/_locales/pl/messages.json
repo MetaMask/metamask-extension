@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasUsed": {
-    "message": "Użyty gaz"
-  },
   "general": {
     "message": "Ogólne"
   },
@@ -343,9 +340,6 @@
   "newContract": {
     "message": "Nowy kontrakt"
   },
-  "newPassword": {
-    "message": "Nowe hasło (min. 8 znaków)"
-  },
   "next": {
     "message": "Dalej"
   },
@@ -397,9 +391,6 @@
   "privateKey": {
     "message": "Klucz prywatny",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Sieć prywatna"
   },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
@@ -548,9 +539,6 @@
   },
   "unapproved": {
     "message": "Niezatwierdzone"
-  },
-  "units": {
-    "message": "jednostki"
   },
   "unknown": {
     "message": "Nieznane"

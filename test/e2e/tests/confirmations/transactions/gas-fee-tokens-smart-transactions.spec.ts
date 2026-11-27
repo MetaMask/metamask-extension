@@ -16,6 +16,7 @@ import { Driver } from '../../../webdriver/driver';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
 import { login } from '../../../page-objects/flows/login.flow';
+import { txSentinelNetwork } from '../../../mock-response-data/api-responses';
 import {
   GAS_FEE_SPOT_PRICES,
   GAS_FEE_UNIFIED_MAINNET_ADDITIONAL_BALANCES,
@@ -255,8 +256,8 @@ async function mockSentinelNetworks(mockServer: MockttpServer) {
       };
     });
 
-  await mockServer
-    .forGet(`${TX_SENTINEL_URL}/network`)
+  await txSentinelNetwork
+    .rule(mockServer, { baseUrl: TX_SENTINEL_URL })
     .always()
     .thenCallback(() => {
       return {

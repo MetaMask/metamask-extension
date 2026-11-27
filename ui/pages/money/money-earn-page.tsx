@@ -46,11 +46,12 @@ export function MoneyEarnPage() {
     () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
     [tokens],
   );
-  const { handleAddToken, isDepositLoading } = useMoneyAddDepositToken({
-    screenName: MoneyScreenName.MoneyPotentialEarnings,
-    tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
-    ftueEntryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
-  });
+  const { handleAddToken, isDepositDisabled, isDepositLoading } =
+    useMoneyAddDepositToken({
+      screenName: MoneyScreenName.MoneyPotentialEarnings,
+      tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+      ftueEntryPoint: MoneyFtueEntryPoint.MoneyPotentialEarnings,
+    });
   const { trackScreenViewed, trackTooltipClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyPotentialEarnings,
   });
@@ -134,7 +135,7 @@ export function MoneyEarnPage() {
               onAddClick={() =>
                 handleAddToken(token, index, eligibleTokens.length)
               }
-              isAddDisabled={isDepositLoading}
+              isAddDisabled={isDepositDisabled || isDepositLoading}
             />
           ))}
         </div>
@@ -143,7 +144,11 @@ export function MoneyEarnPage() {
           <Button
             size={ButtonSize.Lg}
             isLoading={isDepositLoading}
-            isDisabled={eligibleTokens.length === 0}
+            isDisabled={
+              eligibleTokens.length === 0 ||
+              isDepositDisabled ||
+              isDepositLoading
+            }
             onClick={handleConvert}
             className="w-full"
             data-testid="money-earn-convert-cta"

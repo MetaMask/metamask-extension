@@ -4,7 +4,6 @@ import { EthScope, isEvmAccountType } from '@metamask/keyring-api';
 import { type AddNetworkFields } from '@metamask/network-controller';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type CaipChainId } from '@metamask/utils';
-import { FEATURED_RPCS } from '../../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
   getFilteredFeaturedNetworks,
@@ -12,6 +11,7 @@ import {
   sortNetworks,
 } from '../../../../../../shared/lib/network.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
+import { getFeaturedEvmNetworks } from '../../../../../selectors/config-registry/config-registry';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   addNetwork,
@@ -74,6 +74,7 @@ export const useHomeNetworkFilter = ({
   const isEvmNetworkSelected = useSelector(getIsEvmMultichainNetworkSelected);
   const useExternalServices = useSelector(getUseExternalServices);
   const showTestnets = useSelector(getShouldShowTestNetworks);
+  const featuredNetworksBaseList = useSelector(getFeaturedEvmNetworks);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
@@ -188,18 +189,23 @@ export const useHomeNetworkFilter = ({
     customNetworks.length === 0 && !(showTestnets && testNetworks.length > 0);
 
   const additionalNetworks = useMemo(() => {
-    const availableNetworks = FEATURED_RPCS.filter(
-      ({ chainId }) => !evmNetworks[chainId],
-    ).filter(
-      ({ chainId }) =>
-        isEvmChainId(chainId as CaipChainId) || useExternalServices,
-    );
+    const availableNetworks = featuredNetworksBaseList
+      .filter(({ chainId }) => !evmNetworks[chainId])
+      .filter(
+        ({ chainId }) =>
+          isEvmChainId(chainId as CaipChainId) || useExternalServices,
+      );
 
     return getFilteredFeaturedNetworks(
       blacklistedChainIds,
       availableNetworks,
     ).sort((a, b) => a.name.localeCompare(b.name));
-  }, [blacklistedChainIds, evmNetworks, useExternalServices]);
+  }, [
+    blacklistedChainIds,
+    evmNetworks,
+    useExternalServices,
+    featuredNetworksBaseList,
+  ]);
 
   const handleSelectAllDefaultNetworks = useCallback(() => {
     if (isPending) {

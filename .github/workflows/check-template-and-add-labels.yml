@@ -3,7 +3,7 @@ name: Check template and add labels
 on:
   issues:
     types: [opened, edited, labeled, unlabeled, reopened]
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] Runs only base-repository scripts; PR payloads are used as data.
     types: [opened, edited, labeled, unlabeled, reopened, synchronize]
   # Required checks must be reported on merge queue refs. The job is skipped
   # for this event below because the script expects an issue or PR payload.

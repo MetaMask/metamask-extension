@@ -7,6 +7,7 @@ import {
 import HomePage from '../pages/home/homepage';
 import AccountListPage from '../pages/accounts/list-page';
 import { importAccountWithPrivateKey } from './add-wallet.flow';
+import { openAccountMenu } from './account-menu.flow';
 
 /**
  * Waits until the AccountTreeController has finished synchronizing.
@@ -80,7 +81,7 @@ export async function addAccounts({
   const accountListPage = new AccountListPage(driver);
 
   await homepage.checkPageIsLoaded();
-  await homepage.headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
 
   for (let index = 0; index < count; index++) {
     await onBeforeAdd?.({ driver, index });
@@ -113,7 +114,7 @@ export async function importPrivateKeyAccount(
   options: { accountListTimeout?: number } = {},
 ): Promise<void> {
   const homepage = new HomePage(driver);
-  await homepage.headerNavbar.openAccountMenu();
+  await openAccountMenu(driver);
 
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded(options.accountListTimeout);

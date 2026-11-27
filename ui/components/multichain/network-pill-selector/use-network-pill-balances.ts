@@ -5,11 +5,11 @@ import type { MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
-  selectIsAssetsLoadingForSelectedAccountGroup,
   selectUnifiedBalanceGetterBySelectedAccountGroup,
 } from '../../../selectors/assets';
 import { useAccountGroupBalanceDisplay } from '../../app/assets/account-group-balance-change/useAccountGroupBalanceDisplay';
 import { getSelectableChainId } from '../../app/assets/asset-list/asset-list-control-bar/use-home-network-filter';
+import { useAssetsHaveLoaded } from '../../app/assets/hooks/useAssetsHaveLoaded';
 
 type EnabledNetworkMap = Record<string, Record<string, boolean>>;
 
@@ -46,14 +46,12 @@ export const useNetworkPillBalances = (
   const balanceIsLoaded = useSelector(
     selectAccountGroupBalanceIsLoadedForEmptyState,
   );
-  const isAssetsLoading = useSelector(
-    selectIsAssetsLoadingForSelectedAccountGroup,
-  );
+  const assetsHaveLoaded = useAssetsHaveLoaded();
   const { isLoading: balanceIsLoading } = useAccountGroupBalanceDisplay('1d');
 
   // Same check the wallet overview uses to show its loading state.
   const isLoading =
-    !hasBalance && (balanceIsLoading || !balanceIsLoaded || isAssetsLoading);
+    !hasBalance && (balanceIsLoading || !balanceIsLoaded || !assetsHaveLoaded);
 
   return useMemo(() => {
     const balanceByChainId: Record<string, number | undefined> = {};

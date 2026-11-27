@@ -10,13 +10,13 @@ const ACTIVITY_SETTLED_TIMEOUT = 90_000;
  * The Money home page (`#/money-home`): balance, Add / Send actions, and the
  * recent activity preview.
  *
- * Screen: `#/money-home`, reached via the bottom nav Money tab.
+ * Screen: `#/money-home`, reached via the main nav Money tab.
  * Owns: page-loaded check, the Add action, and activity rows (label, fiat
  * amount, click-through).
  * Boundaries: the deposit confirmation opened by Add belongs to
  * `MoneyAccountDepositConfirmation`; activity row details belong to
  * `MoneyTransactionDetailsPage`.
- * Related: `BottomNavBar` (how tests get here).
+ * Related: `MainNav` (how tests get here).
  *
  * @see ui/pages/money/money-home-page.tsx
  */

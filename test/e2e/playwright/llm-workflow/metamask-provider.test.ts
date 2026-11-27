@@ -1,10 +1,14 @@
+import path from 'path';
 import {
   writeSessionMetadata,
   type SessionLaunchInput,
   type WorkflowContext,
 } from '@metamask/client-mcp-core';
 import { MetaMaskSessionManager } from './metamask-provider';
+import { resolveRepoRoot } from './resolve-repo-root';
 import { MetaMaskExtensionLauncher } from '.';
+
+const REPO_ROOT = resolveRepoRoot();
 
 jest.mock('.', () => ({
   MetaMaskExtensionLauncher: jest.fn().mockImplementation(() => ({
@@ -131,7 +135,7 @@ describe('MetaMaskSessionManager', () => {
       expect(writeSessionMetadata).toHaveBeenCalledTimes(1);
       const [artifactsDir, metadata] =
         jest.mocked(writeSessionMetadata).mock.calls[0];
-      expect(artifactsDir).toBe('test-artifacts');
+      expect(artifactsDir).toBe(path.join(REPO_ROOT, 'test-artifacts'));
       expect(metadata).toStrictEqual(
         expect.objectContaining({
           schemaVersion: 1,
@@ -159,8 +163,44 @@ describe('MetaMaskSessionManager', () => {
       await sessionManager.launch({ stateMode: 'default' });
 
       expect(writeSessionMetadata).toHaveBeenCalledWith(
-        'custom-artifacts',
+        path.join(REPO_ROOT, 'custom-artifacts'),
         expect.objectContaining({ sessionId: 'test-session-id' }),
+      );
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          screenshotDir: path.join(
+            REPO_ROOT,
+            'custom-artifacts',
+            'screenshots',
+          ),
+        }),
+      );
+    });
+
+    it('writes screenshots and session metadata to the artifactsDir that core passes in', async () => {
+      await sessionManager.launch({
+        stateMode: 'default',
+        artifactsDir: '/tmp/host-artifacts',
+      });
+
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          screenshotDir: path.join('/tmp/host-artifacts', 'screenshots'),
+        }),
+      );
+      expect(writeSessionMetadata).toHaveBeenCalledWith(
+        '/tmp/host-artifacts',
+        expect.objectContaining({ sessionId: 'test-session-id' }),
+      );
+    });
+
+    it('writes screenshots to <repo>/test-artifacts/screenshots by default', async () => {
+      await sessionManager.launch({ stateMode: 'default' });
+
+      expect(MetaMaskExtensionLauncher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          screenshotDir: path.join(REPO_ROOT, 'test-artifacts', 'screenshots'),
+        }),
       );
     });
 

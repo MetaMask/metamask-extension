@@ -1,8 +1,7 @@
 name: Release Branch Sync
 
 permissions:
-  pull-requests: write
-  contents: write
+  contents: read
 
 on:
   pull_request:
@@ -38,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sync release branches with stable
-        uses: metamask/github-tools/.github/actions/release-branch-sync@v1
+        uses: MetaMask/github-tools/.github/actions/release-branch-sync@v1
         with:
           merged-release-branch: ${{ github.event.pull_request.head.ref }}
           github-token: ${{ secrets.STABLE_SYNC_TOKEN }}

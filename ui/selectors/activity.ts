@@ -7,6 +7,7 @@ import {
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EthScope,
   isEvmAccountType,
@@ -31,10 +32,12 @@ import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/ne
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import { getTransactionPayingAccount } from '../../shared/lib/transactions.utils';
+import { getEvmAccountOverride } from '../../shared/lib/transaction/pay-token';
 import {
   getMoneyAccountTransactionType,
   isProtectedByEnforcedSimulations,
 } from '../pages/confirmations/utils/confirm';
+import { getMoneyAccountWithdrawTransferDetails } from '../pages/confirmations/utils/money-account-withdraw';
 import { ActivityListItem, Status } from '../../shared/lib/activity/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
@@ -157,6 +160,7 @@ function getMoneyAccountPayer(
   tx: TransactionMeta,
   transactionsById: Map<string, TransactionMeta>,
   transactionPayData: TransactionPayControllerState['transactionData'],
+  internalAccountsById: Record<string, InternalAccount>,
 ) {
   const fundingFrom = tx.requiredTransactionIds
     ?.map((id) => transactionsById.get(id)?.txParams?.from)
@@ -164,8 +168,56 @@ function getMoneyAccountPayer(
 
   return getTransactionPayingAccount(
     tx,
-    transactionPayData[tx.id]?.accountOverride ?? fundingFrom,
+    getEvmAccountOverride(
+      transactionPayData[tx.id]?.accountOverride,
+      internalAccountsById,
+    ) ?? fundingFrom,
   )?.toLowerCase();
+}
+
+/**
+ * Wallet account that receives a money-account withdrawal. Pay holds the
+ * recipient's account ID while the transaction is live and persists it on
+ * the transaction afterwards. A withdrawal that is not quoted also names the
+ * recipient in its nested transfer.
+ *
+ * @param tx - The money-account transaction.
+ * @param transactionPayData - Pay data keyed by transaction id.
+ * @param internalAccounts - Accounts in the wallet.
+ * @param internalAccountsById - Accounts in the wallet keyed by id.
+ * @returns Lowercased recipient address, if the transaction is a withdrawal
+ * to a wallet account.
+ */
+function getMoneyAccountWithdrawRecipient(
+  tx: TransactionMeta,
+  transactionPayData: TransactionPayControllerState['transactionData'],
+  internalAccounts: InternalAccount[],
+  internalAccountsById: Record<string, InternalAccount>,
+) {
+  if (
+    getMoneyAccountTransactionType(tx) !== TransactionType.moneyAccountWithdraw
+  ) {
+    return undefined;
+  }
+
+  const overrideAddress = getEvmAccountOverride(
+    transactionPayData[tx.id]?.accountOverride ??
+      tx.metamaskPay?.accountOverride,
+    internalAccountsById,
+  );
+  if (overrideAddress) {
+    return overrideAddress.toLowerCase();
+  }
+
+  const transferRecipient =
+    getMoneyAccountWithdrawTransferDetails(tx).recipient?.toLowerCase();
+  if (!transferRecipient) {
+    return undefined;
+  }
+
+  return internalAccounts
+    .find(({ address }) => address.toLowerCase() === transferRecipient)
+    ?.address.toLowerCase();
 }
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
@@ -198,6 +250,7 @@ export const selectLocalTransactions = createSelector(
   getSelectedAccountGroup,
   selectTransactionPayData,
   getInternalAccounts,
+  getInternalAccountsObject,
   (
     transactions,
     evmAddress,
@@ -208,6 +261,7 @@ export const selectLocalTransactions = createSelector(
     selectedAccountGroup,
     transactionPayData,
     internalAccounts,
+    internalAccountsById,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -253,10 +307,20 @@ export const selectLocalTransactions = createSelector(
       if (!isMoneyAccountTransaction(tx, moneyAccountAddress)) {
         return false;
       }
+      const recipient = getMoneyAccountWithdrawRecipient(
+        tx,
+        transactionPayData,
+        internalAccounts,
+        internalAccountsById,
+      );
+      if (recipient && recipient !== moneyAccountAddress) {
+        return recipient === selectedAddress;
+      }
       const payer = getMoneyAccountPayer(
         tx,
         transactionsById,
         transactionPayData,
+        internalAccountsById,
       );
       if (payer && isPayerOutsideMoneyAccountWallet(payer)) {
         return payer === selectedAddress;

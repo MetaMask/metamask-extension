@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasUsed": {
-    "message": "Brukt datakraft "
-  },
   "general": {
     "message": "Generell"
   },
@@ -337,9 +334,6 @@
   "newContract": {
     "message": "Ny kontaktperson"
   },
-  "newPassword": {
-    "message": "Nytt passord (minimum 8 tegn)"
-  },
   "next": {
     "message": "Neste"
   },
@@ -394,9 +388,6 @@
   "privateKey": {
     "message": "Privat nøkkel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Privat nettverk "
   },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
@@ -545,9 +536,6 @@
   },
   "unapproved": {
     "message": "Ikke godkjent "
-  },
-  "units": {
-    "message": "enheter "
   },
   "unknown": {
     "message": "Ukjent"

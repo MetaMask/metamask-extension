@@ -211,6 +211,9 @@ describe('EthOverview', () => {
           lastUpdated: 0,
         },
       },
+      assetsLoadingStatus: {
+        [mockEvmAccount1.id]: 'loaded',
+      },
       selectedCurrency: 'usd',
       tokenList: [],
       cachedBalances: {
@@ -336,7 +339,22 @@ describe('EthOverview', () => {
         mockedStore,
       );
 
-      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      const balanceSkeleton = queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON);
+      const balanceSkeletonLines = balanceSkeleton?.querySelector(
+        '.wallet-overview__balance-skeleton-lines',
+      );
+
+      expect(balanceSkeleton).toBeInTheDocument();
+      expect(balanceSkeleton).toHaveClass(
+        'self-start',
+        'min-[491px]:self-center',
+        'wide-layout:self-start',
+      );
+      expect(balanceSkeletonLines).toHaveClass(
+        'items-start',
+        'min-[491px]:items-center',
+        'wide-layout:items-start',
+      );
       expect(
         queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
       ).not.toBeInTheDocument();
@@ -410,6 +428,34 @@ describe('EthOverview', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('should show a balance skeleton before the first asset load starts', async () => {
+      const mockedStoreBeforeAssetsLoad = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0' },
+            },
+          },
+          assetsLoadingStatus: undefined,
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreBeforeAssetsLoad,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+    });
+
     it('should show a balance skeleton instead of the empty state while assets are first loading', async () => {
       // Unify-on Jest derives balances from assetsBalance (not accountsByChainId).
       const mockedStoreWithAssetsLoading = {
@@ -428,6 +474,37 @@ describe('EthOverview', () => {
       };
       const mockedStore = configureMockStore([thunk])(
         mockedStoreWithAssetsLoading,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should show a balance skeleton while background assets are loading', async () => {
+      const mockedStoreWithBackgroundAssetsLoading = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0' },
+            },
+          },
+          assetsLoadingStatus: { [mockEvmAccount1.id]: 'loaded' },
+          assetsBackgroundLoadingStatus: {
+            [mockEvmAccount1.id]: 'loading',
+          },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithBackgroundAssetsLoading,
       );
 
       const { queryByTestId } = renderWithProvider(
@@ -721,9 +798,7 @@ describe('EthOverview', () => {
                   ...mockEvmAccount1,
                   // Filter out all methods used for signing transactions.
                   methods: Object.values(EthMethod).filter(
-                    (method) =>
-                      method !== EthMethod.SignTransaction &&
-                      method !== EthMethod.SignUserOperation,
+                    (method) => method !== EthMethod.SignTransaction,
                   ),
                 },
               },

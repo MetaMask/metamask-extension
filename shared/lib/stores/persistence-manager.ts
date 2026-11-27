@@ -32,6 +32,7 @@ import type {
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
+  SplitStateReadDiagnostics,
 } from './base-store';
 import { runTrackedTask } from './utils/run-tracked-task';
 
@@ -82,6 +83,22 @@ export type WriteRetryRecoveredEvent = {
   retryDelayMs: number;
 };
 
+/**
+ * How a persisted-state size was measured for telemetry.
+ *
+ * - `storage_get_bytes_in_use`: exact bytes from the browser storage API
+ * - `json_string_length_estimate`: `JSON.stringify(value).length` fallback
+ *   when `getBytesInUse` is unavailable (e.g. Firefox)
+ */
+export type StateSizeMeasurementSource =
+  | 'storage_get_bytes_in_use'
+  | 'json_string_length_estimate';
+
+export type StoredBytesResult = {
+  bytes: number;
+  source: StateSizeMeasurementSource;
+};
+
 export type SplitStateWriteEvent = {
   /**
    * Per-controller size measurements. Exact storage bytes when
@@ -93,9 +110,7 @@ export type SplitStateWriteEvent = {
   idleStatus: IdleStatus;
   measurementDurationMs: number;
   sampleRate: number;
-  sizeMeasurementSource:
-    | 'storage_get_bytes_in_use'
-    | 'json_string_length_estimate';
+  sizeMeasurementSource: StateSizeMeasurementSource;
   /**
    * Sum of {@link bytesByController} values.
    */
@@ -497,6 +512,24 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return { currentActivity, environmentType, idleStatus, lastActivity };
   }
 
+  /**
+   * Reads split-state key outcomes for a failure report.
+   *
+   * A missing diagnostic method or a probe failure returns `undefined` so the
+   * original error is still reported without a snapshot.
+   *
+   * @returns The snapshot, or `undefined` when it should be omitted.
+   */
+  async #readSplitStateDiagnostics(): Promise<
+    SplitStateReadDiagnostics | undefined
+  > {
+    try {
+      return await this.#localStore.getSplitStateReadDiagnostics?.();
+    } catch {
+      return undefined;
+    }
+  }
+
   async #capturePersistenceException(
     error: unknown,
     failure: string,
@@ -527,6 +560,35 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         if (writeDetails.coalescedUpdates !== undefined) {
           extra['persistence.coalesced_updates'] =
             writeDetails.coalescedUpdates;
+        }
+      }
+
+      if (!isBrowserShuttingDownError(error)) {
+        const readDiagnostics = await this.#readSplitStateDiagnostics();
+        if (readDiagnostics) {
+          extra['persistence.read_manifest_status'] =
+            readDiagnostics.manifestStatus;
+          if (readDiagnostics.manifestKeyCount !== undefined) {
+            extra['persistence.read_manifest_key_count'] =
+              readDiagnostics.manifestKeyCount;
+          }
+          if (readDiagnostics.manifestErrorName) {
+            extra['persistence.read_manifest_error_name'] =
+              readDiagnostics.manifestErrorName;
+          }
+          if (readDiagnostics.readableKeys.length > 0) {
+            extra['persistence.read_readable_keys'] =
+              readDiagnostics.readableKeys.join(',');
+          }
+          if (readDiagnostics.missingKeys.length > 0) {
+            extra['persistence.read_missing_keys'] =
+              readDiagnostics.missingKeys.join(',');
+          }
+          if (readDiagnostics.failedKeys.length > 0) {
+            extra['persistence.read_failed_keys'] = readDiagnostics.failedKeys
+              .map((keyFailure) => `${keyFailure.key}:${keyFailure.errorName}`)
+              .join(',');
+          }
         }
       }
 
@@ -1342,6 +1404,48 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#errorTypeBeforeCallbackRegistered = null;
       },
     );
+  }
+
+  /**
+   * Returns the total stored size of the given keys in the local store.
+   *
+   * Prefers exact `getBytesInUse` bytes. When that API is missing or fails,
+   * falls back to a `JSON.stringify` string-length estimate from
+   * `valuesByKey`.
+   *
+   * @param keys - The storage keys to measure.
+   * @param valuesByKey - In-memory values for those keys, used only for the
+   * estimate fallback.
+   * @returns The measured size and its source, or `undefined` when neither
+   * exact bytes nor an estimate is available.
+   */
+  async getStoredBytes(
+    keys: string[],
+    valuesByKey?: Readonly<Record<string, unknown>>,
+  ): Promise<StoredBytesResult | undefined> {
+    try {
+      const bytes = await this.#localStore.getTotalBytesInUse?.(keys);
+      if (typeof bytes === 'number') {
+        return { bytes, source: 'storage_get_bytes_in_use' };
+      }
+    } catch {
+      // Fall back to a synchronous estimate when exact storage bytes are
+      // unavailable or fail. Telemetry must not fail a successful read.
+    }
+
+    if (!valuesByKey) {
+      return undefined;
+    }
+
+    let bytes = 0;
+    for (const key of keys) {
+      // Cheap size estimate for telemetry: `JSON.stringify` string length
+      // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
+      const serializedValue = JSON.stringify(valuesByKey[key]);
+      bytes += serializedValue === undefined ? 0 : serializedValue.length;
+    }
+
+    return { bytes, source: 'json_string_length_estimate' };
   }
 
   /**
