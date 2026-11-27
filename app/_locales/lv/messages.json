@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Automātiskās izrakstīšanās taimeris (minūtes)"
   },
-  "average": {
-    "message": "Vidēji"
-  },
   "back": {
     "message": "Atpakaļ"
   },

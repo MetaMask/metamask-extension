@@ -72,9 +72,6 @@
   "autoLockTimeLimit": {
     "message": "Časovač automatického odhlásenia (minúty)"
   },
-  "average": {
-    "message": "Priemerný"
-  },
   "back": {
     "message": "Zpět"
   },

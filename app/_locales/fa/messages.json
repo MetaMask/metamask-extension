@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
-  "average": {
-    "message": "اوسط"
-  },
   "back": {
     "message": "بازگشت"
   },

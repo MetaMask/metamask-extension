@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "স্বয়ংক্রিয়-লগ আউট টাইমার (মিনিট)"
   },
-  "average": {
-    "message": "গড়"
-  },
   "back": {
     "message": "ফিরুন"
   },

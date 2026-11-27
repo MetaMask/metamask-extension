@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Časovnik za samodejno odjavo (minute)"
   },
-  "average": {
-    "message": "Povprečje"
-  },
   "back": {
     "message": "Nazaj"
   },

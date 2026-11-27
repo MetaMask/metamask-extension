@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Automaatse väljalogimise taimer (minutites)"
   },
-  "average": {
-    "message": "Keskmine"
-  },
   "back": {
     "message": "Tagasi"
   },

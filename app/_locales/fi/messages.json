@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Automaattisen uloskirjautumisen ajastin (minuuttia)"
   },
-  "average": {
-    "message": "Keskiverto"
-  },
   "back": {
     "message": "Edellinen"
   },

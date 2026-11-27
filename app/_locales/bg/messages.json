@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Таймер за автоматично излизане (минути)"
   },
-  "average": {
-    "message": "Средно аритметично"
-  },
   "back": {
     "message": "Назад"
   },

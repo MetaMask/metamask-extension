@@ -146,9 +146,6 @@
   "autoLockTimeLimit": {
     "message": "Timer di logout automatico (minuti)"
   },
-  "average": {
-    "message": "Media"
-  },
   "back": {
     "message": "Indietro"
   },

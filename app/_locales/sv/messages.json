@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "average": {
-    "message": "Genomsnitt"
-  },
   "back": {
     "message": "Bakåt"
   },
