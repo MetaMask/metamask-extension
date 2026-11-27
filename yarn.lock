@@ -7199,7 +7199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^40.2.0":
+"@metamask/accounts-controller@npm:^40.0.0, @metamask/accounts-controller@npm:^40.1.0, @metamask/accounts-controller@npm:^40.2.0":
   version: 40.2.0
   resolution: "@metamask/accounts-controller@npm:40.2.0"
   dependencies:
@@ -9269,7 +9269,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^38.0.1":
+"@metamask/network-controller@npm:^38.0.0, @metamask/network-controller@npm:^38.0.1":
   version: 38.0.1
   resolution: "@metamask/network-controller@npm:38.0.1"
   dependencies:
