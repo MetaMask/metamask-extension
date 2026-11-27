@@ -121,6 +121,7 @@ describe('Extension update takeover', function (this: Suite) {
 
         await takeover.pressEscape();
         await takeover.clickOutsideContent();
+        await takeover.checkStaysDisplayed();
         await takeover.checkVersionUpdateIsDisplayed();
         await takeover.checkBackgroundIsBlocked();
       },
