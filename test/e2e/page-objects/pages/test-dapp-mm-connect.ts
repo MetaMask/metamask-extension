@@ -29,12 +29,15 @@ export class TestDappMmConnect {
   // Static selectors (TEST_IDS.app.*)
   // ──────────────────────────────────────────────────────────────────────────
 
+  /** App title heading, rendered in every state of the page. */
+  private readonly appTitle = { testId: 'app-title' };
+
   /** "Connect (Multichain)" button — present while disconnected or connecting. */
   private readonly connectButton = { testId: 'app-btn-connect' };
 
   /**
    * Section that is always in the DOM once the app mounts.
-   * Used together with connectButton in checkPageIsLoaded.
+   * Used together with appTitle in checkPageIsLoaded.
    */
   private readonly connectedSection = { testId: 'app-section-connected' };
 
@@ -193,7 +196,7 @@ export class TestDappMmConnect {
 
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      this.connectButton,
+      this.appTitle,
       this.connectedSection,
     ]);
   }
