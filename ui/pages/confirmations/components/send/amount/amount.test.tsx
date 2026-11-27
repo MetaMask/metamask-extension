@@ -3,6 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
+  BITCOIN_ASSET,
   EVM_ASSET,
   MOCK_NFT1155,
   MOCK_NFT721,
@@ -16,9 +17,15 @@ import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSe
 import * as BalanceFunctions from '../../../hooks/send/useBalance';
 import * as CurrencyConversions from '../../../hooks/send/useCurrencyConversions';
 import * as MaxAmount from '../../../hooks/send/useMaxAmount';
-import * as SendType from '../../../hooks/send/useSendType';
 import * as SendContext from '../../../context/send';
 import { Amount } from './amount';
+
+const TRON_ASSET = {
+  ...SOLANA_ASSET,
+  address: 'tron:728126428/slip44:195',
+  chainId: 'tron:728126428',
+  isNative: true,
+};
 
 const render = (args?: Record<string, unknown>, mockAmountError?: string) => {
   const store = configureStore(args ?? mockState);
@@ -227,28 +234,30 @@ describe('Amount', () => {
     expect(getByTestId('send-amount-fiat-value')).toBeInTheDocument();
   });
 
-  it('update value with maxValue when max button is clicked', () => {
+  it('update value with maxValue when max button is clicked', async () => {
     const mockUpdateValue = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateValue: mockUpdateValue,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
-      getMaxAmount: () => '5',
+      getMaxAmount: async () => '5',
+      isMaxAmountSupported: true,
     });
 
     const { getByRole, getByText } = render();
 
     fireEvent.click(getByText(messages.max.message));
-    expect(getByRole('textbox')).toHaveValue('5');
+    await waitFor(() => expect(getByRole('textbox')).toHaveValue('5'));
     expect(mockUpdateValue).toHaveBeenCalledWith('5', true);
   });
 
-  it('capture metrics when max button is clicked', () => {
+  it('capture metrics when max button is clicked', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       updateValue: jest.fn(),
     } as unknown as SendContext.SendContextType);
     jest.spyOn(MaxAmount, 'useMaxAmount').mockReturnValue({
-      getMaxAmount: () => '5',
+      getMaxAmount: async () => '5',
+      isMaxAmountSupported: true,
     });
     const mockSetAmountInputMethodPressedMax = jest.fn();
     jest
@@ -261,7 +270,9 @@ describe('Amount', () => {
 
     const { getByText } = render();
     fireEvent.click(getByText(messages.max.message));
-    expect(mockSetAmountInputMethodPressedMax).toHaveBeenCalled();
+    await waitFor(() =>
+      expect(mockSetAmountInputMethodPressedMax).toHaveBeenCalled(),
+    );
   });
 
   it('return null for ERC721 asset', () => {
@@ -327,13 +338,11 @@ describe('Amount', () => {
     expect(queryByText('Fiat Mode')).not.toBeInTheDocument();
   });
 
-  it('max button is not rendered for solana native asset', () => {
+  it('max button is not rendered for Solana assets', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: { ...SOLANA_ASSET, isNative: true },
+      chainId: SOLANA_ASSET.chainId,
     } as unknown as SendContext.SendContextType);
-    jest.spyOn(SendType, 'useSendType').mockReturnValue({
-      isNonEvmNativeSendType: true,
-    } as ReturnType<typeof SendType.useSendType>);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',
       rawBalanceNumeric: new Numeric('1', 10),
@@ -349,6 +358,50 @@ describe('Amount', () => {
 
     const { queryByText } = render();
     expect(queryByText(messages.max.message)).not.toBeInTheDocument();
+  });
+
+  it('max button is not rendered for Bitcoin assets', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: BITCOIN_ASSET,
+      chainId: BITCOIN_ASSET.chainId,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '1',
+      rawBalanceNumeric: new Numeric('1', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+    });
+
+    const { queryByText } = render();
+    expect(queryByText(messages.max.message)).not.toBeInTheDocument();
+  });
+
+  it('max button is rendered for Tron assets', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: TRON_ASSET,
+      chainId: TRON_ASSET.chainId,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '1',
+      rawBalanceNumeric: new Numeric('1', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+    });
+
+    const { queryByText } = render();
+    expect(queryByText(messages.max.message)).toBeInTheDocument();
   });
 
   describe('numeric input validation', () => {

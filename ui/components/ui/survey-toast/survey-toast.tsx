@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
@@ -30,7 +30,8 @@ type Survey = {
   id: number;
 };
 
-const toastId = 'survey-toast';
+const toastIdPrefix = 'survey-toast';
+const getToastId = (surveyId: number) => `${toastIdPrefix}-${surveyId}`;
 const surveyQueryKey = 'survey-toast';
 
 export function SurveyToast() {
@@ -44,6 +45,7 @@ export function SurveyToast() {
   const isUnlocked = useSelector(getIsUnlocked);
   const analyticsId = useSelector(getAnalyticsId);
   const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
+  const shownToastIdRef = useRef<string | null>(null);
 
   const surveyUrl = `${ACCOUNTS_API_BASE_URL}/v1/users/${analyticsId}/surveys`;
 
@@ -124,7 +126,7 @@ export function SurveyToast() {
         queryKey: [surveyQueryKey, analyticsId],
       });
       trackAction(response);
-      toast.dismiss(toastId);
+      toast.dismiss(getToastId(survey.id));
     },
     [analyticsId, dispatch, queryClient, survey, trackAction],
   );
@@ -142,20 +144,29 @@ export function SurveyToast() {
 
   useEffect(() => {
     if (!survey || survey.id <= lastViewedUserSurvey) {
-      toast.dismiss(toastId);
+      if (shownToastIdRef.current) {
+        toast.dismiss(shownToastIdRef.current);
+        shownToastIdRef.current = null;
+      }
       return;
     }
 
+    const id = getToastId(survey.id);
+    if (shownToastIdRef.current && shownToastIdRef.current !== id) {
+      toast.dismiss(shownToastIdRef.current);
+    }
+    shownToastIdRef.current = id;
+
     toast.success(
       <ToastContent
-        dataTestId={toastId}
+        dataTestId={toastIdPrefix}
         title={survey.description}
         description={survey.content}
         actionText={survey.cta}
         onActionClick={handleActionClick}
       />,
       {
-        id: toastId,
+        id,
         duration: Infinity,
         icon: (
           <Icon
@@ -171,7 +182,9 @@ export function SurveyToast() {
 
   useEffect(() => {
     return () => {
-      toast.dismiss(toastId);
+      if (shownToastIdRef.current) {
+        toast.dismiss(shownToastIdRef.current);
+      }
     };
   }, []);
 

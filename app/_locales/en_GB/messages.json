@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Accept and close"
   },
-  "acceptTermsOfUse": {
-    "message": "I have read and agree to the $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Contact support"
   },
@@ -1316,60 +1312,25 @@
     "message": "Add wallet"
   },
   "add_device_error_connection": {
-    "message": "We couldn't keep a secure connection with your phone. Check your internet connection and try again."
+    "message": "We couldn't keep a secure connection with your other device. Check your internet connection and try again."
   },
   "add_device_error_expired": {
     "message": "This session expired. Start with a new QR code."
   },
   "add_device_error_generic": {
-    "message": "Something went wrong while syncing with your phone. Try again."
+    "message": "Something went wrong. Start with a new QR code."
   },
   "add_device_error_invalid_code": {
-    "message": "The verification code was incorrect. Start again to try syncing your phone."
+    "message": "That code is incorrect. Try again."
   },
   "add_device_error_rejected": {
-    "message": "The sync was cancelled on your phone. Start again to try syncing."
+    "message": "The import was canceled in MetaMask mobile. Start with a new QR code."
   },
   "add_device_error_sync_failed": {
-    "message": "We couldn't finish syncing your accounts to your phone. Try again."
+    "message": "We couldn't import your accounts to MetaMask mobile. Start with a new QR code."
   },
   "add_device_error_title": {
     "message": "Couldn't add to mobile"
-  },
-  "add_device_import_accounts": {
-    "message": "Import accounts"
-  },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 imported accounts were synced to MetaMask mobile.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 imported account was synced to MetaMask mobile.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 wallets were synced to MetaMask mobile.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 wallets and $2 imported accounts were synced to MetaMask mobile.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 wallets and 1 imported account were synced to MetaMask mobile.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 wallet was synced to MetaMask mobile.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 wallet and $1 imported accounts were synced to MetaMask mobile.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 wallet and 1 imported account were synced to MetaMask mobile.",
-    "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
     "message": "Continue in MetaMask mobile"
@@ -4823,52 +4784,6 @@
   "history": {
     "message": "History"
   },
-  "holdToRevealContent1": {
-    "message": "Your Secret Recovery Phrase provides $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "full access to your wallet and funds.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Do not share this with anyone. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMask Support will not request this,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "but phishers might.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Your Private Key provides $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "full access to your wallet and funds.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "hold to reveal circle locked"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Hold to reveal Private Key"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Keep your private key safe"
-  },
-  "holdToRevealSRP": {
-    "message": "Hold to reveal SRP"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Keep your SRP safe"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "hold to reveal circle unlocked"
-  },
   "home": {
     "message": "Home",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6335,6 +6250,12 @@
   "moneyLearnMore": {
     "message": "Learn more"
   },
+  "moneyLifecycleUnavailableBannerDescription": {
+    "message": "We couldn't confirm your Money account status. Deposits and withdrawals are disabled until it can be confirmed."
+  },
+  "moneyLifecycleUnavailableBannerTitle": {
+    "message": "Money account status unavailable"
+  },
   "moneyLifetime": {
     "message": "Lifetime"
   },
@@ -6343,6 +6264,12 @@
   },
   "moneyMeetMusd": {
     "message": "Meet mUSD"
+  },
+  "moneyMfaReadOnlyBannerDescription": {
+    "message": "You turned on extra security in MetaMask mobile. To add funds or withdraw, use your mobile app."
+  },
+  "moneyMfaReadOnlyBannerTitle": {
+    "message": "Manage on MetaMask mobile"
   },
   "moneyMonthlyTooltip": {
     "message": "The total you've earned on your Money account balance in the last 30 days."
@@ -6840,9 +6767,6 @@
   },
   "newNftAddedMessage": {
     "message": "NFT was successfully added!"
-  },
-  "newPassword": {
-    "message": "New password"
   },
   "newPasswordCreate": {
     "message": "Create new password"
@@ -7370,9 +7294,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Override Content-Security-Policy header"
-  },
-  "padlock": {
-    "message": "Padlock"
   },
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
@@ -9355,6 +9276,42 @@
   "qrHardwareScanSignatureNext": {
     "message": "Scan next QR code",
     "description": "Button label for scanning a non-final QR hardware-wallet signature after the user signs on their device."
+  },
+  "qrSyncAccountCount": {
+    "message": "$1 accounts",
+    "description": "$1 is the number of accounts in a wallet"
+  },
+  "qrSyncAccountCountOne": {
+    "message": "$1 account",
+    "description": "$1 is the number of accounts in a wallet"
+  },
+  "qrSyncAccountImportedDescription": {
+    "message": "$1 account imported to MetaMask mobile",
+    "description": "$1 is the number of imported accounts"
+  },
+  "qrSyncAccountsImportedDescription": {
+    "message": "$1 accounts imported to MetaMask mobile",
+    "description": "$1 is the number of imported accounts"
+  },
+  "qrSyncImportAccountsCta": {
+    "message": "Import accounts",
+    "description": "Primary action on the account selection screen"
+  },
+  "qrSyncSelectionSummary": {
+    "message": "$1 wallets · $2 accounts selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
+  },
+  "qrSyncSelectionSummaryOneAccount": {
+    "message": "$1 wallets · $2 account selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
+  },
+  "qrSyncSelectionSummaryOneWallet": {
+    "message": "$1 wallet · $2 accounts selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
+  },
+  "qrSyncSelectionSummaryOneWalletOneAccount": {
+    "message": "$1 wallet · $2 account selected",
+    "description": "$1 is the selected wallet count and $2 is the selected account count"
   },
   "qrSyncStillConnecting": {
     "message": "Still connecting. Don’t close MetaMask mobile.",

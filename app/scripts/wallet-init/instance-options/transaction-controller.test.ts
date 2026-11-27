@@ -6,6 +6,7 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { isPayTransactionResumable } from '@metamask/transaction-pay-controller';
 import {
   createCacheKey,
   ResultType,
@@ -17,6 +18,9 @@ import { createMockMessenger } from '../test-utils';
 import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { getTransactionControllerInstanceOptions } from './transaction-controller';
 
+jest.mock('@metamask/transaction-pay-controller', () => ({
+  isPayTransactionResumable: jest.fn(),
+}));
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
 jest.mock('../../../../shared/lib/selectors');
@@ -153,6 +157,25 @@ describe('TransactionController wallet instance options', () => {
 
     expect(isFirstTimeInteractionEnabled?.()).toBe(true);
   });
+
+  jestIt.each([true, false])(
+    'returns %s from isResumable when the pay controller does',
+    (resumable) => {
+      const isPayTransactionResumableMock = jest.mocked(
+        isPayTransactionResumable,
+      );
+      isPayTransactionResumableMock.mockReturnValue(resumable);
+      const transactionMeta = { id: '1' } as TransactionMeta;
+
+      const isResumable = testConstructorOption('isResumable');
+
+      expect(isResumable?.(transactionMeta)).toBe(resumable);
+      expect(isPayTransactionResumableMock).toHaveBeenCalledWith(
+        expect.anything(),
+        transactionMeta,
+      );
+    },
+  );
 
   it('determines if simulation is enabled using preferences', () => {
     const isSimulationEnabled = testConstructorOption('isSimulationEnabled', {

@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.59.0]
+
+### Added
+
+- Added an option to remember support consent preferences (#46854)
+- Added a link to the referral invite terms on the invite sheet (#47892)
+- Added an APY tag next to Money Account when withdrawing from Perps (#47865)
+- Added a mobile QR fallback for unsupported deep links with `share=1` (#47770)
+- Added tracking for background asset loading per account (#47792)
+
+### Changed
+
+- Restored the previous handling of referral codes in deep links (#48140)
+- Moved the Money CTA under the token name on the wide token table (#48098)
+- Changed the wide-screen redesign from a feature flag to an A/B test (#48057)
+- Changed the gated wide layout to start at 900px instead of 768px (#47840)
+- Updated Permit2 approval screens to show the token, amount, spender, and expiration before confirmation (#47797)
+- Updated marketing consent and data-deletion copy (#47941)
+
+### Fixed
+
+- Fixed a bug that could make the full screen view unresponsive after adding an account or forgetting a hardware wallet when the wallet had many accounts (#48186)
+- Fixed the Solana token logo showing on a white background in token avatars (#48176)
+- Fixed a bug that prevented custom token changes from syncing to Authenticated User Storage (#48163)
+- Restored support for the MPCVault custodian in the institutional wallet snap (#48074)
+- Fixed dapp confirmation popups not opening after switching the preferred view from the side panel to the popup (#48048)
+- Fixed the wallet-home carousel and DeFi tab remaining visible when Basic Functionality was turned off (#48021)
+- Fixed the wallet total and native-token warnings flashing transient states during initial loading (#48053)
+- Fixed preinstalled Snaps receiving an unauthorized error when requesting execution permissions (#48056)
+- Fixed referral invitations accepting codes excluded from a deep link signature (#47901)
+- Fixed zero-value asset rows and funding prompts flashing while wallet balances loaded (#48005)
+- Fixed the token details page advanced chart so the candlestick price change always reflects the last 24 hours regardless of the selected interval, and the price and percentage no longer go blank when candle data fails to load (#47979)
+- Fixed Snaps continuing to make network requests after turning off Basic Functionality (#47876)
+- Fixed added protection being offered for transactions whose simulation failed (#47951)
+- Fixed the explorer link for Money withdrawals to another chain to open the destination chain's explorer (#47968)
+- Fixed the total balance loading skeleton so it matches the balance size (#47271)
+- Fixed Money card activity showing vault share amounts instead of historical mUSD values when historical valuations are enabled (#47881)
+- Fixed a bug where Stellar trustline activation and removal confirmations did not appear in fullscreen (#47886)
+- Fixed the transaction fee row to show Paid by MetaMask when all fees are zero, including Money Account Perps deposits and withdrawals, except when a fiat payment method is selected (#47867)
+
+### Security
+
+- Hid tokens with Warning, Spam, or Malicious security verdicts from the Discover Trending list and Discover token search by default (#48033)
+
 ## [13.58.0]
 
 ### Added
@@ -3741,7 +3785,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.58.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.59.0...HEAD
+[13.59.0]: https://github.com/MetaMask/metamask-extension/compare/v13.58.0...v13.59.0
 [13.58.0]: https://github.com/MetaMask/metamask-extension/compare/v13.57.0...v13.58.0
 [13.57.0]: https://github.com/MetaMask/metamask-extension/compare/v13.56.0...v13.57.0
 [13.56.0]: https://github.com/MetaMask/metamask-extension/compare/v13.55.0...v13.56.0

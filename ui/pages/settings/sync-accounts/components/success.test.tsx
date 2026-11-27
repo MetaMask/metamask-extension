@@ -5,90 +5,92 @@ import { renderWithLocalization } from '../../../../../test/lib/render-helpers-n
 import messages from '../../../../../app/_locales/en/messages.json';
 import Success from './success';
 
+jest.mock('./success-check-animation', () => () => (
+  <div data-testid="qr-sync-success-check-animation">Animated check</div>
+));
+
 describe('Success', () => {
-  it('renders the title and description for multiple wallets and imported accounts', () => {
+  it('renders the title, imported account count, and animated check', () => {
     renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={2} importedAccountCount={5} />,
+      <Success
+        onDone={jest.fn()}
+        syncedWalletCount={2}
+        syncedPrivateKeyAccountCount={0}
+        totalSelectedAccountCount={18}
+      />,
     );
 
     expect(
       screen.getByText(messages.add_device_success_title.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        '2 wallets and 5 imported accounts were synced to MetaMask mobile.',
-      ),
+      screen.getByText('18 accounts imported to MetaMask mobile'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('qr-sync-success-check-animation'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.add_device_success_title.message).parentElement,
+    ).toHaveClass('min-h-[88px]');
+    expect(
+      screen.getByText(messages.add_device_success_title.message).parentElement
+        ?.parentElement,
+    ).toHaveClass('flex-1', 'justify-center', 'gap-0');
   });
 
-  it('renders singular copy when one wallet and one imported account are synced', () => {
+  it('renders singular copy for one imported account', () => {
     renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={1} importedAccountCount={1} />,
+      <Success
+        onDone={jest.fn()}
+        syncedWalletCount={1}
+        totalSelectedAccountCount={1}
+      />,
     );
 
     expect(
-      screen.getByText(
-        messages.add_device_success_desc_wallet_singular_imported_singular
-          .message,
-      ),
+      screen.getByText('1 account imported to MetaMask mobile'),
     ).toBeInTheDocument();
   });
 
-  it('renders only the wallet clause when no imported accounts are synced', () => {
+  it('describes all synced accounts, not only imported private-key accounts', () => {
     renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={3} importedAccountCount={0} />,
+      <Success
+        onDone={jest.fn()}
+        syncedWalletCount={1}
+        syncedPrivateKeyAccountCount={0}
+        totalSelectedAccountCount={3}
+      />,
     );
 
     expect(
-      screen.getByText('3 wallets were synced to MetaMask mobile.'),
+      screen.getByText('3 accounts imported to MetaMask mobile'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('qr-sync-success')).toHaveAttribute(
+      'data-synced-account-count',
+      '0',
+    );
   });
 
-  it('renders singular wallet copy when a single wallet and no imported accounts are synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={1} importedAccountCount={0} />,
-    );
+  it('does not show a made-up count when none is provided', () => {
+    renderWithLocalization(<Success onDone={jest.fn()} />);
 
-    expect(
-      screen.getByText(
-        messages.add_device_success_desc_wallet_singular.message,
-      ),
-    ).toBeInTheDocument();
+    expect(screen.queryByText(/imported to MetaMask mobile/u)).toBeNull();
+    expect(screen.getByTestId('qr-sync-success')).toHaveAttribute(
+      'data-synced-wallet-count',
+      '0',
+    );
+    expect(screen.getByTestId('qr-sync-success')).toHaveAttribute(
+      'data-synced-account-count',
+      '0',
+    );
   });
 
-  it('renders only the imported account clause when no wallets are synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={0} importedAccountCount={4} />,
-    );
+  it('anchors the done button to the bottom of the screen', () => {
+    renderWithLocalization(<Success onDone={jest.fn()} />);
 
     expect(
-      screen.getByText('4 imported accounts were synced to MetaMask mobile.'),
-    ).toBeInTheDocument();
-  });
-
-  it('renders singular imported account copy when a single imported account and no wallets are synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={0} importedAccountCount={1} />,
-    );
-
-    expect(
-      screen.getByText(
-        messages.add_device_success_desc_imported_singular.message,
-      ),
-    ).toBeInTheDocument();
-  });
-
-  it('renders no description when nothing is synced', () => {
-    renderWithLocalization(
-      <Success onDone={jest.fn()} walletCount={0} importedAccountCount={0} />,
-    );
-
-    expect(
-      screen.getByText(messages.add_device_success_title.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/synced to MetaMask mobile/u),
-    ).not.toBeInTheDocument();
+      screen.getByRole('button', { name: messages.done.message }),
+    ).toHaveClass('absolute', 'bottom-4');
   });
 
   it('calls onDone when the done button is clicked', () => {

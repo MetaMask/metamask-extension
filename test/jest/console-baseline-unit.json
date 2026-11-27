@@ -387,9 +387,6 @@
     "ui/components/ui/qr-code-view/qr-code-view.test.tsx": {
       "React: DOM nesting violations": 1
     },
-    "ui/components/ui/survey-toast/survey-toast.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
     "ui/contexts/metametrics.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 1
     },

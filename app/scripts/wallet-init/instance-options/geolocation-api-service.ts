@@ -1,6 +1,8 @@
 import { Env } from '@metamask/geolocation-controller';
 import type { WalletOptions } from '@metamask/wallet';
 import { isProduction } from '../../../../shared/lib/environment';
+import { TraceName } from '../../../../shared/lib/trace';
+import { withOwnRootTrace } from '../../lib/own-root-trace';
 
 type GeolocationApiServiceInstanceOptions = NonNullable<
   WalletOptions['instanceOptions']['geolocationApiService']
@@ -14,6 +16,6 @@ type GeolocationApiServiceInstanceOptions = NonNullable<
 export function getGeolocationApiServiceInstanceOptions(): GeolocationApiServiceInstanceOptions {
   return {
     env: isProduction() ? Env.PRD : Env.DEV,
-    fetch: fetch.bind(globalThis),
+    fetch: withOwnRootTrace(TraceName.GeolocationFetch, fetch.bind(globalThis)),
   };
 }

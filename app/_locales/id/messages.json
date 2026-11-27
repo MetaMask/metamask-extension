@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Terima dan tutup"
   },
-  "acceptTermsOfUse": {
-    "message": "Saya telah membaca dan menyetujui $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Hubungi dukungan"
   },
@@ -1278,38 +1274,6 @@
   },
   "add_device_error_title": {
     "message": "Sinkronisasi tidak dapat diselesaikan"
-  },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 akun yang diimpor telah disinkronkan ke ponsel Anda.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 akun yang diimpor telah disinkronkan ke ponsel Anda.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 dompet telah disinkronkan ke ponsel Anda.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 dompet dan $2 akun yang diimpor telah disinkronkan ke ponsel Anda.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 dompet dan 1 akun yang diimpor telah disinkronkan ke ponsel Anda.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 dompet telah disinkronkan ke ponsel Anda.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 dompet dan $1 akun yang diimpor telah disinkronkan ke ponsel Anda.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 dompet dan 1 akun yang diimpor telah disinkronkan ke ponsel Anda.",
-    "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
     "message": "Perangkat terpasang"
@@ -4734,52 +4698,6 @@
   "history": {
     "message": "Riwayat"
   },
-  "holdToRevealContent1": {
-    "message": "Frasa Pemulihan Rahasia memberikan $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "akses penuh ke dompet dan dana Anda.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Jangan bagikan ini kepada siapa pun. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Dukungan MetaMask tidak akan memintanya,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "tetapi penipu akan berusaha mendapatkannya.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Kunci Pribadi menyediakan $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "akses penuh ke dompet dan dana Anda.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "tahan untuk mengungkapkan lingkaran terkunci"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Tahan untuk mengungkapkan Kunci Pribadi"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Amankan kunci pribadi Anda"
-  },
-  "holdToRevealSRP": {
-    "message": "Tahan untuk mengungkapkan SRP"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Amankan SRP Anda"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "tahan untuk mengungkapkan lingkaran terbuka"
-  },
   "home": {
     "message": "Beranda",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6693,9 +6611,6 @@
   "newNftAddedMessage": {
     "message": "NFT berhasil ditambahkan!"
   },
-  "newPassword": {
-    "message": "Kata sandi baru"
-  },
   "newPasswordCreate": {
     "message": "Buat kata sandi baru"
   },
@@ -7222,9 +7137,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Batalkan header Content-Security-Policy"
-  },
-  "padlock": {
-    "message": "Gembok"
   },
   "paidByMetaMask": {
     "message": "Dibayar oleh MetaMask"

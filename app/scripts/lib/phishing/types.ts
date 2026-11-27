@@ -16,6 +16,11 @@ export type PhishingDetectionController = {
   };
   phishingController: Pick<
     PhishingController,
-    'maybeUpdateState' | 'isBlockedRequest' | 'test'
+    | 'maybeUpdateState'
+    | 'isStalelistOutOfDate'
+    | 'isHotlistOutOfDate'
+    | 'isC2DomainBlocklistOutOfDate'
+    | 'isBlockedRequest'
+    | 'test'
   >;
 };

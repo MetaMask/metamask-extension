@@ -169,6 +169,26 @@ const MOCK_PRIMARY_REQUIRED_TOKEN = {
   decimals: 18,
 };
 
+const SUBSIDIZED_TARGET_TOTALS = {
+  fees: {
+    metaMask: { usd: '0' },
+    provider: { usd: '0' },
+    sourceNetwork: { estimate: { usd: '0' } },
+    targetNetwork: { usd: '0' },
+  },
+  isInputBased: false,
+} as TransactionPayTotals;
+
+const UNSUBSIDIZED_TARGET_TOTALS = {
+  fees: {
+    metaMask: { usd: '0' },
+    provider: { usd: '0.50' },
+    sourceNetwork: { estimate: { usd: '0.10' } },
+    targetNetwork: { usd: '0' },
+  },
+  isInputBased: false,
+} as TransactionPayTotals;
+
 function render(
   options: {
     amountDetails?: (amountFiat: string) => React.ReactNode;
@@ -177,6 +197,7 @@ function render(
     disablePercentageButtons?: boolean;
     displayAccountRow?: boolean;
     displayPercentageButtons?: boolean;
+    fiatPayment?: { selectedPaymentMethodId?: string };
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
     accountNoFundsAlert?: { key: string }[];
@@ -206,6 +227,7 @@ function render(
     disablePercentageButtons,
     displayAccountRow = false,
     displayPercentageButtons = false,
+    fiatPayment,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
     accountNoFundsAlert = [],
@@ -263,6 +285,9 @@ function render(
   jest
     .mocked(useAccountNoFundsAlertModule.useAccountNoFundsAlert)
     .mockReturnValue(accountNoFundsAlert as never);
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayFiatPayment)
+    .mockReturnValue(fiatPayment);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayQuotes)
     .mockReturnValue(
@@ -1126,6 +1151,82 @@ describe('CustomAmountInfo', () => {
 
       const receiveValue = getByTestId('receive-value');
       expect(receiveValue.tagName).toBe('BUTTON');
+    });
+
+    it('renders ReceiveRow with dotted mUSD dialog trigger for subsidized target-based money-account deposits', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        sourceAmounts: [{ targetTokenAddress: '0x123' }],
+        totals: SUBSIDIZED_TARGET_TOTALS,
+        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+      });
+
+      const receiveValue = getByTestId('receive-value');
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(receiveValue.tagName).toBe('BUTTON');
+      expect(receiveValue).toHaveTextContent('$100.00');
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('renders ReceiveRow for subsidized target-based Perps deposits', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        sourceAmounts: [{ targetTokenAddress: '0x123' }],
+        totals: SUBSIDIZED_TARGET_TOTALS,
+        transactionMeta: {
+          ...MOCK_TRANSACTION_META,
+          type: TransactionType.perpsDeposit,
+        },
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(getByTestId('receive-value')).toHaveTextContent('$100.00');
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('renders ReceiveRow for subsidized target-based Predict deposits', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        sourceAmounts: [{ targetTokenAddress: '0x123' }],
+        totals: SUBSIDIZED_TARGET_TOTALS,
+        transactionMeta: {
+          ...MOCK_TRANSACTION_META,
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.predictDeposit }],
+        } as TransactionMeta,
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(getByTestId('receive-value')).toHaveTextContent('$100.00');
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total row for unsubsidized target-based money-account deposits', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        sourceAmounts: [{ targetTokenAddress: '0x123' }],
+        totals: UNSUBSIDIZED_TARGET_TOTALS,
+        transactionMeta: {
+          ...MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+          isGasFeeSponsored: true,
+        },
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total row for target-based deposits when a fiat payment method is selected', () => {
+      const { getByTestId, queryByTestId } = render({
+        fiatPayment: { selectedPaymentMethodId: 'apple-pay' },
+        hasQuotes: true,
+        sourceAmounts: [{ targetTokenAddress: '0x123' }],
+        totals: SUBSIDIZED_TARGET_TOTALS,
+        transactionMeta: MOCK_MONEY_ACCOUNT_DEPOSIT_TRANSACTION_META,
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
     });
 
     it('respects showAccountDivider on FromAccountRow', () => {

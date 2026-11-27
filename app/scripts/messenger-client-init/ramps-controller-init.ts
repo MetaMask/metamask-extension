@@ -7,6 +7,7 @@ import {
 } from '@metamask/ramps-controller';
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
+import { rampsInitTrace } from '../lib/ramps/ramps-init-trace';
 import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
 import {
   MetaMetricsEventCategory,
@@ -82,8 +83,8 @@ function createRampsLifecycleManager(
     lifecycleStarted = true;
     const runId = lifecycleRunId;
 
-    messengerClient
-      .init()
+    rampsInitTrace
+      .run(() => messengerClient.init())
       .then(() => {
         if (runId !== lifecycleRunId || !isPollingAllowed()) {
           return;

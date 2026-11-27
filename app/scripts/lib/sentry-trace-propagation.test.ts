@@ -5,11 +5,14 @@ import {
   getIsolationScope,
 } from '@sentry/browser';
 import { addFetchInstrumentationHandler } from '@sentry/core';
+import type { Span } from '@sentry/core';
 import {
   buildAugmentedHeaders,
   buildConsensysBaggage,
+  claimBackendRequests,
   consensysTracePropagationIntegration,
   getCurrentConsensysRequestId,
+  isClaimedRequest,
   matchesBackendTarget,
   resetConsensysRequestIdProvider,
   setConsensysRequestIdProvider,
@@ -22,6 +25,8 @@ jest.mock('@sentry/core', () => ({
 
 jest.mock('@sentry/browser', () => ({
   getActiveSpan: jest.fn(),
+  // A running span: no end timestamp.
+  spanToJSON: jest.fn(() => ({})),
   getCurrentScope: jest.fn(),
   getIsolationScope: jest.fn(),
 }));
@@ -243,6 +248,73 @@ describe('stripTraceHeaders', () => {
       stripTraceHeaders([BACKEND_URL, { headers: { 'x-caller': 'kept' } }]),
     ).toBeUndefined();
     expect(stripTraceHeaders([BACKEND_URL])).toBeUndefined();
+  });
+});
+
+describe('claimBackendRequests', () => {
+  const originalStateHooks = globalThis.stateHooks;
+
+  afterEach(() => {
+    globalThis.stateHooks = originalStateHooks;
+  });
+
+  it('is seen by another copy of the module, as the background bundles it twice', () => {
+    globalThis.stateHooks = {} as typeof globalThis.stateHooks;
+    let otherCopy: typeof import('./sentry-trace-propagation') | undefined;
+    jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      otherCopy = require('./sentry-trace-propagation');
+    });
+    const span = {} as Span;
+
+    const release = claimBackendRequests(span, (url) => url === BACKEND_URL);
+    let seen: Span | undefined;
+    try {
+      seen = otherCopy?.getClaimingSpan(BACKEND_URL);
+    } finally {
+      release();
+    }
+
+    expect(seen).toBe(span);
+    expect(otherCopy?.getClaimingSpan(BACKEND_URL)).toBeUndefined();
+  });
+});
+
+describe('isClaimedRequest', () => {
+  function startHandler() {
+    consensysTracePropagationIntegration({ log: jest.fn() }).afterAllSetup?.(
+      {} as Client,
+    );
+    return addFetchInstrumentationHandlerMock.mock.calls[0][0];
+  }
+
+  it('keeps a request that started under its claimant unclaimed until it ends', () => {
+    // The SDK ends a request's span only if `shouldCreateSpanForRequest` still
+    // says yes on the end event, after the root has stopped being active.
+    mockActiveSpan();
+    const root = getActiveSpanMock() as unknown as Span;
+    const release = claimBackendRequests(root, (url) => url === BACKEND_URL);
+    const handler = startHandler();
+    const fetchData = { url: BACKEND_URL, method: 'GET' };
+    try {
+      handler({
+        fetchData,
+        args: [BACKEND_URL, undefined],
+      } as unknown as Parameters<typeof handler>[0]);
+      getActiveSpanMock.mockReturnValue(undefined);
+
+      expect(isClaimedRequest(BACKEND_URL)).toBe(false);
+
+      handler({
+        fetchData,
+        args: [BACKEND_URL, undefined],
+        endTimestamp: 1,
+      } as unknown as Parameters<typeof handler>[0]);
+
+      expect(isClaimedRequest(BACKEND_URL)).toBe(true);
+    } finally {
+      release();
+    }
   });
 });
 

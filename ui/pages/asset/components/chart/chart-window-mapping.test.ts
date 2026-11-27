@@ -1,11 +1,51 @@
+import { it } from '@jest/globals';
 import {
+  getTvResolution,
+  INTERVAL_DURATION_MS,
+  INTERVAL_TO_TV_RESOLUTION,
   LINE_RANGE_MS,
   mapCandleIntervalToLineRange,
   nearestByWindow,
   resolveCandleForLineRange,
+  VISIBLE_WINDOW_MS_BY_INTERVAL,
 } from './chart-window-mapping';
 
 describe('chart-window-mapping', () => {
+  describe('INTERVAL_TO_TV_RESOLUTION', () => {
+    it('maps every supported candle interval', () => {
+      const intervals = Object.keys(INTERVAL_TO_TV_RESOLUTION).sort();
+      expect(intervals).toStrictEqual(Object.keys(INTERVAL_DURATION_MS).sort());
+      expect(intervals).toStrictEqual(
+        Object.keys(VISIBLE_WINDOW_MS_BY_INTERVAL).sort(),
+      );
+    });
+
+    it('uses TradingView resolution format (hours as minutes)', () => {
+      expect(INTERVAL_TO_TV_RESOLUTION).toStrictEqual({
+        '1m': '1',
+        '5m': '5',
+        '15m': '15',
+        '1h': '60',
+        '4h': '240',
+        '1d': '1D',
+        '1w': '1W',
+      });
+    });
+  });
+
+  describe('getTvResolution', () => {
+    it('returns the resolution for a known interval', () => {
+      expect(getTvResolution('4h')).toBe('240');
+    });
+
+    it.each<string>(['', '2h', 'toString'])(
+      'returns undefined for unknown interval %j',
+      (interval) => {
+        expect(getTvResolution(interval)).toBeUndefined();
+      },
+    );
+  });
+
   describe('nearestByWindow', () => {
     it('returns the candidate whose window matches exactly', () => {
       expect(nearestByWindow(LINE_RANGE_MS['1D'], LINE_RANGE_MS)).toBe('1D');

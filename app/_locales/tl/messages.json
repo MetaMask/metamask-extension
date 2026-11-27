@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Tanggapin at isara"
   },
-  "acceptTermsOfUse": {
-    "message": "Nabasa ko at sumasang-ayon ako sa $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Kontakin ang suporta"
   },
@@ -1278,38 +1274,6 @@
   },
   "add_device_error_title": {
     "message": "Hindi makumpleto ang pag-sync"
-  },
-  "add_device_success_desc_imported_plural": {
-    "message": "Naka-sync ang $1 imported account sa telepono mo.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "Naka-sync ang 1 imported account sa telepono mo.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "Naka-sync ang $1 wallet sa telepono mo.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "Naka-sync ang $1 wallet at $2 imported account sa telepono mo.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "Naka-sync ang $1 wallet at 1 imported account sa telepono mo.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "Naka-sync ang 1 wallet sa telepono mo.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "Naka-sync ang 1 wallet at $1 imported account sa telepono mo.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "Naka-sync ang 1 wallet at 1 imported account sa telepono mo.",
-    "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
     "message": "Naka-pair ang device"
@@ -4730,52 +4694,6 @@
   "history": {
     "message": "History"
   },
-  "holdToRevealContent1": {
-    "message": "Ang iyong Lihim na Parirala sa Pagbawi ay nagbibigay ng $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "ganap na access sa iyong wallet at mga pondo.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Huwag ibahagi ito sa sinuman. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Hindi ito hihilingin ng Suporta sa MetaMask,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "pero pwedeng hingiin ng mga manloloko.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Nagbibigay ang iyong Pribadong Key ng $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "buong access sa iyong wallet at pondo.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "i-hold para ibunyag ang bilog na naka-lock"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "I-hold para ibunyag ang Pribadong Key"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Ingatan ang iyong pribadong key"
-  },
-  "holdToRevealSRP": {
-    "message": "I-hold para ibunyag ang SRP"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Ingatan ang iyong SRP"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "i-hold para ibunyag ang bilog na naka-unlock"
-  },
   "home": {
     "message": "Home",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6689,9 +6607,6 @@
   "newNftAddedMessage": {
     "message": "Matagumpay na naidagdag ang NFT!"
   },
-  "newPassword": {
-    "message": "Bagong password (min na 8 char)"
-  },
   "newPasswordCreate": {
     "message": "Gumawa ng bagong password"
   },
@@ -7218,9 +7133,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Override Content-Security-Policy header"
-  },
-  "padlock": {
-    "message": "Padlock"
   },
   "paidByMetaMask": {
     "message": "Binayaran ng MetaMask"

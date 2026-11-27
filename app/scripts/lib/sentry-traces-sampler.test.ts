@@ -135,6 +135,21 @@ describe('createTracesSampler', () => {
     );
   });
 
+  it('samples each boot-time root at 0.1%', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    for (const name of [
+      TraceName.AccountsApiSupportedNetworksFetch,
+      TraceName.GeolocationFetch,
+      TraceName.PhishingListsUpdate,
+      TraceName.RampsInit,
+      TraceName.RemoteFeatureFlagsFetch,
+    ]) {
+      expect(sampler({ name })).toBe(0.001);
+    }
+  });
+
   it('defaults useful-screen readiness to 1% regardless of parent sampling', () => {
     delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
     const sampler = createTracesSampler({ defaultSampleRate });
