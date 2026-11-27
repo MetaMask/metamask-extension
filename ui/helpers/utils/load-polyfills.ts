@@ -11,7 +11,12 @@ export async function loadPolyfills() {
 
   const toLoad = polyfills.filter(({ isSupported, name }) => {
     const supported = isSupported();
+    const dataCheck = '__interestForData' in document;
     console.info(`[polyfill] ${name} isSupported BEFORE load:`, supported);
+    console.info(
+      `[polyfill] ${name} __interestForData BEFORE load:`,
+      dataCheck,
+    );
     return !supported;
   });
 
@@ -33,6 +38,8 @@ export async function loadPolyfills() {
 
   polyfills.forEach(({ name, isSupported }) => {
     const supported = isSupported();
+    const dataCheck = '__interestForData' in document;
     console.info(`[polyfill] ${name} isSupported AFTER load:`, supported);
+    console.info(`[polyfill] ${name} __interestForData AFTER load:`, dataCheck);
   });
 }
