@@ -1,0 +1,19 @@
+{
+  "stateChanges": [
+    {
+      "assetType": "NATIVE",
+      "changeType": "RECEIVE",
+      "address": "",
+      "amount": "900000000000000000",
+      "contractAddress": ""
+    },
+    {
+      "assetType": "ERC721",
+      "changeType": "LISTING",
+      "address": "",
+      "amount": "",
+      "contractAddress": "0xafd4896984CA60d2feF66136e57f958dCe9482d5",
+      "tokenID": "2101"
+    }
+  ]
+}

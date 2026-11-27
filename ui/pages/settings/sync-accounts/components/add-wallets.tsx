@@ -50,6 +50,24 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
     ),
   );
 
+  const selectedWalletCount = useMemo(() => {
+    const selectedGroupIds = new Set(selectedAccountGroups);
+    return Object.values(sortedWallets).filter((wallet) =>
+      Object.keys(wallet.groups).some((groupId) =>
+        selectedGroupIds.has(groupId as AccountGroupId),
+      ),
+    ).length;
+  }, [selectedAccountGroups, sortedWallets]);
+
+  let selectionSummaryKey = 'qrSyncSelectionSummary';
+  if (selectedWalletCount === 1 && selectedAccountGroups.length === 1) {
+    selectionSummaryKey = 'qrSyncSelectionSummaryOneWalletOneAccount';
+  } else if (selectedWalletCount === 1) {
+    selectionSummaryKey = 'qrSyncSelectionSummaryOneWallet';
+  } else if (selectedAccountGroups.length === 1) {
+    selectionSummaryKey = 'qrSyncSelectionSummaryOneAccount';
+  }
+
   const handleSyncWallets = useCallback(async () => {
     const { syncedAccountCount, syncedWalletCount } = getSyncSummaryCounts(
       sortedWallets,
@@ -66,8 +84,7 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      gap={4}
-      className="flex-1 min-h-0"
+      className="-mx-4 flex-1 min-h-0"
     >
       <Box
         flexDirection={BoxFlexDirection.Column}
@@ -85,21 +102,40 @@ const AddWallets = ({ onAddWallets }: AddWalletsProps) => {
           {t('add_wallets_desc')}
         </Text>
       </Box>
-      <ScrollContainer className="flex flex-1 flex-col overflow-y-auto mt-4">
+      <ScrollContainer className="mt-4 flex flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <WalletSelectionList
           wallets={sortedWallets}
           selectedAccountGroups={selectedAccountGroups}
           onSelectionChange={setSelectedAccountGroups}
         />
       </ScrollContainer>
-      <Box className="w-full mt-auto" paddingHorizontal={4}>
+      <Box
+        className="w-full mt-auto flex-shrink-0"
+        paddingHorizontal={4}
+        paddingTop={3}
+        paddingBottom={4}
+        flexDirection={BoxFlexDirection.Column}
+        gap={3}
+        data-testid="qr-sync-selection-footer"
+      >
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="text-center"
+          data-testid="qr-sync-selection-summary"
+        >
+          {t(selectionSummaryKey, [
+            selectedWalletCount,
+            selectedAccountGroups.length,
+          ])}
+        </Text>
         <Button
           className="w-full"
           onClick={handleSyncWallets}
           isDisabled={selectedAccountGroups.length === 0}
           data-testid="qr-sync-sync-button"
         >
-          {t('continue')}
+          {t('qrSyncImportAccountsCta')}
         </Button>
       </Box>
     </Box>

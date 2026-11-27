@@ -9,8 +9,12 @@ module.exports = {
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
     '<rootDir>/development/eslint-rules/**/*.js',
+    '<rootDir>/test/e2e/mock-response-data/api-responses/define-api-mock.ts',
+    '<rootDir>/test/e2e/mock-response-data/api-responses/index.ts',
     '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts|mts)',
     '<rootDir>/development/download-builds.ts',
+    '<rootDir>/development/lib/build-paths.ts',
+    '<rootDir>/development/webpack/{build,fork,launch}.ts',
     '<rootDir>/development/download-builds-cli.ts',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
@@ -40,7 +44,10 @@ module.exports = {
     'json',
     'node',
   ],
-  modulePathIgnorePatterns: ['<rootDir>/.metamask/cache/java-tron-up/'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/.metamask/cache/java-tron-up/',
+    '<rootDir>/development/.webpack/',
+  ],
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
@@ -90,11 +97,12 @@ module.exports = {
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/mock-response-data/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/route-registry/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/release-testing-ai-analyzer/**/*.test.ts',
   ],
-  testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
+  testPathIgnorePatterns: ['<rootDir>/development/webpack/test/'],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the

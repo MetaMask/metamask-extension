@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useMoneyAccountLifecycle } from '../../../../hooks/money/use-money-account-lifecycle';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
 import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
@@ -25,6 +26,9 @@ jest.mock('../../context/confirm', () => ({
 }));
 jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
   useMoneyAccountWithdrawableFiat: jest.fn(),
+}));
+jest.mock('../../../../hooks/money/use-money-account-lifecycle', () => ({
+  useMoneyAccountLifecycle: jest.fn(),
 }));
 jest.mock('../../../../hooks/useIsHardwareWalletAccount', () => ({
   useIsHardwareWalletAccount: jest.fn(),
@@ -73,6 +77,7 @@ describe('useAutomaticMoneyAccountPayToken', () => {
   const useMoneyAccountWithdrawableFiatMock = jest.mocked(
     useMoneyAccountWithdrawableFiat,
   );
+  const useMoneyAccountLifecycleMock = jest.mocked(useMoneyAccountLifecycle);
   const useIsHardwareWalletAccountMock = jest.mocked(
     useIsHardwareWalletAccount,
   );
@@ -129,6 +134,12 @@ describe('useAutomaticMoneyAccountPayToken', () => {
       (selector: (state: unknown) => unknown) => selector({}),
     );
     useIsHardwareWalletAccountMock.mockReturnValue(false);
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: false,
+    });
     selectPaymentOverrideMock.mockReturnValue(undefined);
     selectPrimaryMoneyAccountMock.mockReturnValue({
       address: MONEY_ACCOUNT_ADDRESS,
@@ -176,6 +187,60 @@ describe('useAutomaticMoneyAccountPayToken', () => {
 
     expect(result.current.shouldSelect).toBe(true);
     expect(applyMoneyAccountOverrideMock).toHaveBeenCalled();
+  });
+
+  it('does not select Money Account when the lifecycle is read-only', () => {
+    mockMoneyAccountPay({ balance: '76' });
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: true,
+      isLoading: false,
+    });
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      isPending: false,
+      shouldSelect: false,
+    });
+    expect(applyMoneyAccountOverrideMock).not.toHaveBeenCalled();
+  });
+
+  it('does not select Money Account when the lifecycle is unavailable', () => {
+    mockMoneyAccountPay({ balance: '76' });
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: true,
+      isReadOnly: false,
+      isLoading: false,
+    });
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      isPending: false,
+      shouldSelect: false,
+    });
+    expect(applyMoneyAccountOverrideMock).not.toHaveBeenCalled();
+  });
+
+  it('waits while the lifecycle is loading', () => {
+    mockMoneyAccountPay({ balance: '76' });
+    useMoneyAccountLifecycleMock.mockReturnValue({
+      lifecycle: undefined,
+      isLifecycleUnavailable: false,
+      isReadOnly: false,
+      isLoading: true,
+    });
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      isPending: true,
+      shouldSelect: false,
+    });
+    expect(applyMoneyAccountOverrideMock).not.toHaveBeenCalled();
   });
 
   it('compares fiat balances with more than 15 significant digits', () => {

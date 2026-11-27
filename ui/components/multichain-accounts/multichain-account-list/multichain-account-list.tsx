@@ -31,6 +31,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountCell } from '../multichain-account-cell';
+import type { MultichainAccountCellProps } from '../multichain-account-cell/multichain-account-cell';
 import {
   AccountTreeWallets,
   MultichainAccountsState,
@@ -110,6 +111,10 @@ export type MultichainAccountListProps = {
    * @default true
    */
   shouldNavigateOnSelect?: boolean;
+  /**
+   * Cell component rendered per account. Defaults to {@link MultichainAccountCell}.
+   */
+  accountCellComponent?: React.ComponentType<MultichainAccountCellProps>;
 };
 
 type WalletData = AccountTreeWallets[AccountWalletId];
@@ -212,6 +217,7 @@ export const MultichainAccountList = ({
   showDefaultAddress = false,
   isEditMode = false,
   shouldNavigateOnSelect = true,
+  accountCellComponent: AccountCell = MultichainAccountCell,
 }: MultichainAccountListProps) => {
   const showAccountMenu = !showAccountCheckbox && !isEditMode;
 
@@ -514,21 +520,25 @@ export const MultichainAccountList = ({
       const isRemovable = false;
 
       const wallet = wallets[walletId as AccountWalletId];
+      const isEffectivelyHidden = getEffectiveIsHidden(
+        groupId,
+        groupData.metadata.hidden,
+        visibilityOverrides,
+      );
       // Only imported private-key accounts can be deleted, so they get delete
-      // mode while every other wallet gets visible/hidden mode. The two modes
-      // are mutually exclusive.
+      // mode while every other wallet gets visible/hidden mode. A hidden
+      // private-key account (hidden before hiding was removed for them) gets
+      // visibility mode instead, so it can be revealed first and only then
+      // deleted. The two modes are mutually exclusive.
       const isDeleteMode =
-        isEditMode && Boolean(wallet) && isPrivateKeyWallet(wallet);
+        isEditMode &&
+        Boolean(wallet) &&
+        isPrivateKeyWallet(wallet) &&
+        !isEffectivelyHidden;
       const isVisibilityMode = isEditMode && !isDeleteMode;
       // Hidden styling is an edit-mode affordance; outside edit mode the hidden
       // section renders these cells with their normal appearance.
-      const isHidden =
-        isVisibilityMode &&
-        getEffectiveIsHidden(
-          groupId,
-          groupData.metadata.hidden,
-          visibilityOverrides,
-        );
+      const isHidden = isVisibilityMode && isEffectivelyHidden;
 
       const isConnectedAccount = connectedAccountGroups.find(
         (accountGroup) => accountGroup.id === groupId,
@@ -550,7 +560,7 @@ export const MultichainAccountList = ({
 
       return (
         <Box className="multichain-account-menu-popover__list--menu-item">
-          <MultichainAccountCell
+          <AccountCell
             accountId={groupId as AccountGroupId}
             accountName={groupData.metadata.name}
             accountNameString={groupData.metadata.name}
@@ -643,6 +653,7 @@ export const MultichainAccountList = ({
       internalAccountsById,
       visibilityOverrides,
       handleVisibilityToggle,
+      AccountCell,
     ],
   );
 

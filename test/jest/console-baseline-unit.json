@@ -52,7 +52,7 @@
       "error: Error: A handler for SnapController:setClientActive": 2
     },
     "app/scripts/metamask-controller.test.js": {
-      "MetaMask: MetaMetrics invalid trait types": 1,
+      "MetaMask: MetaMetrics invalid trait types": 2,
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "error: AssertionError: The Snaps platform requires": 1,
       "error: {": 1,
@@ -152,6 +152,10 @@
     "app/scripts/migrations/197.test.ts": {
       "error: Error: Migration 197: Infura project": 1,
       "error: Error: Migration 197: Invalid NetworkController": 6
+    },
+    "app/scripts/migrations/236.test.ts": {
+      "warn: Migration #236: Deletion of PPOMDB": 1,
+      "warn: Migration #236: Failed to delete": 1
     },
     "shared/lib/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
@@ -379,9 +383,6 @@
     "ui/components/ui/qr-code-view/qr-code-view.test.tsx": {
       "React: DOM nesting violations": 1
     },
-    "ui/components/ui/survey-toast/survey-toast.test.tsx": {
-      "MetaMask: Background connection not initialized": 1
-    },
     "ui/contexts/metametrics.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 1
     },
@@ -434,9 +435,6 @@
     },
     "ui/hooks/identity/useContactSyncing/useContactSyncing.test.tsx": {
       "MetaMask: Background connection not initialized": 14
-    },
-    "ui/hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
     },
     "ui/hooks/metamask-notifications/useCounter.test.tsx": {
       "Reselect: Input stability warnings": 2
@@ -842,6 +840,9 @@
     "ui/pages/settings/sync-accounts/components/enter-verification-code.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
+    "ui/pages/settings/sync-accounts/components/qr-code-scan.test.tsx": {
+      "Reselect: Identity function warnings": 1
+    },
     "ui/pages/settings/sync-accounts/components/sync-error.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -882,21 +883,8 @@
     "ui/pages/srp-input-form/index.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 244
     },
-    "ui/pages/swaps/awaiting-signatures/awaiting-signatures.test.js": {
-      "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/swaps/awaiting-swap/awaiting-swap.test.js": {
-      "React: PropTypes validation failures": 1,
-      "Reselect: Identity function warnings": 1
-    },
     "ui/pages/swaps/loading-swaps-quotes/loading-swaps-quotes.test.js": {
       "Reselect: Identity function warnings": 1
-    },
-    "ui/pages/swaps/notification-page/notification-page.test.js": {
-      "React: PropTypes validation failures": 1
-    },
-    "ui/pages/swaps/selected-token/selected-token.test.js": {
-      "React: PropTypes validation failures": 1
     },
     "ui/pages/swaps/smart-transaction-status/smart-transaction-status.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,

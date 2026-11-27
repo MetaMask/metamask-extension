@@ -5,6 +5,7 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   applyDisplaySign,
   getDisplaySignPrefix,
@@ -13,6 +14,7 @@ import type { MoneyAccountActivityItem } from '../../../../../shared/lib/activit
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../../shared/lib/money/constants';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../../components/app/money/messenger';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
+import { isMoneyWithdrawTx } from '../../../../helpers/money/money-transaction-guards';
 import { useLocalTransactionMeta } from '../../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
@@ -30,9 +32,18 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { hasMoneyAccount } = useMoneyAccountInfo();
-  const { initiateDeposit, isLoading: isDepositLoading } =
-    useMoneyAccountDeposit();
+  const {
+    initiateDeposit,
+    isDisabled: isDepositDisabled,
+    isLoading: isDepositLoading,
+  } = useMoneyAccountDeposit();
   const transactionMeta = useLocalTransactionMeta(item.hash);
+  const explorerChainId =
+    transactionMeta && isMoneyWithdrawTx(transactionMeta)
+      ? toEvmCaipChainId(
+          transactionMeta.metamaskPay?.chainId ?? transactionMeta.chainId,
+        )
+      : item.chainId;
   const { metamaskPay } = transactionMeta ?? {};
   const { bridgeFeeFiat, networkFeeFiat, totalFiat } = metamaskPay || {};
 
@@ -68,6 +79,7 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
             isLoading={isDepositLoading}
+            isDisabled={isDepositDisabled || isDepositLoading}
             onClick={() => {
               initiateDeposit({
                 ftueOrigin: {
@@ -79,7 +91,7 @@ const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
             {t('addFunds')}
           </Button>
         ) : (
-          <BlockExplorerButton chainId={item.chainId} txHash={item.hash} />
+          <BlockExplorerButton chainId={explorerChainId} txHash={item.hash} />
         )
       }
       formatFiat={formatFiat}

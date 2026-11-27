@@ -162,9 +162,6 @@
   "newContract": {
     "message": "नया अनुबंध"
   },
-  "newPassword": {
-    "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
-  },
   "next": {
     "message": "अगला"
   },
@@ -177,9 +174,6 @@
   "privateKey": {
     "message": "निजी कुंजी",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "निजी नेटवर्क"
   },
   "readdToken": {
     "message": "आप अपने खाता विकल्प मेनू में .टोकन जोड़ें. पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"

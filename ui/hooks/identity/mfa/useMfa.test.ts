@@ -144,8 +144,43 @@ describe('useMfa', () => {
     );
   });
 
+  describe('listActiveSocialLoginMethods', () => {
+    it('returns the methods that can verify on the extension, in cost order', async () => {
+      const refreshEnrolledCredentials = jest.fn().mockResolvedValue([
+        { id: 'email', type: 'email_otp', status: 'active', verified: true },
+        { id: 'pk', type: 'passkey', status: 'active', verified: true },
+        { id: 'app', type: 'totp', status: 'active', verified: true },
+        { id: 'old', type: 'totp', status: 'disabled', verified: true },
+      ]);
+      jest.mocked(createSocialLoginControllerAdapter).mockReturnValue({
+        refreshEnrolledCredentials,
+      } as unknown as MfaControllerAdapter);
+
+      // The extension can't use passkeys yet.
+      expect(await renderUseMfa().listActiveSocialLoginMethods()).toStrictEqual(
+        ['totp', 'email_otp'],
+      );
+    });
+  });
+
   describe('verifyForSocialLogin', () => {
     const reason: MfaReason = { operation: 'qa.socialLogin' };
+
+    it('verifies only the requested method', async () => {
+      await renderUseMfa().verifyForSocialLogin({ reason, method: 'totp' });
+
+      expect(mockStartMfaFlow).toHaveBeenCalledWith(
+        expect.objectContaining({
+          request: {
+            kind: 'verifyOrEnroll',
+            methods: ['totp'],
+            verifyWith: ['totp'],
+            verifyOnly: true,
+          },
+          whileLocked: true,
+        }),
+      );
+    });
 
     it('starts a verify-only flow that may verify with every method', async () => {
       await renderUseMfa().verifyForSocialLogin({ reason });

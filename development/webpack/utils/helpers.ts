@@ -1,6 +1,7 @@
-import { join, sep } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
-import type TerserPluginType from 'terser-webpack-plugin';
+import webpackApi from 'webpack';
+import { projectRoot } from '../../lib/build-paths.ts';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -44,19 +45,21 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
- * Regular expression to match React files in the top-level `ui/` directory
- * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
- * Windows.
+ * Directory prefixes for React source under the top-level `ui/` directory.
+ * Each prefix ends with a separator so sibling directory names do not match.
  */
-export const UI_DIR_RE = new RegExp(
-  `^${join(__dirname, '..', '..', '..', 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
-  'u',
-);
+export const UI_DIR_PREFIXES = [
+  'components',
+  'contexts',
+  'hooks',
+  'layouts',
+  'pages',
+].map((directory) => join(projectRoot, 'ui', directory, sep));
 
 /**
  * Regular expression to match UI component source files, excluding test files,
  * stories, container files, type declarations, mocks, and spec files.
- * Used with `UI_DIR_RE` to scope thread-loader and React Compiler to UI components.
+ * Used with `UI_DIR_PREFIXES` to scope thread-loader and React Compiler.
  */
 export const UI_COMPONENT_RE = new RegExp(
   `^(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
@@ -95,6 +98,38 @@ export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
 }
 
 /**
+ * The name a source file gets inside a source map, in the same form webpack
+ * itself uses: `webpack://` followed by the path relative to the build context
+ * (`webpack://./scripts/x.ts`, `webpack://../ui/x.tsx`).
+ *
+ * Loaders that generate source maps (SWC, Babel) name the input file by its
+ * absolute path by default. webpack hashes a module's source map into the
+ * module's hash, so an absolute path there makes every module hash depend on
+ * where the project lives on disk, which in turn makes the chunk hashes
+ * embedded in the runtime chunk differ between two checkouts of the same
+ * code. Naming the file relative to the context keeps the build reproducible.
+ *
+ * @param rootContext - The build context (`loaderContext.rootContext`).
+ * @param resourcePath - The absolute path of the file being compiled.
+ * @returns The context-relative source name, with `/` separators on every OS.
+ */
+export function toWebpackSourceName(
+  rootContext: string | undefined,
+  resourcePath: string,
+): string {
+  if (!rootContext) {
+    return resourcePath;
+  }
+  let request = relative(rootContext, resourcePath);
+
+  if (sep !== '/') {
+    request = request.replaceAll(sep, '/');
+  }
+
+  return `webpack://${request.startsWith('../') ? '' : './'}${request}`;
+}
+
+/**
  * @param filename
  * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)
  */
@@ -110,8 +145,8 @@ export const extensionToJs = (filename: string) =>
  * comparisons. Disabling mangling for the runtime chunk keeps it
  * content-stable while leaving mangling ON for all other chunks.
  */
-export function getMinimizers() {
-  const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
+export async function getMinimizers() {
+  const { default: TerserPlugin } = await import('terser-webpack-plugin');
   // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
   const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
@@ -207,7 +242,7 @@ export function logStats(err?: Error | null, stats?: Stats) {
     const { name } = stats.compilation;
     const status = toGreen('successfully');
     const time = `${stats.endTime - stats.startTime} ms`;
-    const { version } = require('webpack');
+    const { version } = webpackApi;
     console.error(`${name} (webpack ${version}) compiled ${status} in ${time}`);
   }
 }

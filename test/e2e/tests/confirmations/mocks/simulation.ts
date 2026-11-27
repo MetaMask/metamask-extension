@@ -110,13 +110,38 @@ export async function mockSimulationApi(
     },
   };
 
+  // Both rules match balance requests, so keep them active for re-simulations
+  // (for example, after opting out of enforced simulations).
   await mockServer
     .forPost(TX_SENTINEL_URL)
     .withBodyIncluding(ERC20_BALANCE_OF_SELECTOR)
+    .always()
     .thenJson(200, sandwichResponse);
 
   await mockServer
     .forPost(TX_SENTINEL_URL)
     .withBodyIncluding('infura_simulateTransactions')
+    .always()
     .thenJson(200, mainSimResponse);
+}
+
+/**
+ * Mocks the simulation API so every transaction simulation reverts.
+ *
+ * @param mockServer - The mock server.
+ */
+export async function mockSimulationApiReverted(
+  mockServer: Mockttp,
+): Promise<void> {
+  await mockServer
+    .forPost(TX_SENTINEL_URL)
+    .withBodyIncluding('infura_simulateTransactions')
+    .thenJson(200, {
+      jsonrpc: '2.0',
+      id: '1',
+      error: {
+        code: -32000,
+        message: 'execution reverted',
+      },
+    });
 }

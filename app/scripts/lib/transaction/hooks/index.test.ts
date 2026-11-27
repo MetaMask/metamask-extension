@@ -7,6 +7,10 @@ import {
   PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
 import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller';
+import {
+  createCacheKey,
+  ResultType,
+} from '../../../../../shared/lib/trust-signals';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import * as smartTransactionsModule from '../../smart-transaction/smart-transactions';
 import * as sentinelApiModule from '../sentinel-api';
@@ -25,6 +29,7 @@ jest.mock('./delegation-7702-publish');
 jest.mock('./enforce-simulation-hook');
 
 const CHAIN_ID_MOCK = '0x1';
+const RECIPIENT_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 
 function buildMockMessenger(): TransactionControllerInitMessenger {
   return {
@@ -177,6 +182,71 @@ describe('Transaction Controller Hooks', () => {
         }),
       );
       expect(beforeSign).toBe(expectedHook);
+    });
+
+    describe('isEligible', () => {
+      function getIsEligible() {
+        const messenger = buildMockMessenger();
+
+        jest.mocked(messenger.call).mockImplementation(((action: string) => {
+          switch (action) {
+            case 'AppStateController:getState':
+              return {
+                addressSecurityAlertResponses: {
+                  [createCacheKey(CHAIN_ID_MOCK, RECIPIENT_MOCK)]: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    result_type: ResultType.Malicious,
+                    label: '',
+                    timestamp: Date.now(),
+                  },
+                },
+              };
+            case 'RemoteFeatureFlagController:getState':
+              return {
+                remoteFeatureFlags: {
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  confirmations_eip_7702: {
+                    supportedChains: [CHAIN_ID_MOCK],
+                  },
+                },
+              };
+            case 'AccountsController:getState':
+              return { internalAccounts: { accounts: {} } };
+            default:
+              return undefined;
+          }
+        }) as unknown as TransactionControllerInitMessenger['call']);
+
+        getTransactionControllerHooks(buildMockRequest({ messenger }));
+
+        return jest.mocked(EnforceSimulationHook).mock.calls[0][0].isEligible;
+      }
+
+      const eligibleTransactionMeta: TransactionMeta = {
+        ...mockTransactionMeta,
+        origin: 'https://some-dapp.com',
+        simulationData: { tokenBalanceChanges: [] },
+        txParams: {
+          ...mockTransactionMeta.txParams,
+          to: RECIPIENT_MOCK,
+        },
+      };
+
+      it('returns true when the simulation succeeded', () => {
+        expect(getIsEligible()(eligibleTransactionMeta)).toBe(true);
+      });
+
+      it('returns false when the simulation failed', () => {
+        expect(
+          getIsEligible()({
+            ...eligibleTransactionMeta,
+            simulationData: {
+              error: { code: 'reverted', message: 'Transaction was reverted' },
+              tokenBalanceChanges: [],
+            },
+          }),
+        ).toBe(false);
+      });
     });
   });
 

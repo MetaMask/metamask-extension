@@ -4,6 +4,7 @@ import {
   NetworkController,
 } from '@metamask/network-controller';
 import {
+  getChecksumAddress,
   Hex,
   Json,
   JsonRpcParams,
@@ -22,7 +23,6 @@ import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
-  type PPOMMessenger,
 } from './ppom-util';
 import {
   SecurityAlertResponse,
@@ -47,13 +47,12 @@ export type PPOMMiddlewareRequest<
 /**
  * Middleware function that handles JSON RPC requests.
  * This function will be called for every JSON RPC request.
- * It will call the PPOM to check if the request is malicious or benign.
- * If the request is benign, it will be forwarded to the next middleware.
- * If the request is malicious or warning, it will trigger the PPOM alert dialog,
- * after the user has confirmed or rejected the request,
- * the request will be forwarded to the next middleware, together with the PPOM response.
+ * For confirmation requests, it starts a security validation with the
+ * Security Alerts API without blocking the request. It attaches a loading
+ * security alert response to the request and forwards it to the next
+ * middleware. The final response is written to the transaction or signature
+ * request when the validation completes.
  *
- * @param messenger - Messenger able to run the PPOM security validation flow.
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
  * @param appStateController
@@ -66,7 +65,6 @@ export function createPPOMMiddleware<
   Params extends (string | { to: string })[],
   Result extends Json,
 >(
-  messenger: PPOMMessenger,
   preferencesController: PreferencesController,
   networkController: NetworkController,
   appStateController: AppStateController,
@@ -100,8 +98,16 @@ export function createPPOMMiddleware<
 
       const data = req.params[0];
       if (typeof data === 'string') {
-        const { isSIWEMessage } = detectSIWE({ data });
-        if (isSIWEMessage) {
+        const siwe = detectSIWE({ data });
+        // Only exempt SIWE messages whose address is already EIP-55
+        // checksummed. Comparing the address (rather than relying on parser
+        // warnings) keeps single-case addresses that equal their checksum
+        // exempt.
+        if (
+          siwe.isSIWEMessage &&
+          getChecksumAddress(siwe.parsedMessage.address as Hex) ===
+            siwe.parsedMessage.address
+        ) {
           return;
         }
       } else if (req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
@@ -121,7 +127,6 @@ export function createPPOMMiddleware<
         { name: TraceName.PPOMValidation, parentContext: req.traceContext },
         () =>
           validateRequestWithPPOM({
-            messenger,
             request: req,
             securityAlertId,
             chainId: chainId as Hex,

@@ -24,6 +24,8 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
+import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
 import {
   AlignItems,
   BackgroundColor,
@@ -54,6 +56,7 @@ export const BridgeAsset = React.forwardRef(
     ref?: PolymorphicRef<Element>,
   ) => {
     const currency = useSelector(getCurrentCurrency);
+    const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
     const { navigateToAssetPage } = useBridgeNavigation();
@@ -72,7 +75,13 @@ export const BridgeAsset = React.forwardRef(
         backgroundColor={
           selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
         }
-        className={`cursor-pointer bridge-asset${selected ? '--selected' : ''}`}
+        // `:has(...)` keeps the row background unchanged while the info icon
+        // is hovered, matching the previous `.bridge-asset` SCSS rule.
+        className={
+          selected
+            ? 'cursor-pointer'
+            : 'cursor-pointer [&:hover:not(:has(.bridge-asset-info-icon:hover))]:bg-default-hover'
+        }
         height={BlockSize.Max}
         width={BlockSize.Full}
         data-testid={`bridge-asset--${asset.assetId}`}
@@ -100,6 +109,7 @@ export const BridgeAsset = React.forwardRef(
                 ]
               }
               src={
+                getNetworkImageUrl(asset.chainId, networkImageUrls) ??
                 BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[
                   formatChainIdToCaip(asset.chainId)
                 ]

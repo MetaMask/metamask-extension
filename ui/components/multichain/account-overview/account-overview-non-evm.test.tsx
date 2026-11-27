@@ -66,6 +66,7 @@ const render = (
       enabledNetworkMap: {
         eip155: {},
       },
+      useExternalServices: true,
       ...stateOverrides,
     },
   });
@@ -107,6 +108,17 @@ describe('AccountOverviewBtc', () => {
       });
 
       expectAllTabs(queryByTestId);
+    });
+
+    it('hides the DeFi tab when Basic Functionality is off', () => {
+      const { queryByTestId } = render(defaultProps, {
+        useExternalServices: false,
+      });
+
+      expectStandardTabs(queryByTestId);
+      expect(
+        queryByTestId('account-overview__defi-tab'),
+      ).not.toBeInTheDocument();
     });
 
     it('shows tokens links', () => {

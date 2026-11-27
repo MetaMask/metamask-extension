@@ -1,3 +1,4 @@
+import path from 'path';
 import type { Page, BrowserContext } from '@playwright/test';
 import {
   type ISessionManager,
@@ -33,6 +34,7 @@ import {
   createMetaMaskE2EContext,
   createMetaMaskProdContext,
 } from './capabilities/factory';
+import { resolveRepoRoot } from './resolve-repo-root';
 import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
@@ -423,6 +425,15 @@ export class MetaMaskSessionManager implements ISessionManager {
         : undefined;
     const resolvedFixturePort = contextPorts?.fixtureServer;
 
+    // Core sets input.artifactsDir from MM_ARTIFACTS_DIR, else from the
+    // workflow config. Relative paths resolve against the repo root.
+    const artifactsDir = path.resolve(
+      resolveRepoRoot(),
+      input.artifactsDir ??
+        workflowConfig?.artifactsDir ??
+        DEFAULT_ARTIFACTS_DIR,
+    );
+
     try {
       if (!isProdMode && fixtureCapability) {
         const fixtureState = fixtureCapability.resolveState({
@@ -453,6 +464,7 @@ export class MetaMaskSessionManager implements ISessionManager {
         stateMode,
         slowMo: input.slowMo ?? 0,
         extensionPath,
+        screenshotDir: path.join(artifactsDir, 'screenshots'),
         selfOnboarding: launchRequest.selfOnboarding === true,
         srp: secretRecoveryPhrase,
         password: vaultPassword,
@@ -525,12 +537,8 @@ export class MetaMaskSessionManager implements ISessionManager {
       },
     };
 
-    // Writes <artifactsDir>/<sessionId>/session.json. Relative paths resolve
-    // against the daemon's working directory (the repo root).
-    await writeSessionMetadata(
-      this.workflowContext?.config?.artifactsDir ?? DEFAULT_ARTIFACTS_DIR,
-      metadata,
-    );
+    // Writes <artifactsDir>/<sessionId>/session.json.
+    await writeSessionMetadata(artifactsDir, metadata);
     this.sessionMetadata = metadata;
 
     return {
