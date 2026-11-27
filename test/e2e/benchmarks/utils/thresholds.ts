@@ -276,9 +276,11 @@ const CONFIRM_TX = {
 } satisfies ThresholdConfig;
 
 const BRIDGE_USER_ACTIONS = {
+  // Spans the click through `SwapPage.checkPageIsLoaded()`. Fit to that span's
+  // Chrome CI timings; Firefox limits are scaled 2x at gate time.
   bridge_load_pageLegacy: {
-    p75: { warn: 500, fail: 800 },
-    p95: { warn: 800, fail: 1200 },
+    p75: { warn: 400, fail: 650 },
+    p95: { warn: 650, fail: 1000 },
     ciMultiplier: CI_MULTIPLIER.DEFAULT,
   },
   bridge_load_asset_pickerLegacy: {
