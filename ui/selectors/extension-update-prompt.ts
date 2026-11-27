@@ -11,6 +11,9 @@ export const EXTENSION_UPDATE_PROMPT_MINIMUM_VERSION_FLAG =
 export const EXTENSION_UPDATE_PROMPT_DEPRECATED_VERSION_FLAG =
   'extensionUpdatePromptDeprecatedVersion';
 
+export const EXTENSION_UPDATE_PROMPT_ON_ANY_ROUTE_FLAG =
+  'extensionUpdatePromptOnAnyRoute';
+
 /** The prompt reappears only after strictly more than 24 hours. */
 export const EXTENSION_UPDATE_PROMPT_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
@@ -159,4 +162,23 @@ export function getExtensionUpdatePromptType(
  */
 export function getShowUpdateModal(state: MetaMaskReduxState): boolean {
   return getExtensionUpdatePromptType(state) !== 'none';
+}
+
+/**
+ * Returns whether the resting-screen check is skipped.
+ *
+ * Only an exact `true` enables it. A missing flag, or any other value, keeps
+ * the takeover on resting screens.
+ *
+ * @param state - Redux state.
+ * @returns Whether the takeover may show on any route.
+ */
+export function getIsExtensionUpdatePromptOnAnyRouteEnabled(
+  state: MetaMaskReduxState,
+): boolean {
+  const remoteFeatureFlags = getRemoteFeatureFlags(state) as Record<
+    string,
+    unknown
+  >;
+  return remoteFeatureFlags[EXTENSION_UPDATE_PROMPT_ON_ANY_ROUTE_FLAG] === true;
 }

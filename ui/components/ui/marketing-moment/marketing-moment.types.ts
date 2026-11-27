@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import type {
   BoxProps,
   ButtonProps,
@@ -17,6 +17,11 @@ export type MarketingMomentAction = Omit<
    * Button label. Callers pass already-localized copy.
    */
   label: ReactNode;
+  /**
+   * Test id forwarded to the button. Declared explicitly because `Omit` on
+   * the design-system button union drops DOM data attributes.
+   */
+  'data-testid'?: string;
 };
 
 /**
@@ -60,6 +65,11 @@ export type MarketingMomentProps = {
    * Recommended action.
    */
   primaryAction?: MarketingMomentAction;
+  /**
+   * Ref forwarded to the primary button. Use this when a parent dialog needs
+   * to place initial focus on that button.
+   */
+  primaryActionRef?: Ref<HTMLButtonElement>;
   /**
    * Dismiss action, rendered as a tertiary button.
    */

@@ -108,6 +108,13 @@ describe('MarketingMoment', () => {
     expect(scroller).not.toContainElement(primary);
   });
 
+  it('forwards primaryActionRef to the primary button', () => {
+    const primaryActionRef = { current: null as HTMLButtonElement | null };
+    renderMoment({ primaryActionRef });
+
+    expect(primaryActionRef.current).toBe(screen.getAllByRole('button')[0]);
+  });
+
   it('omits every slot that is not provided', () => {
     renderMoment({
       title: undefined,
