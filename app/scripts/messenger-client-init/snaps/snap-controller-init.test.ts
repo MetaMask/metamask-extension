@@ -72,7 +72,6 @@ describe('SnapControllerInit', () => {
       maxIdleTime: inMilliseconds(2, Duration.Minute),
       state: undefined,
       encryptor: expect.any(Object),
-      environmentEndowmentPermissions: expect.any(Array),
       excludedPermissions: expect.any(Object),
       featureFlags: {
         allowLocalSnaps: false,
