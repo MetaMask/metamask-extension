@@ -6,9 +6,9 @@ import { withFixtures } from '../../helpers';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { login } from '../../page-objects/flows/login.flow';
 import { openConnectHardwareWallet } from '../../page-objects/flows/add-wallet.flow';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 describe('Lattice hardware wallet', function (this: Suite) {
   it('lattice page rendering validation', async function () {
@@ -19,8 +19,7 @@ describe('Lattice hardware wallet', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
+        await openAccountMenu(driver);
 
         // Choose connect hardware wallet from the account menu
         const accountListPage = new AccountListPage(driver);

@@ -3,15 +3,8 @@ import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
-  ButtonBase,
-  ButtonBaseSize,
-  FontWeight,
-  IconColor,
-  IconName,
-  IconSize,
-  Text,
-  TextColor,
-  TextVariant,
+  SelectButton,
+  SelectButtonSize,
   twMerge,
 } from '@metamask/design-system-react';
 import { getUseExternalServices } from '../../../../../selectors';
@@ -100,7 +93,6 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
     enabledNetworksByNamespace,
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
-  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
   const networkButtonText = useNetworkFilterButtonLabel();
 
   useEffect(() => {
@@ -192,41 +184,17 @@ export const NetworkFilter = ({ onNetworkSelect }: NetworkFilterProps) => {
     }
   }, [allNetworks, dispatch, shouldSwitchFromHiddenNonEvmNetwork]);
 
-  const networkFilterTextColor = isSingleNetworkFilterSelected
-    ? TextColor.PrimaryDefault
-    : TextColor.TextDefault;
-
   return (
     <>
-      <ButtonBase
+      <SelectButton
         data-testid="sort-by-networks"
-        className={twMerge(
-          'w-auto min-w-[auto] justify-between gap-1 border border-muted bg-background-default px-2 py-0 hover:bg-hover',
-          isFullScreen && 'mr-2',
-          isOpen && 'bg-pressed',
-          isSingleNetworkFilterSelected && 'text-primary-default',
-        )}
+        className={twMerge(isFullScreen && 'mr-2', isOpen && 'bg-pressed')}
         onClick={toggle}
-        size={ButtonBaseSize.Sm}
+        size={SelectButtonSize.Sm}
+        value={networkButtonText}
         isLoading={isNetworkSwitchPending}
-        isDisabled={isNetworkSwitchPending}
-        startIconName={isNetworkSwitchPending ? undefined : IconName.Filter}
-        startIconProps={{
-          size: IconSize.Md,
-          color: isSingleNetworkFilterSelected
-            ? IconColor.PrimaryDefault
-            : IconColor.IconDefault,
-        }}
-      >
-        <Text
-          variant={TextVariant.BodySm}
-          fontWeight={FontWeight.Medium}
-          color={networkFilterTextColor}
-          ellipsis
-        >
-          {networkButtonText}
-        </Text>
-      </ButtonBase>
+      />
+
       <HomeNetworkFilterModal
         isOpen={isOpen}
         onClose={close}

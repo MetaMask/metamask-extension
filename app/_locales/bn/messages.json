@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
-  "gasUsed": {
-    "message": "গ্যাস ব্যবহার করা হয়েছে"
-  },
   "general": {
     "message": "সাধারণ"
   },
@@ -343,9 +340,6 @@
   "newContract": {
     "message": "নতুন কন্ট্র্যাক্ট"
   },
-  "newPassword": {
-    "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
-  },
   "next": {
     "message": "পরবর্তী"
   },
@@ -400,9 +394,6 @@
   "privateKey": {
     "message": "ব্যক্তিগত কী",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "ব্যক্তিগত নেটওয়ার্ক"
   },
   "readdToken": {
     "message": "আপনি আপনার অ্যাকাউন্টস বিকল্পের মেনুতে \"টোকেনগুলি যোগ করুন\" এ গিয়ে ভবিষ্যতে আবার এই টোকেনটি যোগ করতে পারবেন। "
@@ -557,9 +548,6 @@
   },
   "unapproved": {
     "message": "অননুমোদিত"
-  },
-  "units": {
-    "message": "ইউনিটসমূহ"
   },
   "unknown": {
     "message": "অজানা"

@@ -10,7 +10,7 @@ on:
       build-command:
         type: string
         required: true
-        description: The build command to run
+        description: The yarn script and arguments to run, without the leading yarn
       builds-from-run:
         required: true
         type: string
@@ -81,7 +81,7 @@ jobs:
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
           skip-allow-scripts: true
@@ -91,7 +91,12 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        env:
+          BUILD_COMMAND: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        run: |
+          # Split on spaces only; the value is never parsed as shell.
+          IFS=' ' read -r -a script_and_args <<< "$BUILD_COMMAND"
+          yarn run "${script_and_args[@]}"
 
       - name: Validate source maps
         run: yarn validate-source-maps

@@ -101,7 +101,7 @@ describe('TransactionAccountDetails', () => {
     const { getByText } = renderConfirmation(upgradeAccountConfirmationOnly);
     expect(getByText('0x935E7...05477')).toBeInTheDocument();
     expect(
-      getByText(messages.standardAccountLabel.message),
+      getByText(messages.confirmAccountTypeStandard.message),
     ).toBeInTheDocument();
   });
 
@@ -109,7 +109,7 @@ describe('TransactionAccountDetails', () => {
     const { getByText } = renderConfirmation(downgradeAccountConfirmation);
     expect(getByText('0x8a0bb...bDB87')).toBeInTheDocument();
     expect(
-      getByText(messages.standardAccountLabel.message),
+      getByText(messages.confirmAccountTypeStandard.message),
     ).toBeInTheDocument();
   });
 

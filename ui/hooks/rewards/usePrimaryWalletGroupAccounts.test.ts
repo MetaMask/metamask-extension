@@ -1,6 +1,9 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 
 // Import after mocks
@@ -691,6 +694,72 @@ describe('usePrimaryWalletGroupAccounts', () => {
       renderHook(() => usePrimaryWalletGroupAccounts());
 
       expect(mockGetInternalAccountsFromGroupById).toHaveBeenCalled();
+    });
+  });
+
+  describe('Referential stability', () => {
+    const actualReactRedux = jest.requireActual('react-redux');
+
+    // Renders the hook against a real store so `useSelector` re-runs its
+    // selectors on every dispatch, like it does in the app.
+    const renderWithStore = () => {
+      const store = configureStore({
+        reducer: (state: { updates: number } | undefined, action) => ({
+          updates:
+            (state?.updates ?? 0) + (action.type === 'unrelated' ? 1 : 0),
+        }),
+      });
+      const rendered = renderHook(() => usePrimaryWalletGroupAccounts(), {
+        wrapper: ({ children }) =>
+          React.createElement(actualReactRedux.Provider, { store }, children),
+      });
+      const dispatchUnrelatedUpdate = () =>
+        act(() => {
+          store.dispatch({ type: 'unrelated' });
+        });
+      return { ...rendered, dispatchUnrelatedUpdate };
+    };
+
+    beforeEach(() => {
+      jest.mocked(useSelector).mockImplementation(actualReactRedux.useSelector);
+    });
+
+    afterEach(() => {
+      jest
+        .mocked(useSelector)
+        .mockImplementation((selector: (state: object) => unknown) =>
+          selector({}),
+        );
+    });
+
+    it('returns the same accounts array across store updates when the group selector recomputes an equal array', () => {
+      const primaryAccounts = [
+        createMockSoftwareAccount('sw-1', '0xPrimary111'),
+        createMockSoftwareAccount('sw-2', '0xPrimary222'),
+      ];
+      setupMocks({
+        selectedAddress: '0xPrimary111',
+        walletId: WALLET_ID,
+        accountGroupsByWallet: {
+          [PRIMARY_GROUP_ID]: { id: PRIMARY_GROUP_ID },
+        },
+      });
+      // Mirrors an LRU cache eviction: a new array holding the same accounts
+      mockGetInternalAccountsFromGroupById.mockImplementation(() => [
+        ...primaryAccounts,
+      ]);
+
+      const { result, dispatchUnrelatedUpdate } = renderWithStore();
+      const initialAccounts = result.current.accounts;
+      const callsBeforeUpdate =
+        mockGetInternalAccountsFromGroupById.mock.calls.length;
+
+      dispatchUnrelatedUpdate();
+
+      expect(
+        mockGetInternalAccountsFromGroupById.mock.calls.length,
+      ).toBeGreaterThan(callsBeforeUpdate);
+      expect(result.current.accounts).toBe(initialAccounts);
     });
   });
 });

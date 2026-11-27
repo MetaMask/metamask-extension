@@ -1061,6 +1061,14 @@ describe('MultichainBridgeQuoteCard', () => {
             gasIncluded: true,
             feeData: {
               ...quote.quote.feeData,
+              txFee: [
+                {
+                  amount: '1000000000000000',
+                  asset: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
+                  maxFeePerGas: '1',
+                  maxPriorityFeePerGas: '1',
+                },
+              ],
               relayer: [
                 {
                   amount: '1000000000000000',
@@ -1127,5 +1135,65 @@ describe('MultichainBridgeQuoteCard', () => {
     );
     expect(queryByTestId('network-fees')).not.toBeInTheDocument();
     expect(queryByTestId('relayer-fees')).toBeInTheDocument();
+  });
+
+  it('should render the quote txFee asset in the gas-included badge', async () => {
+    const mockStore = createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
+      },
+      bridgeStateOverrides: {
+        quoteRequest: {
+          insufficientBal: false,
+          srcChainId: 10,
+          destChainId: 137,
+          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          srcTokenAmount: '14000000',
+        },
+        quotesRefreshCount: 1,
+        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+          ...quote,
+          quote: {
+            ...quote.quote,
+            gasIncluded: true,
+            feeData: {
+              ...quote.quote.feeData,
+              txFee: [
+                {
+                  amount: '1000000',
+                  asset: quote.quote.dest.asset,
+                  maxFeePerGas: '1',
+                  maxPriorityFeePerGas: '1',
+                },
+              ],
+            },
+          },
+        })),
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+      metamaskStateOverrides: {
+        ...mockNetworkState(
+          { chainId: CHAIN_IDS.OPTIMISM },
+          { chainId: CHAIN_IDS.POLYGON },
+        ),
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <MultichainBridgeQuoteCard
+        onOpenSlippageModal={() => {}}
+        onOpenRecipientModal={() => {}}
+        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+        selectedDestinationAccount={null}
+      />,
+      configureStore(mockStore),
+    );
+
+    expect(queryByTestId('network-fees-included-token')).toHaveTextContent(
+      'USDC',
+    );
   });
 });

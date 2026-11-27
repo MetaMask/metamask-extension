@@ -22,7 +22,15 @@ export type MfaUsedFor = {
  * belongs to the team that owns the use: it lists the methods it accepts,
  * and `isShown` limits it to some users.
  */
-export const MFA_USED_FOR: MfaUsedFor[] = [
+const MFA_USED_FOR: MfaUsedFor[] = [
+  {
+    key: 'wallet_recovery',
+    icon: IconName.Lock,
+    label: 'mfaSettingsUsedForWalletRecovery',
+    methods: ['passkey', 'email_otp', 'totp'],
+    // Social login wallets are recovered with these methods.
+    isShown: ({ isSocialLogin }) => isSocialLogin,
+  },
   {
     key: 'money',
     icon: IconName.SecurityTick,

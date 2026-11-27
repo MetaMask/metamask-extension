@@ -211,17 +211,52 @@ export function normalizeSeverity(severity: string | undefined): YarnSeverity {
   return 'info';
 }
 
-/** Read a JSON array of ParsedAdvisory from disk. Returns null on I/O error. */
+/**
+ * Check that a parsed JSON value has the fields that advisory diffing relies
+ * on (`advisoryIdentityKey` and `isBlockingAdvisory`). Only those fields are
+ * checked so that baselines written by older script versions stay readable.
+ *
+ * @param value - A value parsed from an advisories JSON file.
+ * @returns Whether the value can be safely used as a ParsedAdvisory.
+ */
+export function isParsedAdvisory(value: unknown): value is ParsedAdvisory {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return false;
+  }
+  const advisory = value as Record<string, unknown>;
+  return (
+    (advisory.id === null || typeof advisory.id === 'number') &&
+    typeof advisory.moduleName === 'string' &&
+    typeof advisory.title === 'string' &&
+    typeof advisory.url === 'string' &&
+    typeof advisory.affectsProduction === 'boolean' &&
+    typeof advisory.effectiveSeverity === 'string' &&
+    YARN_SEVERITIES.has(advisory.effectiveSeverity as YarnSeverity)
+  );
+}
+
+/**
+ * Read a JSON array of ParsedAdvisory from disk.
+ *
+ * @param filePath - Path to the advisories JSON file.
+ * @returns The advisories, or null if the file cannot be read, is not valid
+ * JSON, is not an array, or contains an entry that is not a valid advisory.
+ */
 export function readAdvisories(filePath: string): ParsedAdvisory[] | null {
+  let parsed: unknown;
   try {
     const text = readFileSync(filePath, 'utf8').trim();
-    if (!text || text === '[]') {
+    if (!text) {
       return [];
     }
-    return JSON.parse(text) as ParsedAdvisory[];
+    parsed = JSON.parse(text);
   } catch {
     return null;
   }
+  if (!Array.isArray(parsed) || !parsed.every(isParsedAdvisory)) {
+    return null;
+  }
+  return parsed;
 }
 
 // ---------------------------------------------------------------------------

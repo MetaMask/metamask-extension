@@ -107,6 +107,26 @@ export function fetchMarketInfos(
 }
 
 /**
+ * Expires the cached market list for one scope so the next
+ * `fetchMarketInfos` call refetches it. An in-flight request is kept.
+ *
+ * @param cacheKey - Perps scope key from `buildPerpsCacheKey`.
+ * @param useTerminalApi - Whether the list comes from the terminal backend.
+ */
+export function invalidateCachedMarketInfos(
+  cacheKey: string,
+  useTerminalApi = false,
+): void {
+  const entry = marketInfoCacheByKey.get(
+    marketInfoInternalKey(cacheKey, useTerminalApi),
+  );
+  if (entry) {
+    entry.cached = null;
+    entry.fetchedAt = 0;
+  }
+}
+
+/**
  * Clears all module-level `MarketInfo` cache entries and drops in-flight
  * requests (callers hold their own `MarketInfoCacheEntry` references; stale
  * resolves write only to orphaned entries). Invoked when the Perps stream

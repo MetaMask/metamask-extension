@@ -110,7 +110,7 @@ export const MfaShield = () => (
  * @param props.description - The line under it, if any.
  * @param props.isCentered - Whether an image sits above it.
  */
-export const StepHeader = ({
+const StepHeader = ({
   title,
   description,
   isCentered,

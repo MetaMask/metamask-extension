@@ -6,7 +6,10 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -38,15 +41,23 @@ export function getTransactionPayControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      // Resolve the payment token account in the transaction account group.
+      'AccountTreeController:getAccountContext',
+      'AccountTreeController:getAccountGroupObject',
+      'AccountTreeController:getState',
       'AccountsController:getState',
       'AssetsController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByChainId',
+      'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
+      'TransactionController:addTransactionBatch',
       'TransactionController:estimateGas',
       'TransactionController:estimateGasBatch',
+      'TransactionController:failTransaction',
+      'TransactionController:finalizeResumedTransaction',
       'TransactionController:getGasFeeTokens',
       'TransactionController:getState',
       'TransactionController:updateTransaction',
@@ -54,10 +65,12 @@ export function getTransactionPayControllerMessenger(
       'KeyringController:signTypedMessage',
       'RampsController:getOrder',
       'RampsController:getQuoteWithFees',
+      'RampsController:getState',
       'SentinelApiService:simulateTransactions',
     ],
     events: [
       'AssetsController:stateChange',
+      'KeyringController:unlock',
       'TransactionController:stateChange',
       'TransactionController:unapprovedTransactionAdded',
     ],
@@ -68,6 +81,7 @@ export function getTransactionPayControllerMessenger(
 
 type InitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
   | TransactionControllerGetNonceLockAction
@@ -104,6 +118,8 @@ export function getTransactionPayControllerInitMessenger(
     messenger: controllerInitMessenger,
     actions: [
       'AccountsController:getSelectedAccount',
+      // Resolve the Pay `accountOverride` account ID to its EVM address.
+      'AccountsController:getState',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'MoneyAccountController:getMoneyAccount',

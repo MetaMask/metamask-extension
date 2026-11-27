@@ -43,11 +43,8 @@ import {
 } from './content';
 
 /**
- * Full-screen version of the bridge asset picker. It is shown instead of the
- * `BridgeAssetPicker` modal when the network management feature flag is
- * enabled. The token selection logic is identical to the modal — both share
- * `BridgeAssetPickerContent`. Whether the source or destination token is being
- * picked is derived from the URL search params.
+ * Full-screen bridge asset picker. Whether the source or destination token is
+ * being picked is derived from the URL search params.
  */
 const BridgeAssetPickerPage = () => {
   const t = useI18nContext();

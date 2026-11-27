@@ -1,5 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { createFormatters } from '@metamask/client-utils';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
+import {
+  TextColor as DsTextColor,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextColor,
@@ -11,14 +20,35 @@ import {
   ConfirmInfoRowSkeleton,
 } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { DottedTrigger } from '../../dotted-trigger';
+import {
+  PayChecklistDialog,
+  type PayCheckListItem,
+} from '../../modals/pay-info-dialogs';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import { useConfirmContext } from '../../../context/confirm';
+import { useMoneyVaultApy } from '../../../../../hooks/money/useMoneyVaultApy';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
+
+const RECEIVE_INFO_DIALOG_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+];
+
+const MONEY_USD_DIALOG_TEST_ID = 'money-usd-dialog';
+
+const { formatCurrency: formatEnUsCurrency } = createFormatters({
+  locale: 'en-US',
+  currencyDisplay: 'narrowSymbol',
+});
+
+const formatUsd = (amount: number) => formatEnUsCurrency(amount, 'usd');
 
 export type ReceiveRowProps = {
   /** The user's input amount in USD / fiat */
@@ -43,17 +73,27 @@ export function ReceiveRow({
   variant = ConfirmInfoRowSize.Default,
 }: ReceiveRowProps) {
   const t = useI18nContext();
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const hasReceiveInfoDialog = hasTransactionType(
+    currentConfirmation,
+    RECEIVE_INFO_DIALOG_TRANSACTION_TYPES,
+  );
   // The fee values from `TransactionPayController` (`provider.usd`,
   // `sourceNetwork.estimate.usd`, etc.) are explicitly USD-denominated, and
   // the input is sourced from the `usd`-currency `useTransactionCustomAmount`
   // path used by Perps Withdraw. Force USD formatting so the displayed
   // currency symbol matches the numerical value even if the user has set a
   // non-USD primary currency.
-  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatLocaleFiat = useFiatFormatter({ overrideCurrency: 'usd' });
+  const formatFiat = hasReceiveInfoDialog ? formatUsd : formatLocaleFiat;
   const isLoading = useIsTransactionPayQuotePending();
   const totals = useTransactionPayTotals();
   const quotes = useTransactionPayQuotes();
   const isPaidByMetaMask = useIsPaidByMetaMask();
+  const { apyPercentFormatted } = useMoneyVaultApy({
+    enabled: hasReceiveInfoDialog,
+  });
+  const [isUsdDialogOpen, setIsUsdDialogOpen] = useState(false);
 
   const hasQuotes = Boolean(quotes?.length);
 
@@ -100,6 +140,9 @@ export function ReceiveRow({
     );
   }, [formatFiat, hasQuotes, inputAmountUsd, isPaidByMetaMask, totals]);
 
+  const openUsdDialog = useCallback(() => setIsUsdDialogOpen(true), []);
+  const closeUsdDialog = useCallback(() => setIsUsdDialogOpen(false), []);
+
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
 
@@ -114,21 +157,77 @@ export function ReceiveRow({
     );
   }
 
+  let valueNode: React.ReactNode;
+  if (hasReceiveInfoDialog && receiveUsd) {
+    valueNode = (
+      <DottedTrigger
+        text={receiveUsd}
+        variant={DsTextVariant.BodyMd}
+        color={isSmall ? DsTextColor.TextAlternative : DsTextColor.TextDefault}
+        onClick={openUsdDialog}
+        data-testid="receive-value"
+      />
+    );
+  } else if (isSmall) {
+    valueNode = (
+      <Text
+        variant={textVariant}
+        color={TextColor.textAlternative}
+        data-testid="receive-value"
+      >
+        {receiveUsd}
+      </Text>
+    );
+  } else {
+    valueNode = (
+      <ConfirmInfoRowText text={receiveUsd} data-testid="receive-value" />
+    );
+  }
+
+  const apyDisplay = apyPercentFormatted ?? '—';
+  const usdBullets: PayCheckListItem[] = [
+    {
+      body: t('moneyAccountDepositUsdDialogAlwaysWorthBody'),
+      id: 'always-worth',
+      title: t('moneyAccountDepositUsdDialogAlwaysWorthTitle'),
+    },
+    {
+      body: t('moneyAccountDepositUsdDialogBackedBody'),
+      id: 'backed',
+      title: t('moneyAccountDepositUsdDialogBackedTitle'),
+    },
+    {
+      body: t('moneyAccountDepositUsdDialogEarnsBody'),
+      id: 'earns',
+      title: t('moneyAccountDepositUsdDialogEarnsTitle', [
+        <span key="apy" className="text-success-default">
+          {t('moneyApy', [apyDisplay])}
+        </span>,
+      ]),
+      titleTestId: 'money-usd-dialog-earns-title',
+    },
+    {
+      body: t('moneyAccountDepositNoLockupsBody'),
+      id: 'no-lockups',
+      title: t('moneyAccountDepositNoLockupsTitle'),
+    },
+  ];
+
   return (
     <Box data-testid="receive-row">
       <ConfirmInfoRow label={t('youllReceive')} rowVariant={variant}>
-        {isSmall ? (
-          <Text
-            variant={textVariant}
-            color={TextColor.textAlternative}
-            data-testid="receive-value"
-          >
-            {receiveUsd}
-          </Text>
-        ) : (
-          <ConfirmInfoRowText text={receiveUsd} data-testid="receive-value" />
-        )}
+        {valueNode}
       </ConfirmInfoRow>
+      {hasReceiveInfoDialog && receiveUsd ? (
+        <PayChecklistDialog
+          data-testid={MONEY_USD_DIALOG_TEST_ID}
+          isOpen={isUsdDialogOpen}
+          items={usdBullets}
+          lead={t('moneyAccountDepositUsdDialogLead')}
+          onClose={closeUsdDialog}
+          title={t('moneyAccountDepositUsdDialogTitle', [receiveUsd])}
+        />
+      ) : null}
     </Box>
   );
 }

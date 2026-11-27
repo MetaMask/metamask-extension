@@ -73,6 +73,56 @@ describe('useSnapAmountOnInput', () => {
     });
   });
 
+  it('passes the recipient address for Tron sends', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        assetId: 'tron:728126428/slip44:195' as CaipAssetType,
+        chainId: 'tron:728126428',
+        decimals: 6,
+        symbol: 'TRX',
+        isNative: true,
+      },
+      chainId: 'tron:728126428',
+      fromAccount: MOCK_ACCOUNT,
+      toResolved: 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq',
+      value: '1.5',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(() => useSnapAmountOnInput());
+    await result.current.validateAmountWithSnap('2.5');
+
+    expect(validateAmountMultichainMock).toHaveBeenCalledWith(MOCK_ACCOUNT, {
+      value: '2.5',
+      accountId: MOCK_ACCOUNT.id,
+      assetId: 'tron:728126428/slip44:195',
+      toAddress: 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq',
+    });
+  });
+
+  it('omits the recipient address for Tron sends without a resolved destination', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        assetId: 'tron:728126428/slip44:195' as CaipAssetType,
+        chainId: 'tron:728126428',
+        decimals: 6,
+        symbol: 'TRX',
+        isNative: true,
+      },
+      chainId: 'tron:728126428',
+      fromAccount: MOCK_ACCOUNT,
+      value: '1.5',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(() => useSnapAmountOnInput());
+    await result.current.validateAmountWithSnap('2.5');
+
+    expect(validateAmountMultichainMock).toHaveBeenCalledWith(MOCK_ACCOUNT, {
+      value: '2.5',
+      accountId: MOCK_ACCOUNT.id,
+      assetId: 'tron:728126428/slip44:195',
+    });
+  });
+
   it('returns validation result from validateAmountMultichain', async () => {
     const mockValidationResult = { error: 'Insufficient balance' };
     validateAmountMultichainMock.mockResolvedValue(mockValidationResult);

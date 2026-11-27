@@ -214,9 +214,6 @@
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasUsed": {
-    "message": "Gas använd"
-  },
   "general": {
     "message": "Allmänt"
   },
@@ -334,9 +331,6 @@
   "newContract": {
     "message": "Nytt kontrakt"
   },
-  "newPassword": {
-    "message": "Nytt lösenord (minst 8 tecken)"
-  },
   "next": {
     "message": "Nästa"
   },
@@ -391,9 +385,6 @@
   "privateKey": {
     "message": "Privat nyckel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Privat nätverk"
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
@@ -539,9 +530,6 @@
   },
   "unapproved": {
     "message": "Inte godkänd"
-  },
-  "units": {
-    "message": "enheter"
   },
   "unknown": {
     "message": "okänt"

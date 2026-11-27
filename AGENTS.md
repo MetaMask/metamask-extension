@@ -231,9 +231,7 @@ yarn dapp-solana           # Solana test dapp
 yarn dapp-chain            # Dapp with local Anvil
 
 # DevTools
-yarn devtools:react        # React DevTools
 yarn devtools:redux        # Redux DevTools
-yarn start:dev             # Start with both DevTools
 
 # Local Blockchain
 yarn anvil                 # Start Anvil (Foundry) on port 8545
@@ -773,7 +771,6 @@ Feature flags allow you to enable/disable features during development. They're d
 Check `.metamaskrc.dist` for the current list of feature flags. Common ones:
 
 - `MULTICHAIN` - Multi-chain support
-- `BLOCKAID_PUBLIC_KEY` - Security features
 - Various experimental features
 
 ### Using Feature Flags
@@ -1720,11 +1717,11 @@ Performance Checks (React Components):
 
 ## Cursor Cloud specific instructions
 
-This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
+This section captures non-obvious, durable caveats for running this repo inside Cursor Cloud VMs. Dependency installation is handled automatically by the startup update script (nvm install/use per `.nvmrc`, `npm install -g corepack && corepack enable`, `yarn install`, and creating `.metamaskrc` from `.metamaskrc.dist` if missing). Standard commands live in the sections above and in `README.md`/`package.json` — reference those instead of duplicating.
 
 ### Node version gotcha (important)
 
-- The repo requires Node `>=24.22.1` (`.nvmrc` → `v24.22.1`), but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 24 automatically**. If a command runs Node 22 (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v24.22.1/bin:$PATH"` before the command. `corepack enable` must run under Node 24 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
+- The repo requires Node `>=26.13.1`, but the base image ships a fixed `/exec-daemon/node` (v22) shim that sits early on `PATH` and otherwise wins over nvm. `~/.bashrc` runs `nvm use default` at the end so **interactive shells get Node 26 automatically**. If a command runs an older Node version (e.g. Yarn's engines check fails), run `nvm use` (from the repo root, which reads `.nvmrc`) or prefix `PATH="$HOME/.nvm/versions/node/v26.13.1/bin:$PATH"` before the command. `npm install -g corepack && corepack enable` must run under Node 26 so Yarn 4 (`packageManager` in `package.json`) is used, not the legacy Yarn 1.
 
 ### Running / building the extension
 

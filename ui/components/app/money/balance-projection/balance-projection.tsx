@@ -56,7 +56,7 @@ function isPositiveNumberOrZero(value: number | undefined): value is number {
  */
 const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
   const t = useI18nContext();
-  const { apyDecimal, apyPercent, vaultApyQuery } = useMoneyAccountBalance();
+  const { apyDecimal, apyPercent, isApyLoading } = useMoneyAccountBalance();
   const { trackTooltipClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyDeposit,
   });
@@ -86,7 +86,7 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
     );
   }, [amount, apyDecimal]);
 
-  if (vaultApyQuery.isLoading && !hasUsableApy) {
+  if (isApyLoading && !hasUsableApy) {
     return (
       <Box data-testid="balance-projection-skeleton">
         <Skeleton height={20} width={160} />
