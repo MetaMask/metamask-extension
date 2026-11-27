@@ -16,7 +16,6 @@ import { Label } from '../../label';
 
 /**
  * @deprecated This has been deprecated in favor of the TypeScript version `<FormTextField />` component in ./ui/components/component-library/form-text-field/form-text-field.tsx
- * See storybook documentation for FormTextField here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-formtextfield--docs
  */
 
 export const FormTextField = ({

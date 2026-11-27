@@ -236,10 +236,6 @@ yarn devtools:redux        # Redux DevTools
 # Local Blockchain
 yarn anvil                 # Start Anvil (Foundry) on port 8545
 
-# Storybook
-yarn storybook             # Component documentation/development
-yarn storybook:build       # Build static storybook
-
 # Git Hooks
 yarn githooks:install      # Install pre-commit hooks
 ```
@@ -730,7 +726,6 @@ app/scripts/controllers/foo/foo-controller.ts → ALSO UPDATE:
 ui/components/foo/foo.tsx → ALSO UPDATE:
 ├── ui/components/foo/foo.test.tsx (tests)
 ├── ui/components/foo/foo.types.ts (if props changed)
-├── ui/components/foo/foo.stories.tsx (if props changed)
 └── ui/components/foo/index.ts (if exports changed)
 ```
 
@@ -1259,7 +1254,6 @@ component-name/
 ├── component-name.tsx          # Main component
 ├── component-name.types.ts     # TypeScript types
 ├── component-name.test.tsx     # Unit tests
-├── component-name.stories.tsx  # Storybook stories
 ├── component-name.scss         # Styles
 ├── __snapshots__/              # Jest snapshots
 ├── README.md                   # Component documentation
@@ -1628,7 +1622,6 @@ yarn lavamoat:auto
 ```
 IF you created a new component:
   → Add/update component README.md
-  → Add/update Storybook story (.stories.tsx)
 
 IF you changed public API (controller methods, props, etc.):
   → Update JSDoc comments

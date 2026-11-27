@@ -2,7 +2,7 @@ import { ETH_TOKEN_IMAGE_URL } from '../../shared/constants/network';
 import type { HardwareWalletAccountAddress } from '../../ui/components/multichain-accounts/hardware-account-address-row';
 import type { HardwareWalletAccount } from '../../ui/components/multichain-accounts/hardware-account-card';
 
-/** Default Ethereum address fixture for hardware wallet tests and stories. */
+/** Default Ethereum address fixture for hardware wallet tests. */
 export const MOCK_ETHEREUM_HARDWARE_ADDRESS: HardwareWalletAccountAddress = {
   id: 'eth-0',
   networkName: 'Ethereum',
@@ -51,7 +51,7 @@ type CreateMockHardwareAccountsOptions = {
 };
 
 /**
- * Creates a list of hardware wallet account fixtures for tests and stories.
+ * Creates a list of hardware wallet account fixtures for tests.
  * @param count - Number of accounts to create.
  * @param options - Optional fixture configuration.
  */

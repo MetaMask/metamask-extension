@@ -19,7 +19,6 @@ describe('getArtifactLinks', () => {
     expect(links.interactionStats.url).toBe(
       `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
     );
-    expect(links.storybook.url).toBe(`${HOST}/storybook-build/index.html`);
     expect(links.allArtifacts.url).toBe(
       'https://github.com/MetaMask/metamask-extension/actions/runs/42#artifacts',
     );
@@ -28,8 +27,8 @@ describe('getArtifactLinks', () => {
   it('link() helper renders an anchor tag for a given key', () => {
     const links = getArtifactLinks(HOST, 'MetaMask', 'metamask-extension', '1');
 
-    expect(links.link('storybook')).toBe(
-      `<a href="${HOST}/storybook-build/index.html">Storybook</a>`,
+    expect(links.link('tsMigrationDashboard')).toBe(
+      `<a href="${HOST}/ts-migration-dashboard/index.html">Dashboard</a>`,
     );
   });
 });
@@ -93,7 +92,7 @@ describe('buildArtifactsBody', () => {
     expect(result).toContain('<details>');
     expect(result).toContain('Builds ready [abc1234]');
     expect(result).toContain('bundle size:');
-    expect(result).toContain('storybook:');
+    expect(result).toContain('typescript migration:');
   });
 
   it('includes bundle size and bundle analyzer links', () => {

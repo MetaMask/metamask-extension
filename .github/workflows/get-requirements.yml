@@ -27,9 +27,6 @@ on:
       needs-unit-and-integration:
         description: Whether unit and integration tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-unit-and-integration }}
-      needs-storybook:
-        description: Whether storybook tests are needed
-        value: ${{ jobs.detect-changes.outputs.needs-storybook }}
       needs-releases:
         description: Whether releases job is needed
         value: ${{ jobs.detect-changes.outputs.needs-releases }}
@@ -75,7 +72,6 @@ jobs:
       skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
       needs-lint: ${{ steps.set-needs-lint.outputs.needs-lint || 'false' }}
       needs-unit-and-integration: ${{ steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
-      needs-storybook: ${{ steps.set-needs-storybook.outputs.needs-storybook || 'false' }}
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false' }}
       needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false' }}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false' }}
@@ -188,7 +184,7 @@ jobs:
             // Directories that never affect the production build output.
             const excludedDirs = [
               '.agents/', '.claude/', '.cursor/', '.devcontainer/',
-              '.github/', '.husky/', '.storybook/', '.vscode/', '.yarn/',
+              '.github/', '.husky/', '.vscode/', '.yarn/',
               'docs/', 'test/',
               'development/metamaskbot-build-announce/',
               'development/ts-migration-dashboard/',
@@ -611,43 +607,6 @@ jobs:
             echo "-> needs-unit-and-integration=true${REASON:+ ($REASON)}"
           else
             echo "-> needs-unit-and-integration=false (reason: $REASON)"
-          fi
-
-      # Uses the build-reuse 2x2 matrix: skip only when builds come from the
-      # base branch (fully validated) AND no storybook files changed. Storybook
-      # config (.storybook/**), story files (*.stories.*), and snapshots (*.snap)
-      # are excluded from the build hash, so a storybook-only PR has builds
-      # reused but still needs storybook tests.
-      - name: Compute needs-storybook flag
-        id: set-needs-storybook
-        if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
-        env:
-          BUILDS_FROM_BASE_BRANCH: ${{ steps.find-reusable-builds.outputs.builds-from-base-branch }}
-          FILTER_STORYBOOK_COUNT: ${{ steps.filter.outputs.storybook_files_count }}
-        run: |
-          echo "=== Storybook skip decision ==="
-          echo "  Run-everything branch: $IS_RUN_EVERYTHING_BRANCH"
-          echo "  Builds from base branch: $BUILDS_FROM_BASE_BRANCH"
-          echo "  Storybook files changed: $FILTER_STORYBOOK_COUNT"
-
-          NEEDS=true
-          REASON=""
-
-          # On main/stable, always run all tests (safety net)
-          if [[ "$IS_RUN_EVERYTHING_BRANCH" == "true" ]]; then
-            REASON="run-everything branch"
-
-          # Build-reuse 2x2 matrix: builds from base branch AND no storybook files changed
-          elif [[ "$BUILDS_FROM_BASE_BRANCH" == "true" && "$FILTER_STORYBOOK_COUNT" == "0" ]]; then
-            NEEDS=false
-            REASON="builds from base branch and no storybook files changed (2x2 matrix)"
-          fi
-
-          echo "needs-storybook=$NEEDS" >> "$GITHUB_OUTPUT"
-          if [[ "$NEEDS" == "true" ]]; then
-            echo "-> needs-storybook=true${REASON:+ ($REASON)}"
-          else
-            echo "-> needs-storybook=false (reason: $REASON)"
           fi
 
       - name: Compute needs-releases flag

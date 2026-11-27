@@ -421,11 +421,9 @@ export const getNetworkFees = async (
   const rpcUrl = getRpcUrlByChainId(`0x${chainId}` as HexChainId);
   const connection = {
     url: rpcUrl,
-    headers: process.env.STORYBOOK
-      ? undefined
-      : {
-          'Infura-Source': 'metamask/metamask',
-        },
+    headers: {
+      'Infura-Source': 'metamask/metamask',
+    },
   };
   const provider = new JsonRpcProvider(connection);
 

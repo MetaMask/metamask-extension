@@ -33,7 +33,6 @@ temp
 .DS_Store
 app/.DS_Store
 
-storybook-build/
 coverage/
 jest-coverage/
 /dist

@@ -60,7 +60,7 @@
       }
     },
     "^ background; v popup": {},
-    "wait-on>axios": {
+    "@slack/webhook>axios": {
       "globals": {
         "postMessage": true,
         "fetch": true,

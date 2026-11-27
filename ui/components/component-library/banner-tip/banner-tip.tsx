@@ -22,7 +22,7 @@ export const BannerTip: BannerTipComponent = React.forwardRef(
       className = '',
       // TODO: Get new assets for greeting and chat based off
       // of the new branding. If decision is to use the normal fox
-      // then remove enum and update stories to use the normal fox
+      // then remove enum and use the normal fox
       // logoType = BannerTipLogoType.Greeting,
       logoWrapperProps,
       logoProps,

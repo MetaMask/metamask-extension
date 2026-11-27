@@ -870,7 +870,7 @@
     "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
       "packages": {
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "wait-on>axios": true
+        "@slack/webhook>axios": true
       }
     },
     "@ledgerhq/errors": {
@@ -884,7 +884,7 @@
         "ethers>@ethersproject/hash": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
-        "wait-on>axios": true,
+        "@slack/webhook>axios": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>crypto-js": true
       }
     },
@@ -904,7 +904,7 @@
         "@ledgerhq/errors": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "wait-on>axios": true,
+        "@slack/webhook>axios": true,
         "@ledgerhq/hw-app-eth>bignumber.js": true,
         "buffer": true,
         "semver": true
@@ -4742,7 +4742,7 @@
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
       }
     },
-    "wait-on>axios": {
+    "@slack/webhook>axios": {
       "globals": {
         "AbortController": true,
         "Blob": true,
@@ -5290,7 +5290,7 @@
         "pageYOffset": true
       },
       "packages": {
-        "storybook>recast>tiny-invariant": true
+        "@hello-pangea/dnd>css-box-model>tiny-invariant": true
       }
     },
     "currency-formatter": {

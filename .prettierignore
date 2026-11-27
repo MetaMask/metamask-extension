@@ -17,7 +17,6 @@ __snapshots__/**/*
 /eslint-suppressions.json
 /lavamoat/**/policy.json
 /lavamoat/**/policy-override.json
-/storybook-build/**/*
 /test-artifacts/**/*
 /test/test-results/**/*
 /test/e2e/send-eth-with-private-key-test/**/*

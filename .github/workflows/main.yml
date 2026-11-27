@@ -137,14 +137,6 @@ jobs:
     uses: ./.github/workflows/repository-health-checks.yml
     secrets: inherit
 
-  test-storybook:
-    name: Test storybook
-    needs:
-      - get-requirements
-      - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-storybook == 'true' }}
-    uses: ./.github/workflows/test-storybook.yml
-
   validate-lavamoat-policies:
     needs:
       - get-requirements
@@ -489,17 +481,6 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
-  build-storybook:
-    name: Build storybook
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
-    needs:
-      - get-requirements
-    permissions:
-      contents: read
-      id-token: write
-    uses: ./.github/workflows/build-storybook.yml
-    secrets: inherit
-
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
     if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
@@ -534,7 +515,6 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-webpack.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
-        contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result)
       }}
     needs:
@@ -551,7 +531,6 @@ jobs:
       - build-test-flask-mv2-webpack
       - run-benchmarks
       - bundle-size
-      - build-storybook
       - build-ts-migration-dashboard
     permissions:
       contents: read
@@ -592,7 +571,6 @@ jobs:
       - lint-workflows
       - test-lint
       - repository-health-checks
-      - test-storybook
       - validate-lavamoat-policies
       - build-dist-webpack
       - build-dist-mv2-webpack
@@ -610,7 +588,6 @@ jobs:
       - prep-e2e
       - e2e-chrome
       - e2e-firefox
-      - build-storybook
       - build-ts-migration-dashboard
     uses: ./.github/workflows/ci-status-gate.yml
     with:

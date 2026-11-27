@@ -68,7 +68,6 @@ function configureMocks(): void {
     bundleSizeDebug: { url: 'https://ci/bundle.debug.json', label: 'debug' },
     bundleSizeData: { url: 'https://ci/data.json', label: 'data' },
     interactionStats: { url: 'https://ci/inter.json', label: 'inter' },
-    storybook: { url: 'https://ci/storybook', label: 'Storybook' },
     tsMigrationDashboard: { url: 'https://ci/ts', label: 'TS' },
     bundleAnalyzer: {
       url: 'https://ci/bundle-analyzer/report.html',

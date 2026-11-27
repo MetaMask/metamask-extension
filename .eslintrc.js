@@ -9,7 +9,6 @@ const babelParser = require('@babel/eslint-parser');
 const reactPackageJson = require('react/package.json');
 const reactPlugin = require('eslint-plugin-react');
 const reactHooksPlugin = require('eslint-plugin-react-hooks');
-const storybookPlugin = require('eslint-plugin-storybook');
 const tailwindCssPlugin = require('eslint-plugin-tailwindcss');
 const pageObjectMemberOrderRule = require('./development/eslint-rules/page-object-member-order');
 const {
@@ -34,6 +33,11 @@ module.exports = defineConfig([
     'test/e2e/send-eth-with-private-key-test/**/*',
     // snapshots
     '**/__snapshots__/**/*',
+    // TEMPORARY: Storybook stories and their helper directories are dead code
+    // awaiting deletion in follow-up PRs, and their Storybook-specific lint
+    // config is gone. Removed by the final cleanup PR.
+    '**/*.stories.*',
+    '**/stories/**',
   ]),
   {
     languageOptions: {
@@ -679,39 +683,6 @@ module.exports = defineConfig([
     rules: {
       'n/no-process-exit': 'off',
       'n/hashbang': 'off',
-    },
-  },
-  /**
-   * Storybook
-   */
-  {
-    files: ['**/*.stories.js', '**/*.stories.ts', '**/*.stories.tsx'],
-    // Suggested addition from the storybook 6.5 update
-    extends: [storybookPlugin.configs['flat/recommended']],
-    rules: {
-      // Static hex values are only discouraged in application code, using them in stories is OK.
-      '@metamask/design-tokens/color-no-hex': 'off',
-      'storybook/no-redundant-story-name': 'error',
-    },
-  },
-  /**
-   * Storybook (JavaScript only)
-   *
-   * This block is for overriding settings from the base config. It's JavaScript-only because the
-   * Storybook TypeScript files don't have the base config applied.
-   *
-   * TODO: Apply base config to all Storybook files, and combine these two blocks.
-   */
-  {
-    files: ['**/*.stories.js'],
-    rules: {
-      // Anonymous object exports are conventional for Storybook files
-      'import-x/no-anonymous-default-export': [
-        'error',
-        {
-          allowObject: true,
-        },
-      ],
     },
   },
   /**

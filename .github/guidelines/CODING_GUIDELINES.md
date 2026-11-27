@@ -16,7 +16,6 @@
 
 ```.tsx
 avatar-account
-├── avatar-account.stories.tsx
 ├── avatar-account.scss
 ├── avatar-account.test.tsx
 ├── avatar-account.tsx

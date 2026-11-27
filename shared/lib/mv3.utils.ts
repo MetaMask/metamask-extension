@@ -1,4 +1,4 @@
-// `chrome` exists on ordinary web pages, including Storybook, without
+// `chrome` exists on ordinary web pages without
 // `chrome.runtime`. Optional calls avoid throwing while this module evaluates
 // and fall through to `browser.runtime`, then to ENABLE_MV3 below. Extension
 // pages still read the runtime manifest, so MV2 and MV3 builds are unchanged.
