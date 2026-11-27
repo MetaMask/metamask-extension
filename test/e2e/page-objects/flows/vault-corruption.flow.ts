@@ -1,4 +1,5 @@
 import { WALLET_PASSWORD } from '../../constants';
+import { pausePersistence } from '../../tests/state-persistence/helpers';
 import { type Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import HeaderNavbar from '../pages/home/header-navbar';
@@ -173,6 +174,12 @@ export async function onboardThenExecuteScript(
     waitForSync: false,
   });
   await lockAndWaitForLoginPage(driver);
+
+  // Every caller reloads immediately after this point, so it is safe to stop
+  // persistence. The test-only hook first flushes the pending debounced write,
+  // making the backup precondition deterministic without waiting for the
+  // production persistence cadence.
+  await pausePersistence(driver);
 
   // Ensure backup is in IndexedDB otherwise the Extension may restart with no backup to recover from.
   await waitForBackupVault(driver);
