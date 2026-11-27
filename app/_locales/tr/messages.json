@@ -8852,10 +8852,6 @@
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
   },
-  "pin": {
-    "message": "Pin",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "MetaMask uzantısını sabitle"
   },

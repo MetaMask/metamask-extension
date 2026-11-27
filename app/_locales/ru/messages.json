@@ -8838,10 +8838,6 @@
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
   },
-  "pin": {
-    "message": "Закрепить",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Закрепите расширение MetaMask"
   },

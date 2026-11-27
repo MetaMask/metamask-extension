@@ -8838,10 +8838,6 @@
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
   },
-  "pin": {
-    "message": "Fixar",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Fixar a extensão da MetaMask"
   },

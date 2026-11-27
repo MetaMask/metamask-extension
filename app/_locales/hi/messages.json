@@ -8838,10 +8838,6 @@
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"
   },
-  "pin": {
-    "message": "पिन",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "MetaMask एक्सटेंशन पिन करें"
   },

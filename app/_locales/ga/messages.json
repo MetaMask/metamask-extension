@@ -3589,10 +3589,6 @@
   "personalAddressDetected": {
     "message": "Seoladh pearsanta braite. Cuir isteach seoladh an chonartha comhartha."
   },
-  "pin": {
-    "message": "Bioráin",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Priontáil an síneadh MetaMask"
   },

@@ -8852,10 +8852,6 @@
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
   },
-  "pin": {
-    "message": "Fijar",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Fijar la extensión MetaMask"
   },

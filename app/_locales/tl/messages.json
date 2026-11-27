@@ -8838,10 +8838,6 @@
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
   },
-  "pin": {
-    "message": "I-pin",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "I-pin ang extension ng MetaMask"
   },

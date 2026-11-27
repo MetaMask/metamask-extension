@@ -8846,10 +8846,6 @@
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
   },
-  "pin": {
-    "message": "Pin",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Sematkan ekstensi MetaMask"
   },

@@ -9082,10 +9082,6 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
-  "pin": {
-    "message": "Pin",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Pin the MetaMask extension"
   },

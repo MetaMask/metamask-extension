@@ -8844,10 +8844,6 @@
   "personalAddressDetected": {
     "message": "检测到个人地址。请输入代币合约地址。"
   },
-  "pin": {
-    "message": "置顶",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "固定 MetaMask 扩展程序"
   },

@@ -8838,10 +8838,6 @@
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
   },
-  "pin": {
-    "message": "Καρφίτσωμα",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Καρφιτσώστε την επέκταση του MetaMask"
   },

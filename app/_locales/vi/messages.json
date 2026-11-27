@@ -8852,10 +8852,6 @@
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
   },
-  "pin": {
-    "message": "Ghim",
-    "description": "Pin label used in multichain account menu"
-  },
   "pinMetaMask": {
     "message": "Ghim tiện ích mở rộng MetaMask"
   },
