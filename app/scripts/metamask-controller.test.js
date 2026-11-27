@@ -61,6 +61,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions/feature-flags';
+import * as brazeLib from '../../shared/lib/braze';
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
@@ -334,6 +335,11 @@ jest.mock('../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },
+}));
+
+jest.mock('../../shared/lib/braze', () => ({
+  ...jest.requireActual('../../shared/lib/braze'),
+  isBrazeConfigured: jest.fn(() => false),
 }));
 
 jest.mock('./controllers/permissions', () => ({
@@ -622,6 +628,47 @@ describe('MetaMaskController', () => {
         controllerMessenger,
       );
       createEnsureOnboardingCompleteCallbackSpy.mockRestore();
+    });
+  });
+
+  describe('BrazeService registration', () => {
+    it('omits BrazeService when Braze is not configured and registers it when configured', () => {
+      const controllerWithoutBraze = new MetaMaskController({
+        initLangCode: 'en_US',
+        browser: browserPolyfillMock,
+        getRequestAccountTabIds: () => ({}),
+        getOpenMetamaskTabsIds: () => ({}),
+        notificationManager: {
+          closePopup: jest.fn(),
+          markAsAutomaticallyClosed: jest.fn(),
+        },
+        infuraProjectId: 'foo',
+        platform: { _showNotification: jest.fn() },
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+      });
+      expect(
+        controllerWithoutBraze.messengerClientsByName.BrazeService,
+      ).toBeUndefined();
+
+      jest.spyOn(brazeLib, 'isBrazeConfigured').mockReturnValueOnce(true);
+      const controllerWithBraze = new MetaMaskController({
+        initLangCode: 'en_US',
+        browser: browserPolyfillMock,
+        getRequestAccountTabIds: () => ({}),
+        getOpenMetamaskTabsIds: () => ({}),
+        notificationManager: {
+          closePopup: jest.fn(),
+          markAsAutomaticallyClosed: jest.fn(),
+        },
+        infuraProjectId: 'foo',
+        platform: { _showNotification: jest.fn() },
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+      });
+      expect(
+        controllerWithBraze.messengerClientsByName.BrazeService,
+      ).toBeDefined();
     });
   });
 
