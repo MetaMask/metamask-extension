@@ -5,6 +5,7 @@ import {
   PrimaryType,
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
+  PRIMARY_TYPES_TRANSFER_AUTHORIZATION,
 } from '../../../../../../shared/constants/signatures';
 import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 
@@ -41,6 +42,8 @@ enum Field {
   SigDeadline = 'sigDeadline',
   StartAmount = 'startAmount',
   StartTime = 'startTime',
+  ValidAfter = 'validAfter',
+  ValidBefore = 'validBefore',
   ValidTo = 'validTo',
   Value = 'value',
 }
@@ -51,7 +54,10 @@ const FIELD_TOKEN_UTILS_PRIMARY_TYPES: Record<string, string[]> = {
   [Field.EndAmount]: [...PRIMARY_TYPES_ORDER],
   [Field.SellAmount]: [...PRIMARY_TYPES_ORDER],
   [Field.StartAmount]: [...PRIMARY_TYPES_ORDER],
-  [Field.Value]: [...PRIMARY_TYPES_PERMIT],
+  [Field.Value]: [
+    ...PRIMARY_TYPES_PERMIT,
+    ...PRIMARY_TYPES_TRANSFER_AUTHORIZATION,
+  ],
 };
 
 const FIELD_DATE_PRIMARY_TYPES: Record<string, string[]> = {
@@ -61,6 +67,8 @@ const FIELD_DATE_PRIMARY_TYPES: Record<string, string[]> = {
   [Field.Expiry]: [...PRIMARY_TYPES_PERMIT],
   [Field.SigDeadline]: [...PRIMARY_TYPES_PERMIT],
   [Field.StartTime]: [...PRIMARY_TYPES_ORDER],
+  [Field.ValidAfter]: [...PRIMARY_TYPES_TRANSFER_AUTHORIZATION],
+  [Field.ValidBefore]: [...PRIMARY_TYPES_TRANSFER_AUTHORIZATION],
   [Field.ValidTo]: [...PRIMARY_TYPES_ORDER],
 };
 

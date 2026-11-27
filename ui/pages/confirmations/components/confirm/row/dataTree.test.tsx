@@ -1,3 +1,4 @@
+import { describe, it } from '@jest/globals';
 import { waitFor } from '@testing-library/react';
 import React from 'react';
 
@@ -122,6 +123,45 @@ describe('DataTree', () => {
       expect(
         getByTestId('confirmation_data-expiration-index-0'),
       ).toHaveTextContent('Expiration:Never expires');
+    });
+  });
+
+  describe.each([
+    PrimaryType.TransferWithAuthorization,
+    PrimaryType.ReceiveWithAuthorization,
+  ])('%s', (primaryType) => {
+    const renderTransferAuthorization = () =>
+      renderWithProvider(
+        <DataTree
+          data={{
+            value: { type: 'uint256', value: '1000000000' },
+            validAfter: { type: 'uint256', value: '1700000000' },
+            validBefore: { type: 'uint256', value: '1800000000' },
+          }}
+          primaryType={primaryType}
+          tokenDecimals={6}
+          chainId={CHAIN_ID_MOCK}
+        />,
+        store,
+      );
+
+    it('shows value in token units', async () => {
+      const { findByTestId } = renderTransferAuthorization();
+
+      expect(
+        await findByTestId('confirmation_data-value-index-0'),
+      ).toHaveTextContent(/^Value:1,000$/u);
+    });
+
+    it('shows the validity window as dates', async () => {
+      const { findByTestId, getByTestId } = renderTransferAuthorization();
+
+      expect(
+        await findByTestId('confirmation_data-validAfter-index-1'),
+      ).toHaveTextContent(/^ValidAfter:14 November 2023, 22:13$/u);
+      expect(
+        getByTestId('confirmation_data-validBefore-index-2'),
+      ).toHaveTextContent(/^ValidBefore:15 January 2027, 08:00$/u);
     });
   });
 

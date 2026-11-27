@@ -1,6 +1,9 @@
 import React from 'react';
+import { describe, it } from '@jest/globals';
+import { waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import {
+  CHAIN_IDS,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -14,6 +17,7 @@ import {
 import {
   permitSignatureMsg,
   permitSignatureMsgWithNoDeadline,
+  transferWithAuthorizationSignatureMsg,
   unapprovedTypedSignMsgV3,
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
@@ -21,6 +25,10 @@ import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
+import { getTokenStandardAndDetailsByChain } from '../../../../../../store/actions';
+import { PrimaryType } from '../../../../../../../shared/constants/signatures';
+import { SignatureRequestType } from '../../../../types/confirm';
+import { memoizedGetTokenStandardAndDetailsByChain } from '../../../../utils/token';
 import TypedSignInfo from './typed-sign';
 
 jest.mock(
@@ -35,6 +43,7 @@ jest.mock(
 jest.mock('../../../../../../store/actions', () => {
   return {
     getTokenStandardAndDetails: jest.fn().mockResolvedValue({ decimals: 2 }),
+    getTokenStandardAndDetailsByChain: jest.fn(),
     updateEventFragment: jest.fn(),
   };
 });
@@ -144,6 +153,72 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  describe.each([
+    PrimaryType.TransferWithAuthorization,
+    PrimaryType.ReceiveWithAuthorization,
+  ])('%s', (primaryType) => {
+    const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+
+    const renderTransferAuthorization = (value: string) => {
+      memoizedGetTokenStandardAndDetailsByChain.cache.clear?.();
+      const { msgParams } = transferWithAuthorizationSignatureMsg;
+      const typedData = JSON.parse(msgParams?.data as string);
+      const data = JSON.stringify({
+        ...typedData,
+        primaryType,
+        types: {
+          EIP712Domain: typedData.types.EIP712Domain,
+          [primaryType]: typedData.types.TransferWithAuthorization,
+        },
+        message: { ...typedData.message, value },
+      });
+      const state = getMockTypedSignConfirmStateForRequest({
+        ...transferWithAuthorizationSignatureMsg,
+        msgParams: { ...msgParams, data },
+      } as SignatureRequestType);
+
+      return renderWithConfirmContextProvider(
+        <TypedSignInfo />,
+        configureMockStore([])(state),
+      );
+    };
+
+    it('shows value in the verifyingContract token units', async () => {
+      jest
+        .mocked(getTokenStandardAndDetailsByChain)
+        .mockResolvedValueOnce({ decimals: '2', standard: 'ERC20' });
+
+      const { getByTestId } = renderTransferAuthorization('123456');
+
+      await waitFor(() => {
+        expect(
+          getByTestId('confirmation_data-value-index-2'),
+        ).toHaveTextContent(/^Value:1,234\.56$/u);
+      });
+      expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
+        USDC_ADDRESS,
+        undefined,
+        undefined,
+        CHAIN_IDS.MAINNET,
+      );
+    });
+
+    it('shows value in base units if the token decimals are unavailable', async () => {
+      jest
+        .mocked(getTokenStandardAndDetailsByChain)
+        .mockRejectedValueOnce(new Error('Token not found'));
+
+      const { getByTestId } = renderTransferAuthorization('123456');
+
+      await waitFor(() => {
+        expect(getTokenStandardAndDetailsByChain).toHaveBeenCalled();
+      });
+      expect(getByTestId('confirmation_data-value-index-2')).toHaveTextContent(
+        /^Value:123,456$/u,
+      );
+    });
   });
 
   it('displays "requestFromInfoSnap" tooltip when origin is a snap', async () => {

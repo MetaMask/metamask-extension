@@ -229,6 +229,22 @@ export const permitSignatureMsg = {
   },
 } as SignatureRequestType;
 
+export const transferWithAuthorizationSignatureMsg = {
+  id: '6d1b1b7e-5a2f-4f3b-9c1e-0c1f7d3e2a91',
+  chainId: CHAIN_IDS.MAINNET,
+  status: 'unapproved',
+  time: 1716826404122,
+  type: TransactionType.signTypedData,
+  msgParams: {
+    data: '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"TransferWithAuthorization":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"value","type":"uint256"},{"name":"validAfter","type":"uint256"},{"name":"validBefore","type":"uint256"},{"name":"nonce","type":"bytes32"}]},"primaryType":"TransferWithAuthorization","domain":{"name":"USD Coin","version":"2","chainId":1,"verifyingContract":"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"},"message":{"from":"0x935e73edb9ff52e23bac7f7e043a1ecd06d05477","to":"0x5B38Da6a701c568545dCfcB03FcB875f56beddC4","value":"123456","validAfter":"0","validBefore":"1800000000","nonce":"0x8f3c5a1b2e4d6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8"}}',
+    from: '0x935e73edb9ff52e23bac7f7e043a1ecd06d05477',
+    version: 'V4',
+    requestId: 17,
+    signatureMethod: 'eth_signTypedData_v4',
+    origin: 'https://metamask.github.io',
+  },
+} as SignatureRequestType;
+
 export const permitSignatureMsgWithUnsignedFields = {
   ...permitSignatureMsg,
   id: 'unsigned-fields-permit',
