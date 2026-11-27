@@ -7,6 +7,115 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.59.0]
+
+### Added
+
+- Added an option to remember support consent preferences (#46854)
+- Added a link to the referral invite terms on the invite sheet (#47892)
+- Added an APY tag next to Money Account when withdrawing from Perps (#47865)
+- Added a mobile QR fallback for unsupported deep links with `share=1` (#47770)
+- Added tracking for background asset loading per account (#47792)
+
+### Changed
+
+- Restored the previous handling of referral codes in deep links (#48140)
+- Moved the Money CTA under the token name on the wide token table (#48098)
+- Changed the wide-screen redesign from a feature flag to an A/B test (#48057)
+- Changed the gated wide layout to start at 900px instead of 768px (#47840)
+- Updated Permit2 approval screens to show the token, amount, spender, and expiration before confirmation (#47797)
+- Updated marketing consent and data-deletion copy (#47941)
+
+### Fixed
+
+- Fixed a bug that could make the full screen view unresponsive after adding an account or forgetting a hardware wallet when the wallet had many accounts (#48186)
+- Fixed the Solana token logo showing on a white background in token avatars (#48176)
+- Fixed a bug that prevented custom token changes from syncing to Authenticated User Storage (#48163)
+- Restored support for the MPCVault custodian in the institutional wallet snap (#48074)
+- Fixed dapp confirmation popups not opening after switching the preferred view from the side panel to the popup (#48048)
+- Fixed the wallet-home carousel and DeFi tab remaining visible when Basic Functionality was turned off (#48021)
+- Fixed the wallet total and native-token warnings flashing transient states during initial loading (#48053)
+- Fixed preinstalled Snaps receiving an unauthorized error when requesting execution permissions (#48056)
+- Fixed referral invitations accepting codes excluded from a deep link signature (#47901)
+- Fixed zero-value asset rows and funding prompts flashing while wallet balances loaded (#48005)
+- Fixed the token details page advanced chart so the candlestick price change always reflects the last 24 hours regardless of the selected interval, and the price and percentage no longer go blank when candle data fails to load (#47979)
+- Fixed Snaps continuing to make network requests after turning off Basic Functionality (#47876)
+- Fixed added protection being offered for transactions whose simulation failed (#47951)
+- Fixed the explorer link for Money withdrawals to another chain to open the destination chain's explorer (#47968)
+- Fixed the total balance loading skeleton so it matches the balance size (#47271)
+- Fixed Money card activity showing vault share amounts instead of historical mUSD values when historical valuations are enabled (#47881)
+- Fixed a bug where Stellar trustline activation and removal confirmations did not appear in fullscreen (#47886)
+- Fixed the transaction fee row to show Paid by MetaMask when all fees are zero, including Money Account Perps deposits and withdrawals, except when a fiat payment method is selected (#47867)
+
+### Security
+
+- Hid tokens with Warning, Spam, or Malicious security verdicts from the Discover Trending list and Discover token search by default (#48033)
+
+## [13.58.0]
+
+### Added
+
+- Added referral invitations to deep links, including links restored after onboarding (#47665)
+- Added the Money CTA to the wide-screen token table (#47870)
+- Added loading of older historical data when scrolling back on the token details page chart, behind a feature flag (#47753)
+- Added advanced candlestick charts on the token details page, behind a feature flag (#47751)
+- Added a "No deposit fee" label next to the Money account when depositing into Perps (#47831)
+- Added sort controls to the wide-screen token table (#47835)
+- Added a new wide-screen layout for viewports over 768px, behind a feature flag (#47614)
+- Added a Money deposit deep link (#47592)
+
+### Changed
+
+- Increased spacing in the wide-layout account overview and padding around network selector pills (#47863)
+- Routed Buy deep links into the in-app Buy flow with the token preselected; users who previously connected to Portfolio are still redirected there (#46498)
+- Moved the network filter and asset controls onto the account tab row in the wide layout (#47747)
+- Stacked the token price and 24h change in the narrow wide-layout token table (#47757)
+- Updated the MetaMask Money deposit confirmation to say where funds are added and which token is converted (#47805)
+- Improved address display in confirmations and the Send flow so addresses use the available width and keep their end visible (#47726)
+- Updated the Stellar network logo to a square icon (#47824)
+- Updated bridge dependencies, transaction submission integration, and location values (#47426)
+- Improved the first Money visit by loading the home page behind the intro splash (#47799)
+- Updated the wide-screen network list with a pill-shaped toggle to show more or fewer networks (#47791)
+- Updated the Add wallet screen design and fixed the back button on the Import a wallet screen, which closed the whole flow (#47780)
+- Updated the account rename dialog to show "Rename account", prefill the current name, and include a clear button (#47738)
+- Updated the token contract address copy confirmation on the token details page to read "Token contract address copied" (#47656)
+- Updated the Swap form with separate source and destination cards, a new flip button, and a token tag for gas-included network fees (#47725)
+- Updated the Money account splash with the new hero artwork and heading styling (#47716)
+- Updated the Cronos network and native CRO token logos to the new brand mark (#47714)
+- Updated the Perps withdraw amount input to the Grotzec typeface (#47560)
+
+### Removed
+
+- Removed outdated mUSD fee wording from the Perps withdraw transaction fee tooltip (#47723)
+- Removed support for Chrome versions below 137 and Firefox versions below 140 (#47531)
+
+### Fixed
+
+- Fixed a crash when opening a MetaMask Pay confirmation with a token balance that has many decimal places (#47932)
+- Fixed a bug that blocked custom token imports on chains that forked Ethereum Mainnet (such as PulseChain) whenever the token address matched a known Ethereum Mainnet token (#47928)
+- Hid the X widget when all matching tokens have a missing or zero market cap (#47914)
+- Fixed Perps token logo backgrounds so light logos remained visible in dark mode (#47599)
+- Fixed navigation after submitting a swap or bridge so users stayed on the Swaps page instead of returning to Home (#47591)
+- Fixed Discover Search crypto results to show the order provided by the search API (#47699)
+- Fixed native token prices and charts on Matchain and Nomina (#47728)
+- Fixed referral dialogs losing focus behind destination dialogs while preserving Terms of Use priority (#47682)
+- Fixed marketing consent for social login users failing to save and snapping back in Settings (#47808)
+- Fixed content jumping when dismissing the last banner on the home screen (#47769)
+- Fixed JSON account import showing a wrong-password error under the file picker instead of the password field (#47802)
+- Fixed transactions losing the dapp-provided or buffered gas limit when Added protection was not enabled (#47807)
+- Fixed Pay with for Perps and Predict deposits so it defaults to Money Account when that balance is the highest (#47836)
+- Fixed direct deep-link destinations being lost during onboarding and removed the extra pre-onboarding warning for validly signed links (#47678)
+- Fixed referral invitations allowing dismissal or duplicate submission while acceptance was pending (#47668)
+- Fixed the insufficient funds alert not appearing after switching from sponsored gas to paying with the native token (#47795)
+- Fixed network, token and site favicon avatars so non-square images fill the avatar instead of being letterboxed (#47774)
+- Fixed the Money Account splash so closing it cancels the pending deposit instead of opening MetaMask Pay (#47798)
+- Fixed Perps close amounts, closed PnL and TP/SL prices so they match the MetaMask mobile app (#47777)
+- Fixed a bug where a Perps position could stay visible after it closed right after its TP/SL was edited (#47796)
+- Fixed a bug where a money account deposit funded from another network could be submitted without enough native token to pay for gas, causing the transaction to fail (#47689)
+- Fixed the Back button leaving the extension when Swap was opened from a link (#47664)
+- Fixed TP/SL and close on a perps position that had already closed: the trader is now told it is closed instead of seeing a generic failure (#47473)
+- Fixed a bug where the Send network list only showed non-EVM networks after a non-EVM network was selected on the Home page (#47652)
+
 ## [13.57.0]
 
 ### Added
@@ -3676,7 +3785,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.57.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.59.0...HEAD
+[13.59.0]: https://github.com/MetaMask/metamask-extension/compare/v13.58.0...v13.59.0
+[13.58.0]: https://github.com/MetaMask/metamask-extension/compare/v13.57.0...v13.58.0
 [13.57.0]: https://github.com/MetaMask/metamask-extension/compare/v13.56.0...v13.57.0
 [13.56.0]: https://github.com/MetaMask/metamask-extension/compare/v13.55.0...v13.56.0
 [13.55.0]: https://github.com/MetaMask/metamask-extension/compare/v13.54.0...v13.55.0

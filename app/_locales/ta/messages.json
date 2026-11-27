@@ -216,9 +216,6 @@
   "newContract": {
     "message": "புதிய ஒப்பந்தம்"
   },
-  "newPassword": {
-    "message": "புதிய கடவுச்சொல் (min 8 எழுத்துகள்)"
-  },
   "next": {
     "message": "அடுத்தது"
   },
@@ -252,9 +249,6 @@
   "privateKey": {
     "message": "தனிப்பட்ட விசை",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "தனியார் நெட்வொர்க்"
   },
   "readdToken": {
     "message": "உங்கள் கணக்கு விருப்பங்கள் மெனுவில் \"டோக்கனைச் சேர்\" என்பதன் மூலம் நீங்கள் எதிர்காலத்தில் இந்த டோக்கனை மீண்டும் சேர்க்கலாம்."

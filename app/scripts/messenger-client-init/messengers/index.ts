@@ -1,9 +1,5 @@
 import { noop } from 'lodash';
 import {
-  getPPOMControllerMessenger,
-  getPPOMControllerInitMessenger,
-} from './ppom-controller-messenger';
-import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
   getMultichainRoutingServiceInitMessenger,
@@ -22,6 +18,7 @@ import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
 } from './transaction-pay-controller-messenger';
+import { getAiDigestControllerMessenger } from './ai-digest-controller-messenger';
 import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
@@ -90,10 +87,6 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import {
-  getAccountTrackerControllerInitMessenger,
-  getAccountTrackerControllerMessenger,
-} from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getQrSyncControllerMessenger } from './qr-sync';
 import {
@@ -135,10 +128,6 @@ import {
   getEncryptionPublicKeyControllerMessenger,
 } from './encryption-public-key-controller-messenger';
 import { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-import {
-  getSignatureControllerInitMessenger,
-  getSignatureControllerMessenger,
-} from './signature-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
 import {
@@ -170,13 +159,12 @@ import {
   getMoneyAccountUpgradeControllerMessenger,
   getMoneyAccountUpgradeControllerInitMessenger,
 } from './money-account-upgrade-controller-messenger';
+import {
+  getMoneyAccountLifecycleControllerMessenger,
+  getMoneyAccountLifecycleControllerInitMessenger,
+} from './money-account-lifecycle-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
-export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
-export {
-  getAccountTrackerControllerMessenger,
-  getAccountTrackerControllerInitMessenger,
-} from './account-tracker-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
@@ -233,6 +221,10 @@ export {
   getMoneyAccountUpgradeControllerMessenger,
   getMoneyAccountUpgradeControllerInitMessenger,
 } from './money-account-upgrade-controller-messenger';
+export {
+  getMoneyAccountLifecycleControllerMessenger,
+  getMoneyAccountLifecycleControllerInitMessenger,
+} from './money-account-lifecycle-controller-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -240,11 +232,6 @@ export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
-export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
-export {
-  getSignatureControllerMessenger,
-  getSignatureControllerInitMessenger,
-} from './signature-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export {
   getRewardsMoneyControllerInitMessenger,
@@ -279,10 +266,6 @@ export const MESSENGER_FACTORIES = {
   AccountOrderController: {
     getMessenger: getAccountOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  AccountTrackerController: {
-    getMessenger: getAccountTrackerControllerMessenger,
-    getInitMessenger: getAccountTrackerControllerInitMessenger,
   },
   AlertController: {
     getMessenger: getAlertControllerMessenger,
@@ -412,6 +395,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getMoneyAccountUpgradeControllerMessenger,
     getInitMessenger: getMoneyAccountUpgradeControllerInitMessenger,
   },
+  MoneyAccountLifecycleController: {
+    getMessenger: getMoneyAccountLifecycleControllerMessenger,
+    getInitMessenger: getMoneyAccountLifecycleControllerInitMessenger,
+  },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
     getInitMessenger: getMultichainAssetsControllerInitMessenger,
@@ -476,10 +463,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getSentryTracingServiceMessenger,
     getInitMessenger: noop,
   },
-  SignatureController: {
-    getMessenger: getSignatureControllerMessenger,
-    getInitMessenger: getSignatureControllerInitMessenger,
-  },
   SnapAccountService: {
     getMessenger: getSnapAccountServiceMessenger,
     getInitMessenger: noop,
@@ -520,6 +503,10 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
   },
+  AiDigestController: {
+    getMessenger: getAiDigestControllerMessenger,
+    getInitMessenger: noop,
+  },
   RewardsMoneyDataService: {
     getMessenger: getRewardsMoneyDataServiceMessenger,
     getInitMessenger: noop,
@@ -527,10 +514,6 @@ export const MESSENGER_FACTORIES = {
   RewardsMoneyController: {
     getMessenger: getRewardsMoneyControllerMessenger,
     getInitMessenger: getRewardsMoneyControllerInitMessenger,
-  },
-  PPOMController: {
-    getMessenger: getPPOMControllerMessenger,
-    getInitMessenger: getPPOMControllerInitMessenger,
   },
   PreferencesController: {
     getMessenger: getPreferencesControllerMessenger,

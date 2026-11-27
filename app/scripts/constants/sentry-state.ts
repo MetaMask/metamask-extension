@@ -30,9 +30,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
       selectedAccount: false,
     },
   },
-  AccountTracker: {
-    accountsByChainId: false,
-  },
   AddressBookController: {
     addressBook: false,
   },
@@ -48,6 +45,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     eventQueue: false,
     marketingCampaignCookieId: true,
     marketingConsentDecisionMade: false,
+    marketingConsentSyncPending: false,
     optedIn: true,
     optedInToMarketing: false,
     preConsentEventQueue: false,
@@ -231,11 +229,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     onboardingJourneyEnded: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
-  },
-  PPOMController: {
-    securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
   },
   PasskeyController: {
     passkeyRecord: false,

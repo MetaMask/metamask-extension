@@ -161,13 +161,6 @@
       "*": "array"
     },
     "accountState": "null",
-    "accountsByChainId": {
-      "*": {
-        "*": {
-          "balance": "string"
-        }
-      }
-    },
     "accountTree": {
       "wallets": {
         "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ": {
@@ -374,11 +367,13 @@
     "databaseUnavailable": "boolean",
     "defaultHomeActiveTabName": "null",
     "defaultMoneyAccountId": "null",
+    "defaultProvider": "string",
     "depositInProgress": "boolean",
     "depositRequests": [],
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
     "drafts": [],
+    "effectiveProvider": "null",
     "enabledNetworkMap": {
       "bip122": {
         "bip122:000000000019d6689c085ae165831e93": "boolean",
@@ -524,6 +519,9 @@
     "gasFeeEstimatesByChainId": {},
     "grantedPermissions": [],
     "lastSyncedTimestamp": "number",
+    "hasExplicitDefaultProviderSelection": "boolean",
+    "hasExplicitProviderSelection": "boolean",
+    "hasMigratedToMultiProvider": "boolean",
     "hasPlacedFirstOrder": {
       "testnet": "boolean",
       "mainnet": "boolean"
@@ -751,6 +749,7 @@
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
     "marketingConsentDecisionMade": "boolean",
+    "marketingConsentSyncPending": "boolean",
     "marketFilterPreferences": {
       "optionId": "string",
       "direction": "string"
@@ -1177,7 +1176,6 @@
       }
     },
     "status": "string",
-    "storageMetadata": [],
     "subjectMetadata": {
       "npm:@metamask/bitcoin-wallet-snap": {
         "extensionId": "null",
@@ -1320,7 +1318,6 @@
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
     "version": "string",
-    "versionInfo": [],
     "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {

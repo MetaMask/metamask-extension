@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "הגבלת דלק"
   },
-  "gasUsed": {
-    "message": "דלק שנעשה בו שימוש"
-  },
   "general": {
     "message": "כללי"
   },
@@ -343,9 +340,6 @@
   "newContract": {
     "message": "חוזה חדש"
   },
-  "newPassword": {
-    "message": "ססמה חדשה (לפחות 8 תווים)"
-  },
   "next": {
     "message": "הבא"
   },
@@ -400,9 +394,6 @@
   "privateKey": {
     "message": "מפתח פרטי",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "רשת פרטית"
   },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
@@ -557,9 +548,6 @@
   },
   "unapproved": {
     "message": "לא אושר"
-  },
-  "units": {
-    "message": "יחידות"
   },
   "unknown": {
     "message": "לא ידוע"

@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import { openAccountMenu } from '../../page-objects/flows/account-menu.flow';
 
 // Pin/unpin is not available in BIP44 stage 2
 describe('Account list - pin/unpin functionality', function (this: Suite) {
@@ -16,7 +16,7 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
 
         // pin account
         const accountListPage = new AccountListPage(driver);
@@ -39,7 +39,7 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        new HeaderNavbar(driver).openAccountMenu();
+        await openAccountMenu(driver);
 
         // pin account
         const accountListPage = new AccountListPage(driver);
