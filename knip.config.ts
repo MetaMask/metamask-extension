@@ -11,8 +11,8 @@ import type { KnipConfig } from 'knip';
  * codebase of this size to gate on and can be enabled incrementally later.
  *
  * Findings never fail CI directly. `yarn knip:check` compares the knip report
- * against the committed baseline in `development/knip-baseline.jsonc`
- * (development/knip-baseline.ts). The baseline is the work queue: new findings
+ * against the committed baseline in `scripts/knip-baseline.jsonc`
+ * (scripts/knip-baseline.ts). The baseline is the work queue: new findings
  * fail, already-known findings are listed there and get cleaned up by the
  * owning teams over time. See docs/dead-code-check.md.
  *

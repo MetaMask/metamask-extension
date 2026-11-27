@@ -7,12 +7,11 @@ nothing imports, and imports of packages that are not declared in
 job (alongside depcheck and the yarn audit).
 
 The check gates on the diff against the committed baseline
-(`development/knip-baseline.jsonc`), not on the raw knip report. The baseline
-is the work queue: it lists known dead code so CI only fails on _new_
-findings, and each waiting entry can be cleaned up by its owning team over
-time. It mirrors the guardrail introduced in
+(`scripts/knip-baseline.jsonc`), not on the raw knip report. The baseline is
+the work queue: it lists known dead code so CI only fails on _new_ findings,
+and each waiting entry can be cleaned up by its owning team over time. It
+mirrors the guardrail introduced in
 [MetaMask/metamask-mobile#40535](https://github.com/MetaMask/metamask-mobile/pull/40535).
-
 Phase 1 gates only on unused **files**, unused **dependencies** and
 **unlisted** dependencies; everything else (unused exports/types, duplicates,
 unresolved imports, binaries, cycles, ...) is off in `knip.config.ts` and can
@@ -20,8 +19,8 @@ be enabled incrementally in later phases.
 
 ## Commands
 
-| Command                         | What it does                                                                                                                                                                    |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Command                         | What it does                                                                                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `yarn knip:check`               | Run knip and compare against the baseline; fails on new findings and on baselined findings that no longer appear (the baseline must be shrunk after fixes). Same check CI runs. |
 | `yarn knip:update`              | Rewrite the baseline from the current report; refuses to grow it unless `--allow-grow` is passed.                                                                               |
 | `yarn knip:update --allow-grow` | Rewrite the baseline, allowing new entries — only when growing it is genuinely intended.                                                                                        |

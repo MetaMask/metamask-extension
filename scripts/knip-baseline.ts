@@ -4,9 +4,14 @@
  *
  * Gating CI on a greenfield knip report would fail every branch, so this
  * script gates on the DIFF between the current knip report and the committed
- * baseline in `development/knip-baseline.jsonc` (same pattern as
+ * baseline in `scripts/knip-baseline.jsonc` (same pattern as
  * development/circular-deps.ts + circular-deps.jsonc). See
  * docs/dead-code-check.md for the full workflow.
+ *
+ * The script lives in `scripts/` (not `development/`), like the mobile
+ * counterpart: it is CI tooling driven from package.json scripts, and the
+ * Sonar analysis trees (app, development, shared, types, ui) carry the
+ * new-code coverage gate that runtime app code is held to.
  *
  * - `yarn knip:check` fails on NEW findings (as GitHub annotations in CI) and
  *   on baselined findings that were fixed but not yet removed from the
@@ -23,50 +28,36 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-const BASELINE_FILE = 'development/knip-baseline.jsonc';
+const BASELINE_FILE = 'scripts/knip-baseline.jsonc';
 
-/** Issue type order for stable, human-readable output and baseline ordering. */
-const ISSUE_TYPE_ORDER: readonly string[] = [
-  'files',
-  'dependencies',
-  'devDependencies',
-  'unlisted',
-  'binaries',
-  'unresolved',
-  'exports',
-  'nsExports',
-  'types',
-  'nsTypes',
-  'duplicates',
-  'enumMembers',
-  'namespaceMembers',
-  'subpaths',
-  'optionalPeerDependencies',
-  'catalog',
-  'catalogReferences',
-  'cycles',
+/**
+ * Known knip issue types in display/baseline order (unknown future types sort
+ * after them), with their human-readable labels.
+ */
+const ISSUE_TYPES: readonly (readonly [type: string, label: string])[] = [
+  ['files', 'Unused files'],
+  ['dependencies', 'Unused dependencies'],
+  ['devDependencies', 'Unused devDependencies'],
+  ['unlisted', 'Unlisted dependencies'],
+  ['binaries', 'Unused binaries'],
+  ['unresolved', 'Unresolved imports'],
+  ['exports', 'Unused exports'],
+  ['nsExports', 'Unused exports (namespaces)'],
+  ['types', 'Unused types'],
+  ['nsTypes', 'Unused types (namespaces)'],
+  ['duplicates', 'Duplicate exports'],
+  ['enumMembers', 'Unused enum members'],
+  ['namespaceMembers', 'Unused namespace members'],
+  ['subpaths', 'Unused export subpaths'],
+  ['optionalPeerDependencies', 'Unused optional peer dependencies'],
+  ['catalog', 'Unused catalog entries'],
+  ['catalogReferences', 'Unused catalog references'],
+  ['cycles', 'Dependency cycles'],
 ];
 
-const ISSUE_LABELS: Record<string, string> = {
-  files: 'Unused files',
-  dependencies: 'Unused dependencies',
-  devDependencies: 'Unused devDependencies',
-  unlisted: 'Unlisted dependencies',
-  binaries: 'Unused binaries',
-  unresolved: 'Unresolved imports',
-  exports: 'Unused exports',
-  nsExports: 'Unused exports (namespaces)',
-  types: 'Unused types',
-  nsTypes: 'Unused types (namespaces)',
-  duplicates: 'Duplicate exports',
-  enumMembers: 'Unused enum members',
-  namespaceMembers: 'Unused namespace members',
-  subpaths: 'Unused export subpaths',
-  optionalPeerDependencies: 'Unused optional peer dependencies',
-  catalog: 'Unused catalog entries',
-  catalogReferences: 'Unused catalog references',
-  cycles: 'Dependency cycles',
-};
+const ISSUE_TYPE_ORDER = ISSUE_TYPES.map(([type]) => type);
+
+const ISSUE_LABELS = Object.fromEntries(ISSUE_TYPES);
 
 /** One flagged symbol as emitted by knip's JSON reporter. */
 type KnipIssueSymbol = {
@@ -107,9 +98,8 @@ function compareStrings(a: string, b: string): number {
 }
 
 /**
- * Orders baseline entries by issue type (known types in `ISSUE_TYPE_ORDER`
- * first, unknown future types after them), then by code point so the order
- * does not depend on the machine's locale.
+ * Orders baseline entries by issue type (known types first, unknown future
+ * types after them), then by code point.
  *
  * @param a - Baseline-format entry.
  * @param b - Baseline-format entry.
@@ -129,14 +119,14 @@ export function compareEntries(a: string, b: string): number {
 
 /**
  * Normalizes the knip JSON report into baseline entries keyed by
- * `<type>|<file>|<symbol>` (no line numbers), plus lookups used for GitHub
+ * `<type>|<file>|<symbol>` (no line numbers), plus lookups for GitHub
  * annotations (line numbers) and the codeowners work-queue view (CODEOWNERS
  * teams). A flagged file is its own symbol; every other issue type is keyed
  * by the file it was found in.
  *
  * @param groups - Issue groups as emitted by the knip JSON reporter.
- * @returns Baseline entries sorted with `compareEntries`, plus their optional
- * line numbers and CODEOWNERS teams.
+ * @returns Sorted baseline entries with their optional line numbers and
+ * CODEOWNERS teams.
  */
 export function normalizeReport(groups: KnipIssueGroup[]): NormalizedReport {
   const entries = new Set<string>();
@@ -179,14 +169,10 @@ export function normalizeReport(groups: KnipIssueGroup[]): NormalizedReport {
 }
 
 /**
- * Groups baseline-format entries by their CODEOWNERS team, as resolved by
- * knip's JSON reporter (`owners` per finding). Entries without a resolved
- * owner land in the `[no-owner]` bucket.
- *
- * This is the work-queue view of the baseline: `yarn knip:codeowners` prints
- * it. knip's own `--reporter codeowners` cannot be used for this in knip
- * 6.48 because it crashes on `files` findings (the only finding type this
- * check reports).
+ * Groups baseline-format entries by their CODEOWNERS team (as resolved by
+ * knip's JSON reporter); entries without a resolved owner land in the
+ * `[no-owner]` bucket. This backs `yarn knip:codeowners` — knip's own
+ * `--reporter codeowners` crashes on `files` findings in knip 6.48.
  *
  * @param entries - Sorted baseline-format entries.
  * @param ownersByEntry - Entry to CODEOWNERS-team lookup from the report.
@@ -216,12 +202,8 @@ export function groupEntriesByOwner(
 }
 
 /**
- * Diffs the current report against the baseline entries.
- *
- * @param actual - Sorted baseline-format entries from the current report.
- * @param baseline - Sorted baseline-format entries from the baseline file.
- * @returns Findings added to (new dead code) and removed from (fixed dead
- * code) the report since the baseline was written.
+ * Diffs the current report against the baseline: `added` entries are new dead
+ * code, `removed` entries are fixed dead code still listed in the baseline.
  */
 export function diffFindings(actual: string[], baseline: string[]): ReportDiff {
   const baselineSet = new Set(baseline);
@@ -235,11 +217,7 @@ export function diffFindings(actual: string[], baseline: string[]): ReportDiff {
 /**
  * Formats one normalized entry for terminal output, e.g.
  * `files|app/foo.ts` → `app/foo.ts` and
- * `unlisted|app/foo.ts|pkg` → `pkg (in app/foo.ts)`. The `package.json` file
- * is treated as implicit for dependency findings.
- *
- * @param entry - Baseline-format entry.
- * @returns Human-readable description of the finding.
+ * `unlisted|app/foo.ts|pkg` → `pkg (in app/foo.ts)`.
  */
 export function formatEntry(entry: string): string {
   const [, ...rest] = entry.split('|');
@@ -254,8 +232,6 @@ export function formatEntry(entry: string): string {
 /**
  * Runs knip with the JSON reporter from the given repository root.
  *
- * @param repoRoot - Absolute path to the repository root.
- * @returns The parsed issue groups.
  * @throws When knip fails or emits output that is not valid JSON.
  */
 export function runKnip(repoRoot: string): KnipIssueGroup[] {
@@ -279,11 +255,8 @@ export function runKnip(repoRoot: string): KnipIssueGroup[] {
 }
 
 /**
- * Reads the committed baseline. A missing file is treated as empty so the
+ * Reads the committed baseline; a missing file is treated as empty so the
  * first `yarn knip:update` can create it.
- *
- * @param baselinePath - Absolute path to the baseline file.
- * @returns Baseline entries.
  */
 export function readBaseline(baselinePath: string): string[] {
   if (!fs.existsSync(baselinePath)) {
@@ -304,13 +277,10 @@ export function readBaseline(baselinePath: string): string[] {
 
 /**
  * Writes the baseline file with a fixed shape so diffs stay minimal.
- *
- * @param baselinePath - Absolute path to the baseline file.
- * @param entries - Sorted baseline entries.
  */
 export function writeBaseline(baselinePath: string, entries: string[]): void {
   const header = [
-    'Machine-generated by `yarn knip:update` (development/knip-baseline.ts); do not edit by hand.',
+    'Machine-generated by `yarn knip:update` (scripts/knip-baseline.ts); do not edit by hand.',
     'Each entry is "<type>|<file>|<symbol>". New findings fail `yarn knip:check`; shrink this file by fixing the findings and re-running `yarn knip:update`.',
     'Suppress intentional findings in knip.config.ts with a reason comment instead. See docs/dead-code-check.md.',
   ];
@@ -327,9 +297,6 @@ export function writeBaseline(baselinePath: string, entries: string[]): void {
  * (rendered on the PR when run from GitHub Actions). Narrative output goes to
  * stderr; workflow commands go to stdout, the only stream the runner reliably
  * parses.
- *
- * @param entries - Sorted baseline-format entries to report.
- * @param linesByEntry - Entry to line-number lookup from the current report.
  */
 export function printFindings(
   entries: string[],
@@ -377,8 +344,6 @@ const countFindings = (count: number, noun: string): string =>
 /**
  * Compares the current knip report against the baseline and exits non-zero on
  * any difference in either direction.
- *
- * @param repoRoot - Absolute path to the repository root.
  */
 function check(repoRoot: string): void {
   const { entries: actual, linesByEntry } = normalizeReport(runKnip(repoRoot));
@@ -419,11 +384,8 @@ function check(repoRoot: string): void {
 }
 
 /**
- * Regenerates the baseline from the current knip report. Refuses to grow the
- * baseline unless explicitly allowed.
- *
- * @param repoRoot - Absolute path to the repository root.
- * @param allowGrow - Whether growing the baseline is allowed.
+ * Regenerates the baseline from the current knip report; refuses to grow it
+ * unless explicitly allowed.
  */
 function update(repoRoot: string, allowGrow: boolean): void {
   const baselinePath = path.join(repoRoot, BASELINE_FILE);
@@ -453,9 +415,7 @@ function update(repoRoot: string, allowGrow: boolean): void {
 
 /**
  * Prints the current knip report grouped by CODEOWNERS team — the work-queue
- * view of the baseline used to hand findings to the owning teams.
- *
- * @param repoRoot - Absolute path to the repository root.
+ * view used to hand findings to the owning teams.
  */
 function codeowners(repoRoot: string): void {
   const { entries, ownersByEntry } = normalizeReport(runKnip(repoRoot));
@@ -475,11 +435,7 @@ function codeowners(repoRoot: string): void {
   console.log(`\n${countFindings(entries.length, 'finding')} in total.`);
 }
 
-/**
- * CLI entry point.
- *
- * @param argv - Command-line arguments (after node/tsx and the script path).
- */
+/** CLI entry point. */
 function main(argv: string[]): void {
   const command = argv[0];
   const allowGrow = argv.includes('--allow-grow');
@@ -493,7 +449,7 @@ function main(argv: string[]): void {
     codeowners(repoRoot);
   } else {
     console.error(
-      'Usage: tsx development/knip-baseline.ts [check|update|codeowners] [--allow-grow]',
+      'Usage: tsx scripts/knip-baseline.ts [check|update|codeowners] [--allow-grow]',
     );
     process.exit(1);
   }
