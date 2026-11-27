@@ -3077,10 +3077,12 @@
         "@metamask/base-controller": true,
         "@metamask/utils>@metamask/byte-utils": true,
         "@metamask/snaps-utils>@metamask/cryptography": true,
+        "@metamask/superstruct": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@noble/curves": true,
+        "@noble/hashes": true,
         "async-mutex": true
       }
     },

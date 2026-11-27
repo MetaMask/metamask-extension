@@ -108,6 +108,7 @@
     "resetAccount",
     "resetWallet",
     "resolvePendingApproval",
+    "resolveSeedlessPasswordSyncInstruction",
     "restoreSeedPhrasesToVault",
     "restoreSocialBackupAndGetSeedPhrase",
     "setAccountLabel",
