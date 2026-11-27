@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Kabul et ve kapat"
   },
-  "acceptTermsOfUse": {
-    "message": "$1 bölümünü okudum ve kabul ediyorum",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Destek ile iletişime geç"
   },
@@ -1279,38 +1275,6 @@
   "add_device_error_title": {
     "message": "Senkronizasyon tamamlanamadı"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 cüzdan telefonunuza senkronize edildi.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 cüzdan ve $2 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 cüzdan ve 1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 cüzdan telefonunuza senkronize edildi.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 cüzdan ve $1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 cüzdan ve 1 içe aktarılan hesap telefonunuza senkronize edildi.",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "Cihaz eşleştirildi"
   },
@@ -1421,9 +1385,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "Gelişmiş ağ ücreti"
-  },
-  "advancedGasPriceTitle": {
-    "message": "Gaz fiyatı"
   },
   "advancedPermissionSmallCase": {
     "message": "gelişmiş izin"
@@ -1685,12 +1646,6 @@
   },
   "amount": {
     "message": "Tutar"
-  },
-  "amountReceived": {
-    "message": "Alınan tutar"
-  },
-  "amountSent": {
-    "message": "Gönderilen tutar"
   },
   "andForListItems": {
     "message": "$1 ve $2",
@@ -4329,9 +4284,6 @@
     "message": "$1 sn",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Kullanılan gaz"
-  },
   "gatorNoJustificationProvided": {
     "message": "İzin için gerekçe sağlanmadı"
   },
@@ -4745,52 +4697,6 @@
   },
   "history": {
     "message": "Geçmiş"
-  },
-  "holdToRevealContent1": {
-    "message": "Gizli Kurtarma İfadeniz: $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "cüzdanınıza ve paranıza tam erişim.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Hiç kimseyle paylaşmayın. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMask Destek tarafından bu talep edilmez,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "ancak dolandırıcılar tarafından talep edilebilir.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Özel Anahtarınız $1 sağlar",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "cüzdanınıza ve paranıza tam erişim sağlar.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "kilitli daireyi açığa çıkarmak için tut"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Özel Anahtarı açığa çıkarmak için tut"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Özel anahtarınızı güvende tutun"
-  },
-  "holdToRevealSRP": {
-    "message": "GKİ'yi göstermek için basılı tut"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "GKİ'nizi güvende tutun"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "kilidi açılmış daireyi açığa çıkarmak için tut"
   },
   "home": {
     "message": "Ana Sayfa",
@@ -6705,9 +6611,6 @@
   "newNftAddedMessage": {
     "message": "NFT başarılı bir şekilde eklendi!"
   },
-  "newPassword": {
-    "message": "Yeni şifre"
-  },
   "newPasswordCreate": {
     "message": "Yeni şifre oluştur"
   },
@@ -6784,9 +6687,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
-  },
-  "noMMFeeSwapping": {
-    "message": "MetaMask ücreti yok"
   },
   "noNetworkFee": {
     "message": "Ağ ücreti yok"
@@ -7237,9 +7137,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "İçerik-Güvenlik-Politika başlığını geçersiz kıl"
-  },
-  "padlock": {
-    "message": "Asma Kilit"
   },
   "paidByMetaMask": {
     "message": "MetaMask tarafından ödenir"
@@ -12278,27 +12175,6 @@
   "transactionFlowNetwork": {
     "message": "Ağ:"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Baz ücret (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Toplam L1 ağ ücreti"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 gaz limiti"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 gaz fiyatı"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Gaz başına maks. ücret"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Öncelik ücreti (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Toplam ağ ücreti"
-  },
   "transactionIdCopied": {
     "message": "İşlem kimliği kopyalandı"
   },
@@ -12481,9 +12357,6 @@
   "unifiedSwapFromTo": {
     "message": "$1 $2 ile $3 takas işlemi gerçekleştir",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "birim"
   },
   "unknown": {
     "message": "Bilinmeyen"

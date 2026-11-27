@@ -214,9 +214,6 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasUsed": {
-    "message": "GAS použitý"
-  },
   "general": {
     "message": "Všeobecne"
   },
@@ -320,9 +317,6 @@
   },
   "newContract": {
     "message": "Nový kontrakt"
-  },
-  "newPassword": {
-    "message": "Nové heslo (min 8 znaků)"
   },
   "next": {
     "message": "Další"
@@ -523,9 +517,6 @@
   },
   "unapproved": {
     "message": "Neschváleno"
-  },
-  "units": {
-    "message": "jednotky"
   },
   "unknown": {
     "message": "Neznámé"

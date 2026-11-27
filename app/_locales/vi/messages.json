@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Chấp nhận và đóng"
   },
-  "acceptTermsOfUse": {
-    "message": "Tôi đã đọc và đồng ý với $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Liên hệ bộ phận hỗ trợ"
   },
@@ -1279,38 +1275,6 @@
   "add_device_error_title": {
     "message": "Không thể hoàn tất quá trình đồng bộ"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "Đã đồng bộ $1 tài khoản đã nhập vào điện thoại của bạn.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "Đã đồng bộ 1 tài khoản đã nhập vào điện thoại của bạn.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "Đã đồng bộ $1 ví vào điện thoại của bạn.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "Đã đồng bộ $1 ví và $2 tài khoản đã nhập vào điện thoại của bạn.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "Đã đồng bộ $1 ví và 1 tài khoản đã nhập vào điện thoại của bạn.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "Đã đồng bộ 1 ví vào điện thoại của bạn.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "Đã đồng bộ 1 ví và $1 tài khoản đã nhập vào điện thoại của bạn.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "Đã đồng bộ 1 ví và 1 tài khoản đã nhập vào điện thoại của bạn.",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "Đã ghép nối thiết bị"
   },
@@ -1421,9 +1385,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "Phí mạng nâng cao"
-  },
-  "advancedGasPriceTitle": {
-    "message": "Giá gas"
   },
   "advancedPermissionSmallCase": {
     "message": "quyền nâng cao"
@@ -1685,12 +1646,6 @@
   },
   "amount": {
     "message": "Số lượng"
-  },
-  "amountReceived": {
-    "message": "Số tiền đã nhận"
-  },
-  "amountSent": {
-    "message": "Số tiền đã gửi"
   },
   "andForListItems": {
     "message": "$1, và $2",
@@ -4329,9 +4284,6 @@
     "message": "$1 giây",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gas đã dùng"
-  },
   "gatorNoJustificationProvided": {
     "message": "Không có lý do nào được đưa ra cho quyền này"
   },
@@ -4745,52 +4697,6 @@
   },
   "history": {
     "message": "Lịch sử"
-  },
-  "holdToRevealContent1": {
-    "message": "Cụm từ khôi phục bí mật của bạn cung cấp $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "toàn quyền truy cập vào ví và tiền của bạn.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Không chia sẻ với bất kỳ ai. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Bộ phận Hỗ trợ của MetaMask sẽ không yêu cầu điều này,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "nhưng những kẻ lừa đảo qua mạng thì có.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Khóa riêng tư của bạn cung cấp $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "toàn quyền truy cập vào ví và tiền của bạn.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "giữ để hiển thị vòng tròn bị khóa"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Giữ để hiển thị Khóa riêng tư"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Đảm bảo an toàn cho khóa riêng tư của bạn"
-  },
-  "holdToRevealSRP": {
-    "message": "Giữ để hiển thị Cụm từ khôi phục bí mật"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Đảm bảo an toàn cho Cụm từ khôi phục bí mật của bạn"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "giữ để hiển thị vòng tròn được mở khóa"
   },
   "home": {
     "message": "Trang chủ",
@@ -6705,9 +6611,6 @@
   "newNftAddedMessage": {
     "message": "NFT đã được thêm thành công!"
   },
-  "newPassword": {
-    "message": "Mật khẩu mới"
-  },
   "newPasswordCreate": {
     "message": "Tạo mật khẩu mới"
   },
@@ -6784,9 +6687,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
-  },
-  "noMMFeeSwapping": {
-    "message": "Không có phí MetaMask"
   },
   "noNetworkFee": {
     "message": "Không có phí mạng"
@@ -7237,9 +7137,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Ghi đè tiêu đề Nội dung-Bảo mật-Riêng tư"
-  },
-  "padlock": {
-    "message": "Ổ khóa"
   },
   "paidByMetaMask": {
     "message": "Được thanh toán bởi MetaMask"
@@ -12278,27 +12175,6 @@
   "transactionFlowNetwork": {
     "message": "Mạng"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Phí cơ sở (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Tổng phí mạng L1"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Hạn mức phí gas L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Giá gas L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Mức phí tối đa mỗi gas"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Phí ưu tiên (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Tổng phí mạng"
-  },
   "transactionIdCopied": {
     "message": "Đã sao chép ID giao dịch"
   },
@@ -12481,9 +12357,6 @@
   "unifiedSwapFromTo": {
     "message": "Hoán đổi $1 $2 sang $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "đơn vị"
   },
   "unknown": {
     "message": "Không xác định"

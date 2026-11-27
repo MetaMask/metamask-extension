@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
-  "gasUsed": {
-    "message": "Użyty gaz"
-  },
   "general": {
     "message": "Ogólne"
   },
@@ -342,9 +339,6 @@
   },
   "newContract": {
     "message": "Nowy kontrakt"
-  },
-  "newPassword": {
-    "message": "Nowe hasło (min. 8 znaków)"
   },
   "next": {
     "message": "Dalej"
@@ -545,9 +539,6 @@
   },
   "unapproved": {
     "message": "Niezatwierdzone"
-  },
-  "units": {
-    "message": "jednostki"
   },
   "unknown": {
     "message": "Nieznane"

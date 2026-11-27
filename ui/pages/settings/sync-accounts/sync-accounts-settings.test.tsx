@@ -69,18 +69,18 @@ jest.mock('./components', () => {
     LoadingStep: () => <div data-testid="loading-step" />,
     Success: ({
       onDone,
-      walletCount,
-      importedAccountCount,
+      syncedWalletCount,
+      syncedPrivateKeyAccountCount,
     }: {
       onDone: () => void;
-      walletCount: number;
-      importedAccountCount: number;
+      syncedWalletCount: number;
+      syncedPrivateKeyAccountCount: number;
     }) => (
       <button
         type="button"
         data-testid="success"
-        data-wallet-count={walletCount}
-        data-imported-account-count={importedAccountCount}
+        data-wallet-count={syncedWalletCount}
+        data-imported-account-count={syncedPrivateKeyAccountCount}
         onClick={onDone}
       >
         done

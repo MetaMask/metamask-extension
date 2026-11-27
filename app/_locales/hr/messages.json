@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasUsed": {
-    "message": "Upotrijebljeno gorivo"
-  },
   "general": {
     "message": "Opće"
   },
@@ -342,9 +339,6 @@
   },
   "newContract": {
     "message": "Novi ugovor"
-  },
-  "newPassword": {
-    "message": "Nova lozinka (najmanje osam znakova)"
   },
   "next": {
     "message": "Sljedeće"
@@ -551,9 +545,6 @@
   },
   "unapproved": {
     "message": "Neodobreno"
-  },
-  "units": {
-    "message": "jedinice/a"
   },
   "unknown": {
     "message": "Nepoznato"

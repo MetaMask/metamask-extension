@@ -70,7 +70,7 @@ async function addAppInstalledEvent(
   if (deferredDeepLink) {
     controller.appStateController.setDeferredDeepLink(deferredDeepLink);
     eventProperties.install_source = 'deeplink';
-    eventProperties.deeplink_path = deferredDeepLink.referringLink;
+    eventProperties.deeplink_path = deferredDeepLink.originalUrl;
   }
 
   const { consentDecisionMade, optedIn } = controller.getState();

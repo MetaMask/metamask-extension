@@ -29,10 +29,6 @@
   "about": {
     "message": "Sobre"
   },
-  "acceptTermsOfUse": {
-    "message": "Eu li e concordo com os $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "Acessando sua câmera..."
   },
@@ -96,9 +92,6 @@
   },
   "advanced": {
     "message": "Avançado"
-  },
-  "advancedGasPriceTitle": {
-    "message": "Preço do gás"
   },
   "alertDisableTooltip": {
     "message": "Isso pode ser alterado em \"Configurações > Alertas\""
@@ -599,9 +592,6 @@
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gás usado"
-  },
   "general": {
     "message": "Geral"
   },
@@ -895,9 +885,6 @@
   },
   "newNftAddedMessage": {
     "message": "O colecionável foi adicionado com sucesso!"
-  },
-  "newPassword": {
-    "message": "Nova senha (no mínimo 8 caracteres)"
   },
   "next": {
     "message": "Seguinte"
@@ -1342,27 +1329,6 @@
   "transactionErrorNoContract": {
     "message": "Tentando chamar uma função em um endereço que não está no contrato."
   },
-  "transactionHistoryBaseFee": {
-    "message": "Taxa de base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Taxa de gás L1 total"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Limite de gás L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Preço do gás L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Taxa máxima por gás"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Taxa de prioridade (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Taxa de gás total"
-  },
   "transfer": {
     "message": "Transferir"
   },
@@ -1385,9 +1351,6 @@
   },
   "unapproved": {
     "message": "Não aprovado"
-  },
-  "units": {
-    "message": "unidades"
   },
   "unknown": {
     "message": "Desconhecido"

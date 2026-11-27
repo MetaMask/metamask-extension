@@ -211,9 +211,6 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasUsed": {
-    "message": "ጥቅም ላይ የዋለ ነዳጅ"
-  },
   "general": {
     "message": "አጠቃላይ"
   },
@@ -330,9 +327,6 @@
   },
   "newContract": {
     "message": "አዲስ ኮንትራት"
-  },
-  "newPassword": {
-    "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
   },
   "next": {
     "message": "ቀጣይ"
@@ -542,9 +536,6 @@
   },
   "unapproved": {
     "message": "ያልተፈቀደ"
-  },
-  "units": {
-    "message": "መለኪያዎች"
   },
   "unknown": {
     "message": "ያልታወቀ"

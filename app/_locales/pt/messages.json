@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Aceitar e fechar"
   },
-  "acceptTermsOfUse": {
-    "message": "Eu li e concordo com os $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Falar com o suporte"
   },
@@ -1279,38 +1275,6 @@
   "add_device_error_title": {
     "message": "Não foi possível concluir a sincronização"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 contas importadas foram sincronizadas com o seu telefone.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 conta importada foi sincronizada com o seu telefone.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 carteiras foram sincronizadas com o seu telefone.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 carteiras e $2 contas importadas foram sincronizadas com o seu telefone.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 carteiras e 1 conta importada foram sincronizadas com o seu telefone.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 carteira foi sincronizada com o seu telefone.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 carteira e $1 contas importadas foram sincronizadas com o seu telefone.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 carteira e 1 conta importada foram sincronizadas com o seu telefone.",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "Dispositivo emparelhado"
   },
@@ -1421,9 +1385,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "Taxa de rede avançada"
-  },
-  "advancedGasPriceTitle": {
-    "message": "Preço do gás"
   },
   "advancedPermissionSmallCase": {
     "message": "permissão avançada"
@@ -1685,12 +1646,6 @@
   },
   "amount": {
     "message": "Valor"
-  },
-  "amountReceived": {
-    "message": "Valor recebido"
-  },
-  "amountSent": {
-    "message": "Valor enviado"
   },
   "andForListItems": {
     "message": "$1 e $2",
@@ -4329,9 +4284,6 @@
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "Gás usado"
-  },
   "gatorNoJustificationProvided": {
     "message": "Nenhuma justificativa foi fornecida para a permissão"
   },
@@ -4741,52 +4693,6 @@
   },
   "history": {
     "message": "Histórico"
-  },
-  "holdToRevealContent1": {
-    "message": "Sua Frase de Recuperação Secreta concede $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "acesso total à sua carteira e fundos.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Não compartilhe isso com ninguém. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "O Suporte da MetaMask não solicita essa informação,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "mas golpistas talvez peçam.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Sua chave privada oferece a $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "acesso total à sua carteira e fundos.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "círculo \"segure para revelar\" bloqueado"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Segure para revelar a chave privada"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Mantenha sua chave privada em segurança"
-  },
-  "holdToRevealSRP": {
-    "message": "Segure para revelar a FRS"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Mantenha sua FRS em segurança"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "círculo \"segure para revelar\" desbloqueado"
   },
   "home": {
     "message": "Início",
@@ -6701,9 +6607,6 @@
   "newNftAddedMessage": {
     "message": "O NFT foi adicionado com sucesso!"
   },
-  "newPassword": {
-    "message": "Nova senha (no mínimo 8 caracteres)"
-  },
   "newPasswordCreate": {
     "message": "Criar nova senha"
   },
@@ -6780,9 +6683,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, e a maioria das carteiras de hardware, não funcionarão com a versão atual do navegador."
-  },
-  "noMMFeeSwapping": {
-    "message": "Sem taxa da MetaMask"
   },
   "noNetworkFee": {
     "message": "Sem taxa de rede"
@@ -7233,9 +7133,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Substituir o cabeçalho Content-Security-Policy"
-  },
-  "padlock": {
-    "message": "Cadeado"
   },
   "paidByMetaMask": {
     "message": "Pago pela MetaMask"
@@ -12264,27 +12161,6 @@
   "transactionFlowNetwork": {
     "message": "Rede"
   },
-  "transactionHistoryBaseFee": {
-    "message": "Taxa-base (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "Taxa de rede L1 total"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "Limite de gás L2"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "Preço do gás L2"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "Taxa máxima por gás"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "Taxa de prioridade (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "Taxa total da rede"
-  },
   "transactionIdCopied": {
     "message": "ID da transação copiada"
   },
@@ -12467,9 +12343,6 @@
   "unifiedSwapFromTo": {
     "message": "Trocar $1 $2 por $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "unidades"
   },
   "unknown": {
     "message": "Desconhecida"

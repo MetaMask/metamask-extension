@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "स्वीकार करें और बंद करें"
   },
-  "acceptTermsOfUse": {
-    "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
   },
@@ -1279,38 +1275,6 @@
   "add_device_error_title": {
     "message": "सिंक पूरा नहीं हो सका"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 वॉलेट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 वॉलेट और $2 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 वॉलेट और 1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 वॉलेट आपके फ़ोन से सिंक हो गया है।",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 वॉलेट और $1 इंपोर्ट किए गए अकाउंट आपके फ़ोन से सिंक हो गए हैं।",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 वॉलेट और 1 इंपोर्ट किया गया अकाउंट आपके फ़ोन से सिंक हो गया है।",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "डिवाइस जोड़ा गया"
   },
@@ -1421,9 +1385,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "एडवांस्ड नेटवर्क फीस"
-  },
-  "advancedGasPriceTitle": {
-    "message": "गैस प्राइस"
   },
   "advancedPermissionSmallCase": {
     "message": "एडवांस्डअनुमति"
@@ -1685,12 +1646,6 @@
   },
   "amount": {
     "message": "अमाउंट"
-  },
-  "amountReceived": {
-    "message": "प्राप्त की गई राशि"
-  },
-  "amountSent": {
-    "message": "भेजी गई राशि"
   },
   "andForListItems": {
     "message": "$1, और $2",
@@ -4329,9 +4284,6 @@
     "message": "$1 सेकंड",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "इस्तेमाल की गई गैस"
-  },
   "gatorNoJustificationProvided": {
     "message": "अनुमति के लिए कोई वजह नहीं बताई गई"
   },
@@ -4741,52 +4693,6 @@
   },
   "history": {
     "message": "इतिहास"
-  },
-  "holdToRevealContent1": {
-    "message": "आपका सीक्रेट रिकवरी फ्रेज $1 प्रदान करता है",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "आपके वॉलेट और फंड की पूरी एक्सेस।",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "इसे किसी के साथ शेयर न करें। $1,$2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMask सपोर्ट इसका रिक्वेस्ट नहीं करेगा",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "लेकिन फिशर कर सकते हैं।",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "आपकी प्राइवेट की (key) $1 प्रदान करती है",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "आपके वॉलेट और फंड की पूरी एक्सेस।",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "लॉक किए गए सर्कल को दिखाने के लिए होल्ड करें"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "प्राइवेट की (key) को दिखाने के लिए होल्ड करें"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "अपनी प्राइवेट की (key) सुरक्षित रखें"
-  },
-  "holdToRevealSRP": {
-    "message": "SRP देखने के लिए होल्ड करें"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "अपने SRP को सुरक्षित रखें"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "लॉक किए गए सर्कल को दिखाने के लिए होल्ड करें"
   },
   "home": {
     "message": "होम",
@@ -6701,9 +6607,6 @@
   "newNftAddedMessage": {
     "message": "NFT सफलतापूर्वक जोड़ा गया!"
   },
-  "newPassword": {
-    "message": "नया पासवर्ड"
-  },
   "newPasswordCreate": {
     "message": "नया पासवर्ड बनाएं"
   },
@@ -6780,9 +6683,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap और अधिकांश हार्डवेयर वॉलेट, आपके वर्तमान ब्राउज़र वर्जन के साथ काम नहीं करेंगे।"
-  },
-  "noMMFeeSwapping": {
-    "message": "कोई MetaMask शुल्क नहीं"
   },
   "noNetworkFee": {
     "message": "कोई नेटवर्क शुल्क नहीं"
@@ -7233,9 +7133,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "कंटेंट-सिक्योरिटी-पॉलिसी हेडर को ओवरराइड करें"
-  },
-  "padlock": {
-    "message": "पैडलॉक"
   },
   "paidByMetaMask": {
     "message": "MetaMask द्वारा भुगतान किया गया"
@@ -12264,27 +12161,6 @@
   "transactionFlowNetwork": {
     "message": "नेटवर्क"
   },
-  "transactionHistoryBaseFee": {
-    "message": "बेस फी (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "कुल L1 नेटवर्क शुल्क"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 गैस लिमिट"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 गैस कीमत"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "प्रति गैस अधिकतम फीस"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "प्रायोरिटी फी (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "कुल नेटवर्क शुल्क"
-  },
   "transactionIdCopied": {
     "message": "Transaction ID कॉपी किया गया"
   },
@@ -12467,9 +12343,6 @@
   "unifiedSwapFromTo": {
     "message": "$1 $2 से $3 में स्वैप करें",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "यूनिट्स"
   },
   "unknown": {
     "message": "अज्ञात"

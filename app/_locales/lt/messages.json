@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasUsed": {
-    "message": "Sunaudotos dujos"
-  },
   "general": {
     "message": "Bendra"
   },
@@ -345,9 +342,6 @@
   },
   "newContract": {
     "message": "Nauja sutartis"
-  },
-  "newPassword": {
-    "message": "Naujas slaptažodis (bent 8 ženklai)"
   },
   "next": {
     "message": "Toliau"
@@ -557,9 +551,6 @@
   },
   "unapproved": {
     "message": "Nepatvirtinta"
-  },
-  "units": {
-    "message": "vienetai"
   },
   "unknown": {
     "message": "Nežinoma"
