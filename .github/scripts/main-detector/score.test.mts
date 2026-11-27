@@ -5,6 +5,7 @@ import {
   jobShifts,
   needsConfirmation,
   scoreBatch,
+  throttledConfig,
   type BatchScores,
   type JobResult,
 } from './score.mts';
@@ -333,5 +334,63 @@ describe('detector decisions', () => {
     );
     expect(decision.ping).toBe('quiet');
     expect(decision.findings[0].direction).toBe('faster');
+  });
+});
+
+describe('throttled run', () => {
+  const config = throttledConfig();
+  const chromeOnly = (jobs: JobResult[], using = config) =>
+    ({ chrome: scoreBatch('chrome', jobs, using) }) as BatchScores;
+  // A job whose base sessions take `level` ms, the head `factor` times that.
+  const jobAt = (level: number, factor: number): JobResult => {
+    const job = makeJob(factor);
+    const scale = level / 1000;
+    return {
+      ...job,
+      samples: Object.fromEntries(
+        Object.entries(job.samples).map(([name, values]) => [
+          name,
+          values.map((value) => value * scale),
+        ]),
+      ),
+    };
+  };
+  // A real shift of 1%: 10 ms on a 1000 ms build, 20 ms when throttled 2x.
+  const onePercent = [1.01, 1.011, 1.009, 1.0105, 1.0095];
+
+  it('scores Chrome alone, against the same floors in ms', () => {
+    expect(config.browsers).toStrictEqual(['chrome']);
+    expect(config.floors.chrome).toBe(DEFAULT_CONFIG.floors.chrome);
+    expect(DEFAULT_CONFIG.browsers).toStrictEqual(['chrome', 'firefox']);
+  });
+
+  it('uses the power-user floors for the power-user preset', () => {
+    const powerUser = throttledConfig('startupPowerUserHome');
+    expect(powerUser.floors.chrome.uiStartup.floorMs).toBe(16.75);
+    expect(powerUser.floors.chrome.load.floorMs).toBe(11.7);
+  });
+
+  it('pings on a shift the throttle made large enough, not on the same shift unthrottled', () => {
+    const throttled = chromeOnly(onePercent.map((f) => jobAt(2000, f)));
+    expect(needsConfirmation(throttled)).toBe(true);
+    const decision = decide(
+      throttled,
+      chromeOnly(onePercent.map((f) => jobAt(2000, f))),
+      config,
+    );
+    expect(decision.ping).toBe('quiet');
+    expect(decision.unmeasured).toStrictEqual([]);
+
+    const normal = chromeOnly(onePercent.map((f) => jobAt(1000, f)));
+    expect(needsConfirmation(normal)).toBe(false);
+  });
+
+  it('never asks about Firefox, so a missing Firefox batch is not unmeasured', () => {
+    const first = chromeOnly(makeJobs([1, 1.001, 0.999, 1, 1.002]));
+    expect(decide(first, undefined, config)).toStrictEqual({
+      ping: 'none',
+      findings: [],
+      unmeasured: [],
+    });
   });
 });

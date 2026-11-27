@@ -2,18 +2,20 @@
  * Usage: node .github/scripts/main-detector/score-cli.mts --stage first|final --dir ARTIFACTS --plan plan.json --out result.json [--summary FILE] [--github-output FILE] --shards N [--cuf-shards N]
  * Reads the artifacts of batch 1 (and 2) from detector-b<batch>-<browser>-s<shard> folders and scores them.
  * At the final stage, --cuf-shards also scores the critical user flows from detector-cuf-<flow>-s<shard> folders.
+ * A plan with cpuThrottleRate is the daily throttled run: its folders start with throttled- and only Chrome is scored.
  */
 import fs from 'node:fs';
 import { parseArgs } from 'node:util';
 import { loadCufJobs, scoreCufs } from './cufs.mts';
 import { loadBatch } from './load.mts';
-import { renderSummary, resultLabel, type PlanInfo } from './report.mts';
 import {
-  DEFAULT_CONFIG,
-  decide,
-  needsConfirmation,
-  type BatchScores,
-} from './score.mts';
+  planConfig,
+  planPrefix,
+  renderSummary,
+  resultLabel,
+  type PlanInfo,
+} from './report.mts';
+import { decide, needsConfirmation } from './score.mts';
 
 function setOutputs(file: string | undefined, values: Record<string, string>) {
   if (file) {
@@ -53,7 +55,12 @@ async function main(): Promise<void> {
   }
 
   const plan: PlanInfo = JSON.parse(fs.readFileSync(planFile, 'utf8'));
-  const first = loadBatch(dir, 1, shards) as BatchScores;
+  const config = planConfig(plan);
+  const prefix = planPrefix(plan);
+  const first = loadBatch(dir, 1, shards, false, { config, prefix });
+  if (!first) {
+    throw new Error('The first batch is required');
+  }
 
   if (stage === 'first') {
     const confirm = needsConfirmation(first);
@@ -65,8 +72,8 @@ async function main(): Promise<void> {
     return;
   }
 
-  const second = loadBatch(dir, 2, shards, true);
-  const decision = decide(first, second, DEFAULT_CONFIG);
+  const second = loadBatch(dir, 2, shards, true, { config, prefix });
+  const decision = decide(first, second, config);
   const cufShards = Number(values['cuf-shards']);
   if (
     values['cuf-shards'] !== undefined &&
@@ -77,7 +84,7 @@ async function main(): Promise<void> {
   const cufs =
     values['cuf-shards'] === undefined
       ? undefined
-      : scoreCufs(loadCufJobs(dir, cufShards));
+      : scoreCufs(loadCufJobs(dir, cufShards, prefix));
   const label = resultLabel(decision, plan, cufs);
   fs.writeFileSync(
     out,
@@ -88,7 +95,7 @@ async function main(): Promise<void> {
     first,
     second,
     decision,
-    config: DEFAULT_CONFIG,
+    config,
     cufs,
   });
   if (values.summary) {

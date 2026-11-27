@@ -1,10 +1,13 @@
 import {
   BREAKDOWN_METRICS,
-  BROWSERS,
+  DEFAULT_CONFIG,
   VERDICT_METRICS,
+  scoredBrowsers,
+  throttledConfig,
   type BatchScores,
   type Decision,
   type DetectorConfig,
+  type StartupPreset,
   type Verdict,
 } from './score.mts';
 import type { ShiftSummary } from './stats.mts';
@@ -20,6 +23,50 @@ export type PlanInfo = {
   injectMs?: number | null;
   // Number of commits between the base (exclusive) and the head (inclusive).
   rangeSize: number;
+  // Set by the runs that slow Chrome's CPU: how many times slower it ran.
+  cpuThrottleRate?: number;
+  // Which of those runs it is, `daily` when unset.
+  kind?: 'daily' | 'power-user' | 'drift';
+  // The startup preset a throttled run measured, the standard home when unset.
+  preset?: StartupPreset;
+};
+
+/**
+ * @param plan - What was compared.
+ * @returns The label of a throttled run, which names the range it covers:
+ * `throttled, <base>..<head>`, `throttled power-user, <base>..<head>` or, for
+ * the comparison with the pinned reference build, `drift, <base>..<head>`.
+ * `undefined` for a commit check.
+ */
+export function planLabel(plan: PlanInfo): string | undefined {
+  if (plan.cpuThrottleRate === undefined) {
+    return undefined;
+  }
+  const range = `${plan.baseSha.slice(0, 7)}..${plan.headSha.slice(0, 7)}`;
+  const names = {
+    daily: 'throttled',
+    'power-user': 'throttled power-user',
+    drift: 'drift',
+  };
+  return `${names[plan.kind ?? 'daily']}, ${range}`;
+}
+
+/** The config a plan is scored with: Chrome only, with its own medians when throttled. */
+export const planConfig = (plan: PlanInfo): DetectorConfig =>
+  plan.cpuThrottleRate === undefined
+    ? DEFAULT_CONFIG
+    : throttledConfig(plan.preset);
+
+/** The name prefix of the plan's artifacts, apart from the commit checks' and each other's. */
+export const planPrefix = (plan: PlanInfo): string => {
+  if (plan.cpuThrottleRate === undefined) {
+    return 'detector';
+  }
+  return {
+    daily: 'throttled',
+    'power-user': 'throttled-power-user',
+    drift: 'drift',
+  }[plan.kind ?? 'daily'];
 };
 
 const fmt = (value: number) => `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
@@ -30,12 +77,14 @@ const cell = (summary: ShiftSummary | undefined) =>
     : 'n/a';
 
 const floorsText = (config: DetectorConfig, key: 'floorMs' | 'loudMs') =>
-  BROWSERS.flatMap((browser) =>
-    VERDICT_METRICS.map(
-      (metric) =>
-        `${config.floors[browser][metric][key].toFixed(1)} ms ${browser} ${metric}`,
-    ),
-  ).join(', ');
+  config.browsers
+    .flatMap((browser) =>
+      VERDICT_METRICS.map(
+        (metric) =>
+          `${config.floors[browser][metric][key].toFixed(1)} ms ${browser} ${metric}`,
+      ),
+    )
+    .join(', ');
 
 const verdictCell = (verdict: Verdict) =>
   verdict.level === 'none' ? '' : `${verdict.level} ${verdict.direction}`;
@@ -54,7 +103,7 @@ function batchTable(
       : '| Browser | Metric | Head vs base [95% bounds] |',
     withVerdict ? '|---|---|---|---|' : '|---|---|---|',
   ];
-  for (const browser of BROWSERS) {
+  for (const browser of scoredBrowsers(scores)) {
     for (const metric of metrics) {
       const score = scores[browser].metrics[metric];
       const row = `| ${browser} | ${metric} | ${cell(score.summary)}`;
@@ -67,10 +116,12 @@ function batchTable(
 }
 
 const jobsLine = (title: string, scores: BatchScores) =>
-  `${title}: ${BROWSERS.map(
-    (browser) =>
-      `${browser} ${scores[browser].jobsUsable}/${scores[browser].jobsTotal} jobs usable`,
-  ).join(', ')}`;
+  `${title}: ${scoredBrowsers(scores)
+    .map(
+      (browser) =>
+        `${browser} ${scores[browser].jobsUsable}/${scores[browser].jobsTotal} jobs usable`,
+    )
+    .join(', ')}`;
 
 export function renderSummary(options: {
   plan: PlanInfo;
@@ -82,10 +133,16 @@ export function renderSummary(options: {
 }): string {
   const { plan, first, second, decision, config, cufs } = options;
   const head = plan.headSha.slice(0, 10);
+  const label = planLabel(plan);
   const lines = [
-    '## Main performance detector',
+    label
+      ? `## Main performance detector (${label})`
+      : '## Main performance detector',
     '',
     `Head \`${head}\` (${plan.headSubject}) against base \`${plan.baseSha.slice(0, 10)}\`${plan.rangeSize > 1 ? `, a range of ${plan.rangeSize} commits` : ''}.`,
+    plan.cpuThrottleRate === undefined
+      ? ''
+      : `Chrome's CPU was slowed ${plan.cpuThrottleRate} times for both builds, so every ms below is a throttled ms.`,
     plan.canary
       ? 'This is an A/A canary: base and head are the same build, so any finding is a false alarm.'
       : '',

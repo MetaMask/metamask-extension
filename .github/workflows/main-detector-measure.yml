@@ -1,7 +1,8 @@
 name: Main detector measure
 
 # One batch of paired base/head benchmark jobs, 5 per browser, each job
-# alternating the two builds on one runner. Called by main-detector.yml.
+# alternating the two builds on one runner. Called by main-detector.yml and by
+# main-detector-batch.yml, which slows Chrome's CPU and measures Chrome only.
 
 on:
   workflow_call:
@@ -22,6 +23,31 @@ on:
         required: false
         type: string
         default: ''
+      preset:
+        description: Benchmark preset to measure, startupStandardHome or startupPowerUserHome
+        required: false
+        type: string
+        default: startupStandardHome
+      browsers:
+        description: JSON array of the browsers to measure
+        required: false
+        type: string
+        default: '["chrome","firefox"]'
+      cpu_throttle_rate:
+        description: How many times slower Chrome runs page CPU work, empty for full speed
+        required: false
+        type: string
+        default: ''
+      browser_loads:
+        description: Browser sessions per job, a multiple of 10 since the A/B sequence is 10 long
+        required: false
+        type: string
+        default: '10'
+      artifact_prefix:
+        description: Prefix of the batch artifact names, detector for the commit checks
+        required: false
+        type: string
+        default: detector
 
 permissions:
   contents: read
@@ -40,13 +66,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox]
+        browser: ${{ fromJSON(inputs.browsers) }}
         # DETECTOR_SHARDS in main-detector.yml must equal the number of shards.
         shard: [1, 2, 3, 4, 5]
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # A throttled run takes about four times as long as an unthrottled one.
+    timeout-minutes: ${{ inputs.cpu_throttle_rate && 90 || 45 }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
+      BENCHMARK_CPU_THROTTLE_RATE: ${{ inputs.cpu_throttle_rate }}
       SELENIUM_HEADLESS: true
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       BRANCH: ${{ github.ref_name }}
@@ -117,19 +145,33 @@ jobs:
         run: echo "BENCHMARK_AB_FLIP=$(( (SHARD + BATCH) % 2 ))" >> "$GITHUB_ENV"
 
       - name: Run the A/B benchmark
-        timeout-minutes: 35
-        run: >-
-          yarn test:e2e:benchmark
-          --preset startupStandardHome
-          --browserLoads 10 --pageLoads 10
-          --retries 2
-          --out test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-webpack-startupStandardHome-s${{ matrix.shard }}.json
+        timeout-minutes: ${{ inputs.cpu_throttle_rate && 80 || 35 }}
+        env:
+          PRESET: ${{ inputs.preset }}
+          BROWSER: ${{ matrix.browser }}
+          SHARD: ${{ matrix.shard }}
+          BROWSER_LOADS: ${{ inputs.browser_loads }}
+        run: |
+          set -euo pipefail
+          # The scorer reads uiStartup and load, which only the startup presets record.
+          case "$PRESET" in
+            startupStandardHome | startupPowerUserHome) ;;
+            *)
+              echo "::error::preset must be startupStandardHome or startupPowerUserHome"
+              exit 1
+              ;;
+          esac
+          yarn test:e2e:benchmark \
+            --preset "$PRESET" \
+            --browserLoads "$BROWSER_LOADS" --pageLoads 10 \
+            --retries 2 \
+            --out "test-artifacts/benchmarks/benchmark-$BROWSER-webpack-$PRESET-s$SHARD.json"
 
       - name: Upload batch result
         if: ${{ always() }}
         uses: actions/upload-artifact@v7
         with:
-          name: detector-b${{ inputs.batch }}-${{ matrix.browser }}-s${{ matrix.shard }}
+          name: ${{ inputs.artifact_prefix }}-b${{ inputs.batch }}-${{ matrix.browser }}-s${{ matrix.shard }}
           path: test-artifacts/benchmarks/*.json
           # A re-run of failed jobs uploads the same names again.
           overwrite: true

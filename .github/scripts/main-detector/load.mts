@@ -1,11 +1,12 @@
 /**
  * Reads the per-job benchmark artifacts that main-detector-measure.yml uploads
- * as detector-b<batch>-<browser>-s<shard> folders.
+ * as <prefix>-b<batch>-<browser>-s<shard> folders, `detector` for the commit
+ * checks and `throttled` for the daily throttled run.
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { BROWSERS, DEFAULT_CONFIG, scoreBatch } from './score.mts';
-import type { BatchScores, JobResult } from './score.mts';
+import { DEFAULT_CONFIG, scoreBatch } from './score.mts';
+import type { BatchScores, DetectorConfig, JobResult } from './score.mts';
 
 function parseJson(file: string): unknown {
   try {
@@ -68,27 +69,33 @@ export function readJob(directory: string): JobResult {
  * @param batch - 1 for the first batch, 2 for the confirmation batch.
  * @param shards - Number of jobs per browser the batch should have.
  * @param optional - When true, a batch with no artifact folders was not run.
+ * @param options - What to score with.
+ * @param options.config - The config to score with, whose browsers are the ones
+ * scored.
+ * @param options.prefix - The artifact name prefix.
  */
 export function loadBatch(
   root: string,
   batch: number,
   shards: number,
   optional = false,
+  options: { config?: DetectorConfig; prefix?: string } = {},
 ): BatchScores | undefined {
+  const { config = DEFAULT_CONFIG, prefix = 'detector' } = options;
   const folders = fs.existsSync(root) ? fs.readdirSync(root) : [];
   // A missing optional batch was not run; a missing required one scores as unusable jobs.
   if (
     optional &&
-    !folders.some((name) => name.startsWith(`detector-b${batch}-`))
+    !folders.some((name) => name.startsWith(`${prefix}-b${batch}-`))
   ) {
     return undefined;
   }
   const scores = {} as BatchScores;
-  for (const browser of BROWSERS) {
+  for (const browser of config.browsers) {
     const jobs = Array.from({ length: shards }, (_, shard) =>
-      readJob(path.join(root, `detector-b${batch}-${browser}-s${shard + 1}`)),
+      readJob(path.join(root, `${prefix}-b${batch}-${browser}-s${shard + 1}`)),
     );
-    scores[browser] = scoreBatch(browser, jobs, DEFAULT_CONFIG);
+    scores[browser] = scoreBatch(browser, jobs, config);
   }
   return scores;
 }

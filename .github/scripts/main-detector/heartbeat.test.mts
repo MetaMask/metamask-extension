@@ -1,8 +1,10 @@
 import type { SectionBlock } from '@slack/types';
 import {
   assessHealth,
+  assessSchedule,
   buildHeartbeatMessage,
   latestSlot,
+  scheduledDue,
   type RunInfo,
 } from './heartbeat.mts';
 
@@ -120,5 +122,59 @@ describe('buildHeartbeatMessage', () => {
       }
     }
     expect(JSON.stringify(message)).toContain('and 30 more');
+  });
+});
+
+describe('scheduledDue', () => {
+  // 2026-11-30 is a Monday.
+  const at = (iso: string) => Date.parse(iso);
+
+  it('expects the daily run on a weekday other than Monday', () => {
+    expect(
+      scheduledDue(at('2026-11-30T11:17:00Z'), at('2026-12-01T11:17:00Z')),
+    ).toStrictEqual(['throttled']);
+  });
+
+  it('expects drift and calibration on Monday as well', () => {
+    expect(
+      scheduledDue(at('2026-11-29T11:17:00Z'), at('2026-11-30T11:17:00Z')),
+    ).toStrictEqual(['throttled', 'drift', 'calibration']);
+  });
+});
+
+describe('assessSchedule', () => {
+  const scheduled = (
+    kind: 'throttled' | 'drift' | 'calibration',
+    conclusion: string | null,
+  ) => ({ kind, conclusion, url: `https://example.test/${kind}` });
+
+  it('reports a due run that did not start, and one that failed', () => {
+    const result = assessSchedule(
+      ['throttled', 'drift', 'calibration'],
+      [scheduled('throttled', 'success'), scheduled('drift', 'failure')],
+    );
+    expect(result.scheduleMissing).toStrictEqual(['calibration']);
+    expect(result.scheduleFailed.map((run) => run.kind)).toStrictEqual([
+      'drift',
+    ]);
+  });
+
+  it('counts a running scheduled run as started', () => {
+    expect(
+      assessSchedule(['throttled'], [scheduled('throttled', null)]),
+    ).toStrictEqual({ scheduleMissing: [], scheduleFailed: [] });
+  });
+
+  it('makes a day with no Main runs a problem when a scheduled run failed', () => {
+    const health = assessHealth(
+      [],
+      [],
+      assessSchedule(['drift'], [scheduled('drift', 'failure')]),
+    );
+    expect(health.status).toBe('problem');
+    const text = JSON.stringify(
+      buildHeartbeatMessage(health, 'MetaMask/metamask-extension', 'url'),
+    );
+    expect(text).toContain('Scheduled run failed');
   });
 });

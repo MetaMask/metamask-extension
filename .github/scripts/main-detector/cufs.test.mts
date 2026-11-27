@@ -1,7 +1,7 @@
-// origin: ai-synthesis
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { it } from '@jest/globals';
 import { ADMITTED_SERIES } from '../../../test/e2e/benchmarks/utils/admitted-series.ts';
 import {
   CUF_FLOW_FILES,
@@ -59,15 +59,15 @@ describe('critical user flows', () => {
     }
   });
 
-  it('runs exactly the CUF flows in the cufs job of main-detector.yml', () => {
-    const workflow = fs.readFileSync(
-      '.github/workflows/main-detector.yml',
-      'utf8',
-    );
-    const matrix = workflow.match(/\n\s+flow:\n((?:\s+- \w+\n)+)/u)?.[1];
-    const flows = matrix?.match(/\w+/gu);
-    expect(flows).toStrictEqual(Object.keys(CUF_FLOW_FILES));
-  });
+  it.each(['main-detector.yml', 'main-detector-batch.yml'])(
+    'runs exactly the CUF flows in the cufs job of %s',
+    (name) => {
+      const workflow = fs.readFileSync(`.github/workflows/${name}`, 'utf8');
+      const matrix = workflow.match(/\n\s+flow:\n((?:\s+- \w+\n)+)/u)?.[1];
+      const flows = matrix?.match(/\w+/gu);
+      expect(flows).toStrictEqual(Object.keys(CUF_FLOW_FILES));
+    },
+  );
 
   describe('pairDifferences', () => {
     it('pairs consecutive iterations as head minus base, whichever ran first', () => {

@@ -9,7 +9,10 @@ import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
-import { userStorageHostMock } from '../../mocks/performance-mocks';
+import {
+  subscriptionsMock,
+  userStorageHostMock,
+} from '../../mocks/performance-mocks';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import {
   BENCHMARK_PERSONA,
@@ -45,6 +48,12 @@ async function measurePagePowerUser(
         testing: {
           infuraProjectId: process.env.INFURA_PROJECT_ID,
         },
+        // Live flags are fetched from the dev environment, which can put this
+        // run in the wide layout; its header has no `account-menu-icon`. Pin
+        // the control variant.
+        remoteFeatureFlags: {
+          coreCEUX1492AbtestWideScreenRedesign: { name: 'control' },
+        },
       },
       useMockingPassThrough: true,
       disableServerMochaToBackground: true,
@@ -52,6 +61,7 @@ async function measurePagePowerUser(
       testSpecificMock: async (server: Mockttp) => {
         await mockNotificationServices(server);
         await userStorageHostMock(server);
+        await subscriptionsMock(server);
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {

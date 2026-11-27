@@ -1,0 +1,107 @@
+name: Main detector throttled
+
+# The Chrome benchmark presets that the paired jobs of main-detector-batch.yml
+# do not score, on a CPU throttled N times, on the head build of the daily
+# plan. Report-only: nothing is scored, posted to Slack, gated or written to
+# the benchmark history; the results are artifacts for admission under ADR 0072.
+# Called by main-detector.yml on its daily schedule.
+
+on:
+  workflow_call:
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
+      TEST_SRP_2:
+        required: false
+    inputs:
+      plan:
+        description: Daily plan JSON from scheduled-plan-cli.mts; its head build is measured at its cpuThrottleRate
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+  statuses: read
+
+env:
+  # Same default as BUILD_HOST in .github/scripts/main-detector/build-source.mts.
+  DETECTOR_BUILD_HOST: https://diuv6g5fj9pvx.cloudfront.net/metamask-extension
+
+jobs:
+  benchmarks:
+    name: chrome-webpack-${{ matrix.pageType }}-cpu${{ fromJSON(inputs.plan).cpuThrottleRate }}x
+    # An unscored preset that fails must not hold back the daily run's record of what it measured.
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        # The presets of the `benchmarks` job in run-benchmarks.yml, Chrome only,
+        # less the two startup presets, which main-detector-batch.yml measures
+        # in pairs and scores.
+        pageType:
+          - interactionUserActions
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      SELENIUM_BROWSER: chrome
+      SELENIUM_HEADLESS: true
+      BENCHMARK_CPU_THROTTLE_RATE: ${{ fromJSON(inputs.plan).cpuThrottleRate }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
+      RESULT: test-artifacts/benchmarks/throttled-cpu${{ fromJSON(inputs.plan).cpuThrottleRate }}x-benchmark-chrome-webpack-${{ matrix.pageType }}.json
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          # The benchmark code must match the build it measures.
+          ref: ${{ fromJSON(inputs.plan).headSha }}
+
+      - name: Fail if the head predates the CPU throttle harness
+        # Without it the run is unthrottled while the artifact says throttled.
+        run: test -f test/e2e/benchmarks/utils/cpu-throttle.ts || { echo "::error::Head predates the CPU throttle harness"; exit 1; }
+
+      - name: Install anvil with retry
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
+        with:
+          timeout_minutes: 1
+          max_attempts: 4
+          retry_wait_seconds: 30
+          command: yarn mm-foundryup
+
+      - name: Download the Chrome build
+        env:
+          RUN: ${{ fromJSON(inputs.plan).headRun }}
+          VERSION: ${{ fromJSON(inputs.plan).headVersion }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 5 --retry-all-errors \
+            --output chrome.zip \
+            "$DETECTOR_BUILD_HOST/$RUN/build-test-webpack/builds/metamask-chrome-$VERSION.zip"
+          mkdir -p dist/chrome
+          unzip -q chrome.zip -d dist/chrome
+
+      - name: Run the benchmark
+        # Job timeouts propagate to later jobs, step timeouts just cause job failure.
+        # 10 minutes over run-benchmarks.yml's 25, as the job's own limit is, for the 2× CPU throttle.
+        timeout-minutes: 35
+        run: yarn test:e2e:benchmark --preset "${{ matrix.pageType }}" --out "$RESULT" --retries 2
+        shell: bash
+
+      - name: Upload benchmark result as GitHub artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          # Must not match `benchmark-*.json` (the quality gate and the stats
+          # store) or `detector-b*` (the detector's scoring).
+          name: throttled-cpu${{ fromJSON(inputs.plan).cpuThrottleRate }}x-benchmark-chrome-webpack-${{ matrix.pageType }}.json
+          path: ${{ env.RESULT }}
+          retention-days: 30
+          if-no-files-found: ignore

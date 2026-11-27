@@ -156,18 +156,20 @@ export function scoreCufs(
 
 /**
  * @param root - Folder holding the downloaded artifacts.
- * @param shards - Jobs per flow, in detector-cuf-<flow>-s<shard> folders.
+ * @param shards - Jobs per flow, in <prefix>-cuf-<flow>-s<shard> folders.
+ * @param prefix - The artifact name prefix, `detector` for the commit checks.
  */
 export function loadCufJobs(
   root: string,
   shards: number,
+  prefix = 'detector',
 ): Record<string, JobResult[]> {
   const jobsByFlow: Record<string, JobResult[]> = {};
   for (const flow of Object.keys(CUF_FLOW_FILES)) {
     jobsByFlow[flow] = Array.from(
       { length: shards },
       (_, shard) =>
-        readJobFlows(path.join(root, `detector-cuf-${flow}-s${shard + 1}`))[
+        readJobFlows(path.join(root, `${prefix}-cuf-${flow}-s${shard + 1}`))[
           flow
         ],
     ).filter((job): job is JobResult => job !== undefined);

@@ -103,6 +103,56 @@ what it should, so check that first. A breakdown metric that moves by more than
   (a dry run); `resolve-cli.mts`, `compare-builds-cli.mts` and `score-cli.mts` are
   the same steps the workflow runs.
 
+## Scheduled runs
+
+Three scheduled runs slow Chrome's CPU (`BENCHMARK_CPU_THROTTLE_RATE`, 2 times
+by default) so work of 25 to 50 ms, which is no long task on a CI runner, shows
+in `longTaskTotalDuration` and `tbt`. Each measures Chrome only, with the
+commit checks' paired jobs, 5 jobs of 20 sessions or iterations (the commit
+checks use 10), a confirmation batch when the first looks suspicious, the same
+scoring and the same Slack channel. Each ping names its run in its label, and
+the run is titled `latest-main (throttled)`, `(drift)` or `(calibration)`, which
+the heartbeat does not count. A throttled run's shifts are the throttled ms
+against the same floors, so a shift of half a floor on a normal CPU can reach it;
+no throttled A/A run has set those floors, and `mode=throttled-aa` produces one.
+
+| Run               | When                             | Compares                                                                                                  | Measures                                                                             | Slack label                            |
+| ----------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------- |
+| Daily             | 07:00 UTC                        | the newest `main` commit with a build against the commit the last successful scheduled daily run measured | `startupStandardHome` and the critical user flows                                    | `throttled, <base>..<head>`            |
+| Daily, power user | with the daily run, on its range | the same                                                                                                  | `startupPowerUserHome` with 10 sessions per job, floors of its own from six A/A runs | `throttled power-user, <base>..<head>` |
+| Drift             | Mondays 08:00 UTC                | the newest `main` commit against `drift-reference.json`                                                   | the daily run's series                                                               | `drift, <reference>..<head>`           |
+| Calibration       | Mondays 09:00 UTC                | the past week's A/A canary results                                                                        | nothing                                                                              | `calibration, <from>..<to>`            |
+
+The daily run records the commit it measured as the name of the artifact
+`throttled-measured-<sha>`, once every pass of it succeeded, and the next run
+reads the name through the API. The first run, a run after the record expired
+(30 days) and a run whose previous commit is out of reach use the nearest
+earlier build. A run that fails records nothing, so the next range is longer.
+A run with no newer commit with a build does nothing, and one whose build is
+identical to its base's records its head and measures nothing.
+
+The drift reference is a commit on `main` with a build. Update it by hand in its
+own commit when the drift it caught has been dealt with or accepted. The drift
+run never falls back to another base.
+
+The calibration reads the `detector-result` of the past week's commit checks and
+keeps the canaries, the runs of an identical build against itself that the
+detector makes for 1 in 10 commits. It pings when more canaries pinged than a
+rule that fires on 1 run in 20 would give (exact binomial tail below 0.05, 20
+being the level of the rules' one-sided 95% bounds and an assumption of this
+check, not a measured rate), or when the standard error of a batch's shift in ms
+is above a startup floor, or a critical user flow series' shift in ms on an A/A
+is above its `δ_block`. It judges the unthrottled floors only, since canaries
+are unthrottled.
+
+`workflow_dispatch` runs them on demand: `mode=throttled`, `throttled-aa`
+(the head against itself), `drift` and `calibration`, with `cpu_throttle_rate`,
+`iterations` (a multiple of 10), `head_sha`, `base_sha` and `post_slack`.
+
+The daily run also runs the Chrome presets of `run-benchmarks.yml` that these
+jobs do not score on the head build, report-only: the `throttled-cpu2x-benchmark-*`
+artifacts, kept for 30 days for admission under ADR 0072.
+
 ## Heartbeat
 
 `main-detector-heartbeat.yml` runs daily at 14:17 UTC. It takes the Main runs
