@@ -9,6 +9,7 @@ import {
   liveFiatDelta,
   useMarketStats,
 } from '../../../../hooks/assets/market-stats';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import { toCaipAssetId } from '../util/to-caip-asset-id';
 
 /**
@@ -29,6 +30,7 @@ export function useAccountGroupLiveTotal(): {
     selectUnifiedBalanceBySelectedAccountGroup,
   );
   const assetsByChain = useSelector(getAssetsBySelectedAccountGroup);
+  const enabledChainIds = useSelector(getAllEnabledNetworksForAllNamespaces);
   const livePrices = useMarketStats();
   const polledTotal = selectedGroupBalance?.totalBalanceInUserCurrency;
 
@@ -36,9 +38,13 @@ export function useAccountGroupLiveTotal(): {
     if (polledTotal === undefined) {
       return undefined;
     }
-    const assets = Object.values(assetsByChain ?? {}).flat() as Asset[];
+    // The polled total only covers enabled networks, so the live delta must
+    // too, or moves on hidden networks drift the total from the network pill.
+    const assets = Object.entries(assetsByChain ?? {})
+      .filter(([chainId]) => enabledChainIds.includes(chainId))
+      .flatMap(([, chainAssets]) => chainAssets) as Asset[];
     return polledTotal + liveFiatDelta(assets, livePrices, toCaipAssetId);
-  }, [assetsByChain, livePrices, polledTotal]);
+  }, [assetsByChain, enabledChainIds, livePrices, polledTotal]);
 
   return {
     total,
