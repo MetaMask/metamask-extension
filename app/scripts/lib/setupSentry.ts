@@ -6,7 +6,7 @@ import type {
   Event as SentryEvent,
   TransactionEvent,
 } from '@sentry/types';
-import { debug as sentrySdkLogger } from '@sentry/core';
+import { debug as sentrySdkLogger, type StartSpanOptions } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
 import { BROWSER_SHUTTING_DOWN_ERROR } from '../../../shared/constants/errors';
@@ -209,6 +209,7 @@ function getClientOptions(): SentryClientOptions {
         // Pairs with TBT aggregate measurements from performance-observers.ts.
         enableLongAnimationFrame: true,
         shouldCreateSpanForRequest,
+        beforeStartSpan: nameRouteSpanAfterDocument,
       }),
       metaMetricsIntegration({
         getAnalyticsState,
@@ -420,6 +421,21 @@ export function beforeBreadcrumb(): BeforeBreadcrumbHandler {
     }
     return breadcrumb;
   };
+}
+
+/**
+ * Names a pageload or navigation span after the document path (`/home.html`).
+ * The SDK would otherwise resolve a hash route against `location.origin` and
+ * name every navigation `/`.
+ *
+ * @param options - The route span's start options.
+ * @returns The options, named after the document path.
+ */
+export function nameRouteSpanAfterDocument(
+  options: StartSpanOptions,
+): StartSpanOptions {
+  const { pathname } = globalThis.location ?? {};
+  return pathname ? { ...options, name: pathname } : options;
 }
 
 /**
