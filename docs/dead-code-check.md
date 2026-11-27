@@ -19,8 +19,8 @@ be enabled incrementally in later phases.
 
 ## Commands
 
-| Command                         | What it does                                                                                                                                                                   |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Command                         | What it does                                                                                                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `yarn knip:check`               | Run knip and compare against the baseline; fails on new findings and on baselined findings that no longer appear (the baseline must be shrunk after fixes). Same check CI runs. |
 | `yarn knip:update`              | Rewrite the baseline from the current report; refuses to grow it unless `--allow-grow` is passed.                                                                               |
 | `yarn knip:update --allow-grow` | Rewrite the baseline, allowing new entries — only when growing it is genuinely intended.                                                                                        |
