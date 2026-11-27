@@ -4599,6 +4599,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
   },
+  "hardwareWalletErrorDeviceAlreadyConnectedDescription": {
+    "message": "You can only connect one $1 at a time. To use a different $1, remove the connected $1's accounts from MetaMask first.",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorDeviceLockedDescription": {
     "message": "Unlock it and try again to continue",
     "description": "Description shown when a hardware wallet is locked during an operation"
@@ -4649,10 +4653,6 @@
   },
   "hardwareWalletErrorTitleDeviceAlreadyConnected": {
     "message": "$1 Already Connected",
-    "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorDeviceAlreadyConnectedDescription": {
-    "message": "You can only connect one $1 at a time. To use a different $1, remove the connected $1's accounts from MetaMask first.",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorTitleDeviceLocked": {
