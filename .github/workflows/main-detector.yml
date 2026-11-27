@@ -490,16 +490,12 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Download the batches
+      # One download for both: download-artifact unpacks a lone match into `path` itself
+      # rather than a folder named for it, so a single surviving CUF job would be missed.
+      - name: Download the batches and critical user flows
         uses: actions/download-artifact@v8
         with:
-          pattern: detector-b*
-          path: artifacts
-
-      - name: Download the critical user flows
-        uses: actions/download-artifact@v8
-        with:
-          pattern: detector-cuf-*
+          pattern: detector-{b*,cuf-*}
           path: artifacts
 
       - name: Score and report
