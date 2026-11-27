@@ -917,7 +917,7 @@
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils>@metamask/error-utils": true,
-        "@metamask/keyring-snap-client": true,
+        "@metamask/assets-controller>@metamask/keyring-snap-client": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
@@ -959,7 +959,7 @@
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
+        "@metamask/assets-controller>@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
@@ -2093,7 +2093,7 @@
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
-        "@metamask/keyring-snap-client": true,
+        "@metamask/assets-controller>@metamask/keyring-snap-client": true,
         "@metamask/keyring-utils": true
       }
     },
@@ -2124,12 +2124,12 @@
         "@metamask/keyring-sdk>uuid": true
       }
     },
-    "@metamask/keyring-snap-client": {
+    "@metamask/assets-controller>@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
-        "@metamask/keyring-snap-client>uuid": true
+        "@metamask/assets-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
@@ -2350,7 +2350,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/keyring-snap-client": true,
+        "@metamask/assets-controller>@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
@@ -2409,7 +2409,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
+        "@metamask/assets-controller>@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true
       }
     },
@@ -7504,7 +7504,7 @@
         "crypto": true
       }
     },
-    "@metamask/keyring-snap-client>uuid": {
+    "@metamask/assets-controller>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }
