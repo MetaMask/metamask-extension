@@ -1,8 +1,9 @@
 import type { Hex } from '@metamask/utils';
+import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
-import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import { getSelectedEvmInternalAccount } from '../../../../selectors';
 import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../constants';
 import { ensureMusdTokenImportedForChain } from './ensure-musd-token-imported';
 
@@ -13,12 +14,15 @@ jest.mock('../../../../store/actions', () => ({
     mockImportCustomAssetsBatch(...args),
 }));
 
-jest.mock('../../../../../shared/lib/selectors/accounts', () => ({
-  getSelectedInternalAccount: jest.fn(() => ({
-    id: 'account-1',
-    address: '0xabc',
-  })),
-}));
+jest.mock('../../../../selectors', () => {
+  const actual = jest.requireActual('../../../../selectors');
+  return {
+    ...actual,
+    getSelectedEvmInternalAccount: jest.fn(
+      actual.getSelectedEvmInternalAccount,
+    ),
+  };
+});
 
 jest.mock('../../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../../shared/lib/environment'),
@@ -33,11 +37,38 @@ jest.mock('../../../../../shared/lib/asset-utils', () => {
   };
 });
 
+const EVM_ACCOUNT = {
+  id: 'account-1',
+  address: '0xabc',
+  type: EthAccountType.Eoa,
+  metadata: { lastSelected: 1 },
+};
+
+const SOLANA_ACCOUNT = {
+  id: 'solana-account-1',
+  address: 'So11111111111111111111111111111111111111112',
+  type: SolAccountType.DataAccount,
+  metadata: { lastSelected: 2 },
+};
+
+const buildState = (accounts: { id: string }[], selectedAccount: string) => ({
+  metamask: {
+    internalAccounts: {
+      accounts: Object.fromEntries(
+        accounts.map((account) => [account.id, account]),
+      ),
+      selectedAccount,
+    },
+  },
+});
+
 describe('ensureMusdTokenImportedForChain', () => {
   const mockDispatch = jest.fn();
+  let mockState: unknown;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockState = buildState([EVM_ACCOUNT], EVM_ACCOUNT.id);
     mockImportCustomAssetsBatch.mockImplementation(
       () => async () => Promise.resolve(),
     );
@@ -48,7 +79,7 @@ describe('ensureMusdTokenImportedForChain', () => {
             d: typeof mockDispatch,
             getState: () => unknown,
           ) => Promise<unknown>
-        )(mockDispatch, () => ({}));
+        )(mockDispatch, () => mockState);
       }
       return undefined;
     });
@@ -72,9 +103,7 @@ describe('ensureMusdTokenImportedForChain', () => {
   });
 
   it('does nothing when there is no selected account', async () => {
-    jest
-      .mocked(getSelectedInternalAccount)
-      .mockReturnValueOnce(undefined as never);
+    mockState = buildState([], '');
 
     await ensureMusdTokenImportedForChain(CHAIN_IDS.MAINNET, mockDispatch);
 
@@ -107,6 +136,24 @@ describe('ensureMusdTokenImportedForChain', () => {
         },
       },
     );
+  });
+
+  it('imports mUSD onto the EVM account when a non-EVM account is selected', async () => {
+    mockState = buildState([EVM_ACCOUNT, SOLANA_ACCOUNT], SOLANA_ACCOUNT.id);
+
+    await ensureMusdTokenImportedForChain(CHAIN_IDS.MAINNET, mockDispatch);
+
+    expect(getSelectedEvmInternalAccount).toHaveBeenCalled();
+    expect(mockImportCustomAssetsBatch).toHaveBeenCalledTimes(1);
+    expect(mockImportCustomAssetsBatch.mock.calls[0][0]).toBe(EVM_ACCOUNT.id);
+  });
+
+  it('does nothing when only non-EVM accounts exist', async () => {
+    mockState = buildState([SOLANA_ACCOUNT], SOLANA_ACCOUNT.id);
+
+    await ensureMusdTokenImportedForChain(CHAIN_IDS.MAINNET, mockDispatch);
+
+    expect(mockImportCustomAssetsBatch).not.toHaveBeenCalled();
   });
 
   it('imports mUSD when chain id uses non-canonical hex casing', async () => {

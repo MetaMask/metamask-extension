@@ -2,7 +2,7 @@ import type { Hex } from '@metamask/utils';
 import { MUSD_TOKEN, getMusdTokenAddressForChain } from '../constants';
 import { importCustomAssetsBatch } from '../../../../store/actions';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
-import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
+import { getSelectedEvmInternalAccount } from '../../../../selectors';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 
@@ -31,7 +31,7 @@ export async function ensureMusdTokenImportedForChain(
   try {
     await Promise.resolve(
       dispatch((innerDispatch, getState) => {
-        const selected = getSelectedInternalAccount(getState());
+        const selected = getSelectedEvmInternalAccount(getState());
         if (!selected?.id) {
           return Promise.resolve();
         }
