@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "Accepter et fermer"
   },
-  "acceptTermsOfUse": {
-    "message": "J’ai lu et j’accepte les $1",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "Contacter le service d’assistance"
   },
@@ -1278,38 +1274,6 @@
   },
   "add_device_error_title": {
     "message": "La synchronisation n’a pas être terminée"
-  },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1 comptes importés ont été synchronisés avec votre téléphone.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1 compte importé a été synchronisé avec votre téléphone.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1 portefeuilles ont été synchronisés avec votre téléphone.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1 portefeuilles et $2 comptes importés ont été synchronisés avec votre téléphone.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1 portefeuilles et 1 compte importé ont été synchronisés avec votre téléphone.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1 portefeuille a été synchronisé avec votre téléphone.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1 portefeuilles et $1 comptes importés ont été synchronisés avec votre téléphone.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1 portefeuille et 1 compte importé ont été synchronisés avec votre téléphone.",
-    "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
     "message": "Appareil appairé"
@@ -4730,52 +4694,6 @@
   "history": {
     "message": "Historique"
   },
-  "holdToRevealContent1": {
-    "message": "Votre phrase secrète de récupération donne $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "un accès illimité à votre portefeuille et à vos fonds.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "Ne la partagez avec personne. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "Le service d’assistance de MetaMask ne vous le demandera pas,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "mais les hameçonneurs pourraient le faire.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "Votre clé privée vous donne $1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "un accès complet à votre portefeuille et à vos fonds.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "appuyez longuement pour révéler le cercle verrouillé"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "Appuyez longuement pour révéler la clé privée"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "Conservez votre clé privée en lieu sûr"
-  },
-  "holdToRevealSRP": {
-    "message": "Appuyez longuement pour révéler la PSR"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "Conservez votre PSR en lieu sûr"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "appuyez longuement pour révéler le cercle déverrouillé"
-  },
   "home": {
     "message": "Accueil",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6689,9 +6607,6 @@
   "newNftAddedMessage": {
     "message": "Le NFT a été ajouté avec succès !"
   },
-  "newPassword": {
-    "message": "Nouveau mot de passe (min 8 caractères)"
-  },
   "newPasswordCreate": {
     "message": "Créer un nouveau mot de passe"
   },
@@ -7218,9 +7133,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Remplacer l’en-tête Content-Security-Policy"
-  },
-  "padlock": {
-    "message": "Cadenas"
   },
   "paidByMetaMask": {
     "message": "Payé par MetaMask"

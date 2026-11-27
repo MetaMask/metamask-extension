@@ -340,9 +340,6 @@
   "newContract": {
     "message": "Új szerződés"
   },
-  "newPassword": {
-    "message": "Új jelszó (minimum 8 karakter)"
-  },
   "next": {
     "message": "Következő"
   },

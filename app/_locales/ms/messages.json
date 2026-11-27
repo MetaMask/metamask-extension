@@ -330,9 +330,6 @@
   "newContract": {
     "message": "Kontrak Baru"
   },
-  "newPassword": {
-    "message": "Kata Laluan Baru (min 8 aks)"
-  },
   "next": {
     "message": "Seterusnya"
   },

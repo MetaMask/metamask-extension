@@ -331,9 +331,6 @@
   "newContract": {
     "message": "Nytt kontrakt"
   },
-  "newPassword": {
-    "message": "Nytt lösenord (minst 8 tecken)"
-  },
   "next": {
     "message": "Nästa"
   },

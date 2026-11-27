@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "同意して閉じる"
   },
-  "acceptTermsOfUse": {
-    "message": "$1を読んで同意しました",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "サポートへのお問い合わせ"
   },
@@ -1278,38 +1274,6 @@
   },
   "add_device_error_title": {
     "message": "同期を完了できませんでした"
-  },
-  "add_device_success_desc_imported_plural": {
-    "message": "$1件のインポート済みアカウントが携帯電話に同期されました。",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "1件のインポート済みアカウントが携帯電話に同期されました。",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "$1個のウォレットが携帯電話に同期されました。",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "$1個のウォレットと$2件のインポート済みアカウントが携帯電話に同期されました。",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "$1個のウォレットと1件のインポート済みアカウントが携帯電話に同期されました。",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "1個のウォレットが携帯電話に同期されました。",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "1個のウォレットと$1件のインポート済みアカウントが携帯電話に同期されました。",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "1個のウォレットと1件のインポート済みアカウントが携帯電話に同期されました。",
-    "description": "Used when a single wallet and a single imported account were synced"
   },
   "add_device_success_title": {
     "message": "デバイスがペアリングされました"
@@ -4734,52 +4698,6 @@
   "history": {
     "message": "履歴"
   },
-  "holdToRevealContent1": {
-    "message": "シークレットリカバリーフレーズは$1を提供します。",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "ウォレットと資金への完全アクセスを提供します。",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "これは誰にも教えないでください。$1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMaskサポートがこの情報を尋ねることはなく、",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "もし尋ねられた場合はフィッシング詐欺の可能性があります。",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "秘密鍵は$1",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "ウォレットと資金への完全アクセス",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "長押ししてロックされた円を表示します"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "長押しして秘密鍵を表示します"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "秘密鍵は安全に保管してください"
-  },
-  "holdToRevealSRP": {
-    "message": "長押しして SRP を表示"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "SRPは安全に保管してください"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "長押ししてロックが解除された円を表示します"
-  },
   "home": {
     "message": "ホーム",
     "description": "Label for the Home tab in the bottom navigation bar"
@@ -6693,9 +6611,6 @@
   "newNftAddedMessage": {
     "message": "NFTが追加されました！"
   },
-  "newPassword": {
-    "message": "新しいパスワード (最低8文字)"
-  },
   "newPasswordCreate": {
     "message": "新しいパスワードを作成"
   },
@@ -7222,9 +7137,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policyヘッダーを上書き"
-  },
-  "padlock": {
-    "message": "南京錠"
   },
   "paidByMetaMask": {
     "message": "MetaMaskが負担"

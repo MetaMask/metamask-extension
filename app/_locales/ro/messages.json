@@ -334,9 +334,6 @@
   "newContract": {
     "message": "Contract nou"
   },
-  "newPassword": {
-    "message": "Parola Nouă (minimum 8 caractere)"
-  },
   "next": {
     "message": "Înainte"
   },

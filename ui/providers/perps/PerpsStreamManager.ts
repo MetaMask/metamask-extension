@@ -25,6 +25,7 @@
  * ```
  */
 
+import { PERPS_ERROR_CODES } from '@metamask/perps-controller';
 import type {
   Position,
   Order,
@@ -105,6 +106,23 @@ type OptimisticTPSLOverride = {
 // redundant REST calls that contribute to 429 rate-limit errors.
 // If no WS data arrives within this window, the REST fallback fires.
 const WS_GRACE_PERIOD_MS = 3000;
+
+/**
+ * perps-controller >= 25 rejects a read that crossed a provider disconnect
+ * (wallet lock, account switch, network toggle) with
+ * `PROVIDER_LIFECYCLE_STALE`. That is an expected cancellation, not a failed
+ * fetch, so it must not be logged as an error (Sentry / E2E console check).
+ *
+ * @param err - Rejection from `submitRequestToBackground`.
+ * @returns Whether the rejection is a provider lifecycle cancellation.
+ */
+function isProviderLifecycleStale(err: unknown): boolean {
+  const message =
+    typeof err === 'object' && err !== null && 'message' in err
+      ? String(err.message)
+      : String(err);
+  return message.includes(PERPS_ERROR_CODES.PROVIDER_LIFECYCLE_STALE);
+}
 
 // Grace period for optimistic overrides (30 seconds)
 // HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
@@ -232,10 +250,12 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
-              console.error(
-                '[PerpsStreamManager] Failed to fetch positions',
-                err,
-              );
+              if (!isProviderLifecycleStale(err)) {
+                console.error(
+                  '[PerpsStreamManager] Failed to fetch positions',
+                  err,
+                );
+              }
               if (isCurrent() && !this.positions.hasCachedData()) {
                 push(EMPTY_POSITIONS);
               }
@@ -265,7 +285,12 @@ class PerpsStreamManager {
               }
             })
             .catch((err) => {
-              console.error('[PerpsStreamManager] Failed to fetch orders', err);
+              if (!isProviderLifecycleStale(err)) {
+                console.error(
+                  '[PerpsStreamManager] Failed to fetch orders',
+                  err,
+                );
+              }
               if (!cancelled && !this.orders.hasCachedData()) {
                 push(EMPTY_ORDERS);
               }
@@ -304,7 +329,7 @@ class PerpsStreamManager {
               // teardown noise — the fetch started while it still mattered, and
               // by the time it settles nobody is watching. Logging it anyway
               // makes unrelated E2E suites fail on console errors (#46623).
-              if (!cancelled) {
+              if (!cancelled && !isProviderLifecycleStale(err)) {
                 console.error(
                   '[PerpsStreamManager] Failed to fetch account',
                   err,
