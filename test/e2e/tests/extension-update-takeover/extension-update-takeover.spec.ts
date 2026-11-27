@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import semver from 'semver';
 import type { MockedEndpoint, Mockttp } from 'mockttp';
-import { withFixtures } from '../../helpers';
+import { waitForRemoteFeatureFlag, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import ExtensionUpdateTakeover from '../../page-objects/pages/dialog/extension-update-takeover';
@@ -9,30 +10,28 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
-import {
-  openBasicFunctionalityModal,
-  openTakeoverInNewExtensionTab,
-  waitForRemoteFeatureFlag,
-} from '../../page-objects/flows/extension-update-takeover.flow';
+import { navigateToPrivacySettings } from '../../page-objects/flows/settings.flow';
 import { version } from '../../../../package.json';
 
-const minimumVersion = semver.inc(version, 'patch') as string;
-const deprecatedVersion = semver.inc(version, 'minor') as string;
+const nextPatchVersion = semver.inc(version, 'patch') as string;
+const nextMinorVersion = semver.inc(version, 'minor') as string;
 
 const versionUpdateFlags = {
   remoteFeatureFlags: {
-    extensionUpdatePromptMinimumVersion: minimumVersion,
+    extensionUpdatePromptMinimumVersion: nextPatchVersion,
   },
 };
 
+// The installed version is below the deprecated version, which is at or
+// below the minimum, so the unsupported variant shows.
 const unsupportedFlags = {
   remoteFeatureFlags: {
-    extensionUpdatePromptDeprecatedVersion: minimumVersion,
-    extensionUpdatePromptMinimumVersion: deprecatedVersion,
+    extensionUpdatePromptDeprecatedVersion: nextPatchVersion,
+    extensionUpdatePromptMinimumVersion: nextMinorVersion,
   },
 };
 
-function qualifyingFixture(pendingExtensionVersion = minimumVersion) {
+function qualifyingFixture(pendingExtensionVersion = nextPatchVersion) {
   return new FixtureBuilderV2()
     .withAppStateController({ pendingExtensionVersion })
     .build();
@@ -72,7 +71,7 @@ describe('Extension update takeover', function (this: Suite) {
   it('shows and dismisses the unsupported variant', async function () {
     await withFixtures(
       {
-        fixtures: qualifyingFixture(deprecatedVersion),
+        fixtures: qualifyingFixture(nextMinorVersion),
         manifestFlags: unsupportedFlags,
         title: this.test?.fullTitle(),
       },
@@ -120,10 +119,10 @@ describe('Extension update takeover', function (this: Suite) {
         const takeover = new ExtensionUpdateTakeover(driver);
         await takeover.checkVersionUpdateIsDisplayed();
 
-        await openTakeoverInNewExtensionTab(driver, 'popup');
+        await takeover.openInNewExtensionTab('popup');
         await takeover.checkBackgroundIsBlocked();
 
-        await openTakeoverInNewExtensionTab(driver, 'home', '#settings');
+        await takeover.openInNewExtensionTab('home', '#settings');
         await takeover.checkBackgroundIsBlocked();
       },
     );
@@ -148,7 +147,7 @@ describe('Extension update takeover', function (this: Suite) {
                 statusCode: 200,
                 json: [
                   ...getProductionRemoteFlagApiResponse(),
-                  { extensionUpdatePromptMinimumVersion: minimumVersion },
+                  { extensionUpdatePromptMinimumVersion: nextPatchVersion },
                 ],
               };
             }),
@@ -159,16 +158,19 @@ describe('Extension update takeover', function (this: Suite) {
         const takeover = new ExtensionUpdateTakeover(driver);
         await takeover.checkPageIsNotPresent();
 
-        await openBasicFunctionalityModal(driver);
+        await navigateToPrivacySettings(driver);
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.toggleBasicFunctionality();
+        await privacySettings.checkBasicFunctionalityModalIsDisplayed();
         releaseFlags();
         await waitForRemoteFeatureFlag(
           driver,
           'extensionUpdatePromptMinimumVersion',
-          minimumVersion,
+          nextPatchVersion,
         );
         await takeover.checkPageIsNotPresent();
 
-        await new PrivacySettings(driver).cancelBasicFunctionalityModal();
+        await privacySettings.cancelBasicFunctionalityModal();
         await takeover.checkVersionUpdateIsDisplayed();
       },
     );
@@ -187,7 +189,17 @@ describe('Extension update takeover', function (this: Suite) {
         await login(driver);
         const takeover = new ExtensionUpdateTakeover(driver);
         await takeover.checkVersionUpdateIsDisplayed();
-        await takeover.confirmUpdate({ doubleClick: true });
+        const takeoverHandle = await driver.getCurrentWindowHandle();
+        await takeover.clickUpdate({ doubleClick: true });
+        await driver.waitForWindowToClose(takeoverHandle);
+        // A duplicate Update would open its tab moments after the first, so
+        // the single tab has to hold, not just appear.
+        await driver.waitForWindowsWithTitle(
+          WINDOW_TITLES.ExtensionUpdating,
+          1,
+          { stableFor: 2000 },
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionUpdating);
       },
     );
   });
