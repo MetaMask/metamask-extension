@@ -335,6 +335,27 @@ export function convertSummaryToResults(
 }
 
 /**
+ * Samples of every `ALL_METRICS` key; a key no result defines is left out.
+ */
+export function collectPageLoadMetricSamples(measuredResults: Metrics[]): {
+  result: Record<string, number[]>;
+  trimmedCounts: StatisticalResult;
+} {
+  const result: Record<string, number[]> = {};
+  const trimmedCounts: StatisticalResult = {};
+  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
+    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    if (rawSamples.every((sample) => sample === undefined)) {
+      continue;
+    }
+    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
+    result[key] = [...filtered].sort((a, b) => a - b);
+    trimmedCounts[key] = outlierCount;
+  }
+  return { result, trimmedCounts };
+}
+
+/**
  * Run the dApp page-load benchmark and aggregate results.
  *
  * Uses IQR-only outlier trimming (`trimmedCount`). Z-score is intentionally
@@ -435,14 +456,8 @@ export async function runPageLoadBenchmark(
     );
   }
 
-  const result: Record<string, number[]> = {};
-  const trimmedCounts: StatisticalResult = {};
-  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
-    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
-    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
-    result[key] = [...filtered].sort((a, b) => a - b);
-    trimmedCounts[key] = outlierCount;
-  }
+  const { result, trimmedCounts } =
+    collectPageLoadMetricSamples(measuredResults);
 
   let webVitals: WebVitalsSummary | undefined;
   if (measuredWebVitalsRuns.length > 0) {
