@@ -14,9 +14,7 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
-  getAnalyticsId,
   getConsentDecisionMade,
-  getOptedIn,
   getIsSocialLoginFlow,
   getIsPasskeyFeatureAvailable,
   getDeferredDeepLinkParameters,
@@ -78,12 +76,8 @@ export default function CreatePassword({
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
-  const isOptedIn = useSelector(getOptedIn);
   const consentDecisionMade = useSelector(getConsentDecisionMade);
-  const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
-  const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
-
   const startOnboardingWalletSetupTrace = (traceName: TraceName) => {
     bufferedTrace?.({
       name: traceName,
@@ -105,16 +99,6 @@ export default function CreatePassword({
     },
     [bufferedEndTrace],
   );
-
-  const shouldInjectMetametricsIframe = Boolean(
-    consentDecisionMade && isOptedIn && base64AnalyticsId,
-  );
-  const analyticsIframeQuery = {
-    mmi: base64AnalyticsId,
-    env: 'production',
-  };
-  const urlSearchParams = new URLSearchParams(analyticsIframeQuery);
-  const analyticsIframeUrl = `https://start.metamask.io/?${urlSearchParams.toString()}`;
 
   const validateSocialLoginAuthenticatedState = useCallback(async () => {
     const isSeedlessOnboardingUserAuthenticated = await dispatch(
@@ -409,13 +393,6 @@ export default function CreatePassword({
         error={hasCreationError}
         loading={isSubmitting}
       />
-      {shouldInjectMetametricsIframe ? (
-        <iframe
-          src={analyticsIframeUrl}
-          className="create-password__analytics-iframe"
-          data-testid="create-password-iframe"
-        />
-      ) : null}
     </Box>
   );
 }
