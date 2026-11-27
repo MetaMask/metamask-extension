@@ -1622,6 +1622,53 @@ class Driver {
   }
 
   /**
+   * Waits for an element in the window with the given title, switching to
+   * that window again whenever the current one is discarded.
+   *
+   * Use this when the extension can replace a window with a new one that has
+   * the same title while the test is waiting. For example, after "Connect" on
+   * a snap connection, the dialog can close and reopen before the install
+   * screen appears.
+   *
+   * @param {string} title - The title of the window to wait in.
+   * @param {string | object} rawLocator - Element locator.
+   * @param {object} [options] - parameter object
+   * @param {number} [options.timeout] - The maximum total time in milliseconds
+   * to wait for the element. Defaults to `this.timeout`.
+   * @returns {Promise<void>} promise resolving once the element is found.
+   * @throws {Error} Will throw an error if the element is not found within the
+   * timeout, or on any error other than the window being discarded.
+   */
+  async waitForSelectorInWindowWithTitle(
+    title,
+    rawLocator,
+    { timeout = this.timeout } = {},
+  ) {
+    const start = Date.now();
+
+    await this.waitUntil(
+      async () => {
+        await this.switchToWindowWithTitle(title);
+        try {
+          await this.waitForSelector(rawLocator, {
+            timeout: Math.max(timeout - (Date.now() - start), 1),
+          });
+          return true;
+        } catch (error) {
+          if (error?.name !== 'NoSuchWindowError') {
+            throw error;
+          }
+          console.log(
+            `Window with title "${title}" was discarded, switching to it again`,
+          );
+          return false;
+        }
+      },
+      { interval: 100, timeout },
+    );
+  }
+
+  /**
    * Waits until there is a window/tab with the given title, without changing the current window focus.
    *
    * @param {string} title - The title of the window or tab to wait for.

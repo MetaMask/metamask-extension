@@ -322,8 +322,7 @@ describe('Test Snap Metrics', function () {
         const snapInstall = new SnapInstall(driver);
         await snapInstall.checkPageIsLoaded();
         await snapInstall.clickConnectButton();
-
-        await driver.waitForSelector({ text: 'Connection failed' });
+        await snapInstall.waitForConnectionFailed();
 
         const events = await getEventPayloads(
           driver,

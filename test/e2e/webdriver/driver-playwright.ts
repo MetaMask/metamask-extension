@@ -1192,6 +1192,16 @@ export class PlaywrightDriver {
     );
   }
 
+  async waitForSelectorInWindowWithTitle(
+    _title: string,
+    _rawLocator: RawLocator,
+    _options: { timeout?: number } = {},
+  ): Promise<void> {
+    throw new Error(
+      'PlaywrightDriver.waitForSelectorInWindowWithTitle is not yet implemented.',
+    );
+  }
+
   async waitUntilXWindowHandles(
     _expected: number,
     _delayStep = 1000,
