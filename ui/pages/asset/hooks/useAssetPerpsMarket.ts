@@ -242,9 +242,14 @@ export function useAssetPerpsMarket(
       }
     };
 
-    fetchAssetPerpsMarketWithRetry(symbol, useTerminalApi, () => !cancelled, {
-      isRwa,
-    }).then(settle);
+    // Never rejects: failures resolve to `undefined` after one retry.
+    // eslint-disable-next-line no-void
+    void fetchAssetPerpsMarketWithRetry(
+      symbol,
+      useTerminalApi,
+      () => !cancelled,
+      { isRwa },
+    ).then(settle);
 
     return () => {
       cancelled = true;
