@@ -8,7 +8,7 @@
  */
 
 import log from 'loglevel';
-import { routes } from './routes';
+import { matchRoute } from './routes';
 import type { Destination, Route } from './routes/route';
 import { verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
@@ -70,7 +70,7 @@ export async function parse<
     navigationOrigin: NavigationOrigin.EXTERNAL;
   },
 >(url: URL, options?: Options): Promise<ParsedDeepLink<Options> | false> {
-  const route = routes.get(url.pathname.toLowerCase());
+  const route = matchRoute(url.pathname);
   if (!route) {
     log.debug('No handler found for the pathname:', url.pathname);
     return false;

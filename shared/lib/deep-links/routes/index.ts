@@ -16,7 +16,7 @@ import { perpsMarkets } from './perps-markets';
 import { predict } from './predict';
 import { privacy } from './privacy';
 import { rewards } from './rewards';
-import type { Route } from './route';
+import { addRoute } from './route-registry';
 import { sell } from './sell';
 import { shield } from './shield';
 import { swap } from './swap';
@@ -24,27 +24,7 @@ import { topTraders } from './top-traders';
 import { trending } from './trending';
 
 export type { Route } from './route';
-
-export const routes = new Map<Route['pathname'], Route>();
-
-/**
- * Adds a route to the routes map.
- *
- * @param route - The route to add.
- */
-export function addRoute(route: Route) {
-  if (process.env.DEBUG) {
-    // just making sure all added route `pathname`'s are unique; but only in
-    // DEBUG builds, since it's too late to change the routes in prod.
-    if (routes.has(route.pathname)) {
-      throw new Error(
-        `Route with pathname "${route.pathname}" already exists.`,
-      );
-    }
-  }
-
-  routes.set(route.pathname, route);
-}
+export { addRoute, matchRoute, routes } from './route-registry';
 
 if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
