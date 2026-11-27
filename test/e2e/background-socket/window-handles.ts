@@ -1,5 +1,6 @@
 import log from 'loglevel';
 import { ThenableWebDriver } from 'selenium-webdriver';
+import { WINDOW_TITLES } from '../constants';
 import { getServerMochaToBackground } from './server-mocha-to-background';
 import { Handle, WindowProperties } from './types';
 
@@ -201,6 +202,10 @@ export class WindowHandles {
     }
 
     for (const candidateId of this.rawHandles) {
+      if (this.#cannotBecomeDialog(candidateId, property, value)) {
+        continue;
+      }
+
       const matchesProperty = await this.switchToHandleAndCheckForProperty(
         candidateId,
         property,
@@ -213,6 +218,35 @@ export class WindowHandles {
     }
 
     return undefined;
+  }
+
+  /**
+   * Whether a handle can be skipped while searching for the MetaMask Dialog.
+   *
+   * The dialog always opens in a new window, so a handle already annotated
+   * with another title can never become it. Switching to such a handle is not
+   * only wasted work: in Firefox it also activates the tab, and an active
+   * full-screen MetaMask tab stops the extension from opening the dialog.
+   *
+   * @param handleId - The handle to check
+   * @param property - 'title' or 'url'
+   * @param value - The value we're searching for
+   * @returns Whether the handle can be skipped
+   */
+  #cannotBecomeDialog(
+    handleId: string,
+    property: WindowProperties,
+    value: string,
+  ): boolean {
+    if (property !== 'title' || value !== WINDOW_TITLES.Dialog) {
+      return false;
+    }
+
+    const knownTitle = this.annotatedHandles.find(
+      (handle) => handle.id === handleId,
+    )?.title;
+
+    return Boolean(knownTitle) && knownTitle !== WINDOW_TITLES.Dialog;
   }
 
   /**
