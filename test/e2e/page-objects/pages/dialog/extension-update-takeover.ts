@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Key, Origin } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { regularDelayMs } from '../../../helpers';
@@ -129,6 +128,18 @@ class ExtensionUpdateTakeover {
     await waitForFocusedTestId(this.driver, this.updateButton.testId);
   }
 
+  /**
+   * Checks the takeover is still shown after a short wait, so a close that is
+   * already in flight fails the check.
+   */
+  async checkStaysDisplayed(): Promise<void> {
+    await this.driver.waitUntil(
+      async () =>
+        await this.driver.isElementPresentAndVisible(this.takeover, 500),
+      { timeout: this.driver.timeout, interval: 200, stableFor: 2000 },
+    );
+  }
+
   async checkUnsupportedVersionIsDisplayed(): Promise<void> {
     await this.checkVariantIsDisplayed(
       'unsupportedVersion',
@@ -194,17 +205,17 @@ class ExtensionUpdateTakeover {
       return !handles.includes(takeoverHandle);
     });
     let updatingHandles: string[] = [];
-    await this.driver.wait(async () => {
-      updatingHandles = await findWindowsWithTitle(
-        this.driver,
-        WINDOW_TITLES.ExtensionUpdating,
-      );
-      return updatingHandles.length > 0;
-    });
-    assert.equal(
-      updatingHandles.length,
-      1,
-      'Expected exactly one updating tab',
+    // A duplicate Update would open its tab moments after the first, so the
+    // single tab has to hold, not just appear.
+    await this.driver.waitUntil(
+      async () => {
+        updatingHandles = await findWindowsWithTitle(
+          this.driver,
+          WINDOW_TITLES.ExtensionUpdating,
+        );
+        return updatingHandles.length === 1;
+      },
+      { timeout: this.driver.timeout, interval: 500, stableFor: 2000 },
     );
     await this.driver.driver.switchTo().window(updatingHandles[0]);
   }
