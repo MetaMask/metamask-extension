@@ -1,0 +1,53 @@
+@use 'design-system';
+
+// AI-branding gradient chrome colors for the Market Insights entry card,
+// shared by the title text, sparkle/arrow icons and the border sweep.
+// These are intentional gradient stops not yet available as official design
+// tokens.
+/* stylelint-disable color-no-hex */
+$market-insights-chrome-gradient-head: #ed666e;
+$market-insights-chrome-gradient-tail: #d86fcf;
+/* stylelint-enable color-no-hex */
+
+.market-insights-chrome-text {
+  background: linear-gradient(
+    to right,
+    $market-insights-chrome-gradient-head,
+    $market-insights-chrome-gradient-tail
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+// One-shot gradient sweep that travels around the card border. The rect uses
+// `pathLength={100}`, so a dash array of `50 50` shows half the perimeter and
+// animating the dash offset from 140 to 40 moves that trail forward exactly
+// one full loop.
+.market-insights-border-sweep {
+  stroke-dasharray: 50 50;
+  animation: market-insights-border-sweep 1000ms ease-in-out forwards;
+}
+
+@keyframes market-insights-border-sweep {
+  0% {
+    stroke-dashoffset: 140;
+    opacity: 0;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 40;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .market-insights-border-sweep {
+    animation: none;
+    display: none;
+  }
+}

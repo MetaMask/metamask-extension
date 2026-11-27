@@ -189,6 +189,7 @@ export const ROUTE_PAGE_OBJECT_REGISTRY: RoutePageObjectRegistry = {
   '/asset/activation/loader': NOT_A_SCREEN,
   '/asset/:chainId/:asset?/:id?': AssetDetailsPage,
   '/asset/:chainId/:asset?/:id?/security-trust': null,
+  '/asset/:chainId/:asset?/:id?/market-insights': null,
   '/defi': DeFiDetailsPage,
   '/token-management': TokenManagementPage,
   '/custom-token-import': CustomTokenImportPage,

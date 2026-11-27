@@ -35,6 +35,8 @@ export const ASSET_DETAILS_ROUTE =
   `${ASSET_ROUTE}/:chainId/:asset?/:id?` as const;
 export const ASSET_SECURITY_TRUST_ROUTE =
   `${ASSET_ROUTE}/:chainId/:asset?/:id?/security-trust` as const;
+export const ASSET_MARKET_INSIGHTS_ROUTE =
+  `${ASSET_ROUTE}/:chainId/:asset?/:id?/market-insights` as const;
 export const ASSET_IMAGE_ROUTE = `${ASSET_ROUTE}/image/:asset/:id` as const;
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
@@ -357,6 +359,11 @@ export const ROUTES = [
   {
     path: ASSET_SECURITY_TRUST_ROUTE,
     label: 'Asset Security Trust Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: ASSET_MARKET_INSIGHTS_ROUTE,
+    label: 'Asset Market Insights Page',
     trackInAnalytics: true,
   },
   { path: SETTINGS_ROUTE, label: 'Settings Page', trackInAnalytics: true },
