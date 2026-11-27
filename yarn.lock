@@ -7544,10 +7544,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:3.3.0"
-  checksum: 10/cab9f63967477e0f36792adeb4963f1b4271f078a93231f3df7a379712078516f824b13d7b2cfb06b9ad0215b90256d3b1299b34ca61869f556455859508de5d
+"@metamask/bitcoin-wallet-snap@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:3.4.0"
+  checksum: 10/db692fa35248612443619c053268c79011f9ef23ab8b436dba1f1c7dab5c0c94ce9e3c8dffcae3af1a76a32d84dcb784634dba4e4dec4ba684dcde9c6e312a0e
   languageName: node
   linkType: hard
 
@@ -34648,7 +34648,7 @@ __metadata:
     "@metamask/base-controller": "npm:^10.1.0"
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/bitcoin-regtest-up": "npm:^2.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^3.3.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^3.4.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^83.2.0"
     "@metamask/bridge-status-controller": "npm:^78.0.3"

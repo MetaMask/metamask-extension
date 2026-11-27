@@ -2,6 +2,7 @@ import type { MetaMaskReduxState } from '../../../../store/store';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import {
+  BITCOIN_ASSET,
   EVM_ASSET,
   EVM_NATIVE_ASSET,
   SOLANA_NATIVE_ASSET,
@@ -136,5 +137,26 @@ describe('useMaxAmount', () => {
     mockBalance('1000000000', 9);
 
     expect(renderHook().isMaxAmountSupported).toBe(false);
+  });
+
+  it('reports Max as unsupported for Bitcoin assets', () => {
+    mockNonEvmMaxAmount(false);
+    mockSendContext(BITCOIN_ASSET, {
+      chainId: BITCOIN_ASSET.chainId,
+    });
+    mockBalance('100000000', 8);
+
+    expect(renderHook().isMaxAmountSupported).toBe(false);
+  });
+
+  it('returns the full Bitcoin balance when no Snap quote is routed', async () => {
+    mockNonEvmMaxAmount(false);
+    mockSendContext(BITCOIN_ASSET, {
+      chainId: BITCOIN_ASSET.chainId,
+    });
+    mockBalance('100000000', 8);
+
+    expect(await renderHook().getMaxAmount()).toBe('1');
+    expect(mockGetNonEvmMaxAmount).not.toHaveBeenCalled();
   });
 });

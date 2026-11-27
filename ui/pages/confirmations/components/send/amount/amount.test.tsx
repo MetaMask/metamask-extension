@@ -3,6 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
+  BITCOIN_ASSET,
   EVM_ASSET,
   MOCK_NFT1155,
   MOCK_NFT721,
@@ -341,6 +342,28 @@ describe('Amount', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: { ...SOLANA_ASSET, isNative: true },
       chainId: SOLANA_ASSET.chainId,
+    } as unknown as SendContext.SendContextType);
+    jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
+      balance: '1',
+      rawBalanceNumeric: new Numeric('1', 10),
+    } as unknown as ReturnType<typeof BalanceFunctions.useBalance>);
+    jest.spyOn(CurrencyConversions, 'useCurrencyConversions').mockReturnValue({
+      conversionSupportedForAsset: true,
+      fiatCurrencySymbol: '$',
+      fiatCurrencyName: 'usd',
+      getFiatValue: () => '20',
+      getFiatDisplayValue: () => '$ 20.00',
+      getNativeValue: () => '20',
+    });
+
+    const { queryByText } = render();
+    expect(queryByText(messages.max.message)).not.toBeInTheDocument();
+  });
+
+  it('max button is not rendered for Bitcoin assets', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: BITCOIN_ASSET,
+      chainId: BITCOIN_ASSET.chainId,
     } as unknown as SendContext.SendContextType);
     jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
       balance: '1',

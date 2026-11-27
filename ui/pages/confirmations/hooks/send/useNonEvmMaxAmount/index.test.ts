@@ -33,6 +33,14 @@ const TRON_ASSET = {
   symbol: 'TRX',
 };
 
+const BITCOIN_ASSET = {
+  assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+  chainId: 'bip122:000000000019d6689c085ae165831e93',
+  decimals: 8,
+  isNative: true,
+  symbol: 'BTC',
+};
+
 const TO_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
 
 const mockUseSendContext = jest.mocked(SendContext.useSendContext);
@@ -107,6 +115,23 @@ describe('useNonEvmMaxAmount', () => {
       chainId: SOLANA_NATIVE_ASSET.chainId,
     });
     setBalance('1000000000');
+
+    const { result } = renderNonEvmMaxAmount();
+
+    expect(result.current.isNonEvmMaxSupported).toBe(false);
+    await expect(result.current.getNonEvmMaxAmount()).resolves.toBeUndefined();
+    expect(mockGetTronMaxSendableAmount).not.toHaveBeenCalled();
+  });
+
+  // The Bitcoin Snap quotes a maximum, but Bitcoin is deliberately left out of
+  // the registry so Max keeps hiding the fee behind the confirmation screen.
+  it('has no quote for a Bitcoin asset', async () => {
+    setContext({
+      asset: BITCOIN_ASSET,
+      chainId: BITCOIN_ASSET.chainId,
+      toResolved: 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf',
+    });
+    setBalance('100000000');
 
     const { result } = renderNonEvmMaxAmount();
 
