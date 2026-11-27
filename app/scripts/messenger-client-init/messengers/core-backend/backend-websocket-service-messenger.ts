@@ -4,7 +4,6 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
 import {
   OnboardingControllerGetStateAction,
@@ -51,7 +50,6 @@ export function getBackendWebSocketServiceMessenger(
 }
 
 type AllowedInitializationActions =
-  | RemoteFeatureFlagControllerGetStateAction
   | AuthenticationControllerGetBearerTokenAction
   | PreferencesControllerGetStateAction
   | OnboardingControllerGetStateAction;
@@ -82,7 +80,6 @@ export function getBackendWebSocketServiceInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
       'PreferencesController:getState',
       'OnboardingController:getState',

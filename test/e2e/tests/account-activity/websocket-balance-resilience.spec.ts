@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
@@ -271,47 +270,5 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
         },
       );
     });
-  });
-
-  it('balance updates work via REST polling when WebSocket feature flag is disabled', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        manifestFlags: {
-          remoteFeatureFlags: {
-            backendWebSocketConnection: { value: false },
-          },
-        },
-        testSpecificMock: mockChain1337,
-      },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await login(driver);
-        const homepage = new HomePage(driver);
-
-        const connectionCount = WebSocketRegistry.getServer(
-          WEBSOCKET_SERVICES.accountActivity,
-        ).getWebsocketConnectionCount();
-
-        assert.equal(
-          connectionCount,
-          0,
-          `Expected 0 WebSocket connections with feature flag disabled, got ${connectionCount}`,
-        );
-
-        await localNodes[0].setAccountBalance(
-          DEFAULT_FIXTURE_ACCOUNT,
-          FIFTY_ETH_WEI,
-        );
-
-        await waitForBalanceUpdate(homepage, driver, '50');
-      },
-    );
   });
 });

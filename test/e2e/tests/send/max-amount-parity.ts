@@ -288,16 +288,10 @@ export async function mockMaxAmountParityApis(
  * Solana specs disable the same flag when they cannot answer every popular
  * chain's RPC.
  *
- * `backendWebSocketConnection` stays pinned to the boolean the shared E2E
- * mock uses. A threshold array would leave the websocket service off.
- *
  * @returns Client-config `/v1/flags` body.
  */
 function flagsWithRpcFailoverDisabled(): Json[] {
-  const overridden = new Set([
-    'corePlatformRpcFailoverMode',
-    'backendWebSocketConnection',
-  ]);
+  const overridden = new Set(['corePlatformRpcFailoverMode']);
   const retained = getProductionRemoteFlagApiResponse().filter(
     (entry) =>
       entry === null ||
@@ -306,11 +300,7 @@ function flagsWithRpcFailoverDisabled(): Json[] {
       !Object.keys(entry).some((name) => overridden.has(name)),
   );
 
-  return [
-    ...retained,
-    { backendWebSocketConnection: true },
-    { corePlatformRpcFailoverMode: 'disabled' },
-  ];
+  return [...retained, { corePlatformRpcFailoverMode: 'disabled' }];
 }
 
 /**
