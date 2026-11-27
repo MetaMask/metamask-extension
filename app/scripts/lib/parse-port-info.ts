@@ -40,7 +40,8 @@ export function parsePortInfo(
     isMetaMaskUIPort = Boolean(metamaskInternalProcessHash[processName]);
   } else {
     isMetaMaskUIPort =
-      senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
+      senderUrl?.origin === `chrome-extension://${browser.runtime.id}` &&
+      senderUrl.pathname !== '/cashtag-widget.html';
   }
 
   return { processName, senderUrl, isMetaMaskUIPort };

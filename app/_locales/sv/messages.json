@@ -214,9 +214,6 @@
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasUsed": {
-    "message": "Gas använd"
-  },
   "general": {
     "message": "Allmänt"
   },
@@ -333,9 +330,6 @@
   },
   "newContract": {
     "message": "Nytt kontrakt"
-  },
-  "newPassword": {
-    "message": "Nytt lösenord (minst 8 tecken)"
   },
   "next": {
     "message": "Nästa"
@@ -536,9 +530,6 @@
   },
   "unapproved": {
     "message": "Inte godkänd"
-  },
-  "units": {
-    "message": "enheter"
   },
   "unknown": {
     "message": "okänt"

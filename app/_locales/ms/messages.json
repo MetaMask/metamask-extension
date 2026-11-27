@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasUsed": {
-    "message": "Gas Digunakan"
-  },
   "general": {
     "message": "Am"
   },
@@ -332,9 +329,6 @@
   },
   "newContract": {
     "message": "Kontrak Baru"
-  },
-  "newPassword": {
-    "message": "Kata Laluan Baru (min 8 aks)"
   },
   "next": {
     "message": "Seterusnya"
@@ -538,9 +532,6 @@
   },
   "unapproved": {
     "message": "Belum Diluluskan"
-  },
-  "units": {
-    "message": "unit"
   },
   "unknown": {
     "message": "Tidak diketahui"

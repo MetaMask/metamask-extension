@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "গ্যাসের সীমা"
   },
-  "gasUsed": {
-    "message": "গ্যাস ব্যবহার করা হয়েছে"
-  },
   "general": {
     "message": "সাধারণ"
   },
@@ -342,9 +339,6 @@
   },
   "newContract": {
     "message": "নতুন কন্ট্র্যাক্ট"
-  },
-  "newPassword": {
-    "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
   },
   "next": {
     "message": "পরবর্তী"
@@ -554,9 +548,6 @@
   },
   "unapproved": {
     "message": "অননুমোদিত"
-  },
-  "units": {
-    "message": "ইউনিটসমূহ"
   },
   "unknown": {
     "message": "অজানা"

@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas-raja"
   },
-  "gasUsed": {
-    "message": "Käytetty bensaa"
-  },
   "general": {
     "message": "Yleistä"
   },
@@ -345,9 +342,6 @@
   },
   "newContract": {
     "message": "Uusi sopimus"
-  },
-  "newPassword": {
-    "message": "Uusi salasana (väh. 8 merkkiä)"
   },
   "next": {
     "message": "Seuraava"
@@ -554,9 +548,6 @@
   },
   "unapproved": {
     "message": "Ei hyväksytty"
-  },
-  "units": {
-    "message": "yksikköä"
   },
   "unknown": {
     "message": "Tuntematon"

@@ -64,10 +64,6 @@
   "acceptAndClose": {
     "message": "동의 및 닫기"
   },
-  "acceptTermsOfUse": {
-    "message": "$1의 내용을 읽고 이에 동의합니다",
-    "description": "$1 is the `terms` message"
-  },
   "accessRestrictedContactSupport": {
     "message": "지원팀에 문의"
   },
@@ -1279,38 +1275,6 @@
   "add_device_error_title": {
     "message": "동기화를 완료할 수 없습니다"
   },
-  "add_device_success_desc_imported_plural": {
-    "message": "가져온 계정 $1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of imported accounts. Used when only imported accounts were synced"
-  },
-  "add_device_success_desc_imported_singular": {
-    "message": "가져온 계정 1개가 휴대전화에 동기화되었습니다.",
-    "description": "Used when a single imported account was synced"
-  },
-  "add_device_success_desc_wallet_plural": {
-    "message": "지갑 $1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of wallets. Used when only wallets were synced"
-  },
-  "add_device_success_desc_wallet_plural_imported_plural": {
-    "message": "지갑 $1개와 가져온 계정 $2개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of wallets, $2 is the number of imported accounts"
-  },
-  "add_device_success_desc_wallet_plural_imported_singular": {
-    "message": "지갑 $1개와 가져온 계정 1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of wallets. Used when multiple wallets and a single imported account were synced"
-  },
-  "add_device_success_desc_wallet_singular": {
-    "message": "지갑 1개가 휴대전화에 동기화되었습니다.",
-    "description": "Used when a single wallet was synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_plural": {
-    "message": "지갑 1개와 가져온 계정 $1개가 휴대전화에 동기화되었습니다.",
-    "description": "$1 is the number of imported accounts. Used when a single wallet and multiple imported accounts were synced"
-  },
-  "add_device_success_desc_wallet_singular_imported_singular": {
-    "message": "지갑 1개와 가져온 계정 1개가 휴대전화에 동기화되었습니다.",
-    "description": "Used when a single wallet and a single imported account were synced"
-  },
   "add_device_success_title": {
     "message": "장치 페어링됨"
   },
@@ -1421,9 +1385,6 @@
   },
   "advancedGasPriceModalTitle": {
     "message": "고급 네트워크 수수료"
-  },
-  "advancedGasPriceTitle": {
-    "message": "가스 가격"
   },
   "advancedPermissionSmallCase": {
     "message": "고급 승인"
@@ -1685,12 +1646,6 @@
   },
   "amount": {
     "message": "수량"
-  },
-  "amountReceived": {
-    "message": "수취 금액"
-  },
-  "amountSent": {
-    "message": "송금액"
   },
   "andForListItems": {
     "message": "$1, 그리고 $2",
@@ -4329,9 +4284,6 @@
     "message": "$1 초",
     "description": "$1 represents a number of seconds"
   },
-  "gasUsed": {
-    "message": "가스 사용됨"
-  },
   "gatorNoJustificationProvided": {
     "message": "권한에 대한 근거가 제공되지 않았습니다"
   },
@@ -4745,52 +4697,6 @@
   },
   "history": {
     "message": "기록"
-  },
-  "holdToRevealContent1": {
-    "message": "비밀복구구문이 있으면 $1 기능을 사용할 수 있습니다",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
-  },
-  "holdToRevealContent2": {
-    "message": "지갑과 자금 모두에 액세스할 수 있습니다.",
-    "description": "Is the bolded text in 'holdToRevealContent1'"
-  },
-  "holdToRevealContent3": {
-    "message": "이는 누구와도 공유하지 마세요. $1 $2",
-    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
-  },
-  "holdToRevealContent4": {
-    "message": "MetaMask 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
-    "description": "Part of 'holdToRevealContent3'"
-  },
-  "holdToRevealContent5": {
-    "message": "정보를 요구하는 경우 피싱 사기일 수 있습니다.",
-    "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealContentPrivateKey1": {
-    "message": "개인 키가 있으면 $1 기능을 사용할 수 있습니다",
-    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealContentPrivateKey2": {
-    "message": "지갑과 자금 모두에 액세스할 수 있습니다.",
-    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
-  },
-  "holdToRevealLockedLabel": {
-    "message": "눌러서 잠긴 서클 공개"
-  },
-  "holdToRevealPrivateKey": {
-    "message": "눌러서 개인 키 공개"
-  },
-  "holdToRevealPrivateKeyTitle": {
-    "message": "개인 키를 안전하게 보관하세요"
-  },
-  "holdToRevealSRP": {
-    "message": "눌러서 SRP 공개"
-  },
-  "holdToRevealSRPTitle": {
-    "message": "SRP를 안전하게 보관하세요"
-  },
-  "holdToRevealUnlockedLabel": {
-    "message": "눌러서 잠금해제된 서클 공개"
   },
   "home": {
     "message": "홈",
@@ -6705,9 +6611,6 @@
   "newNftAddedMessage": {
     "message": "NFT를 성공적으로 추가했습니다!"
   },
-  "newPassword": {
-    "message": "새 비밀번호(8자 이상)"
-  },
   "newPasswordCreate": {
     "message": "새 비밀번호 만들기"
   },
@@ -6784,9 +6687,6 @@
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap 및 대부분의 하드웨어 지갑은 현재 사용 중인 브라우저 버전에서 작동하지 않습니다."
-  },
-  "noMMFeeSwapping": {
-    "message": "MetaMask 수수료 없음"
   },
   "noNetworkFee": {
     "message": "네트워크 수수료 없음"
@@ -7237,9 +7137,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy 헤더 무시"
-  },
-  "padlock": {
-    "message": "패드락"
   },
   "paidByMetaMask": {
     "message": "MetaMask가 지불함"
@@ -12272,27 +12169,6 @@
   "transactionFlowNetwork": {
     "message": "네트워크:"
   },
-  "transactionHistoryBaseFee": {
-    "message": "기본 수수료 (GWEI)"
-  },
-  "transactionHistoryL1GasLabel": {
-    "message": "총 L1 네트워크 수수료"
-  },
-  "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 가스 한도"
-  },
-  "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 가스 가격"
-  },
-  "transactionHistoryMaxFeePerGas": {
-    "message": "가스당 최대 수수료"
-  },
-  "transactionHistoryPriorityFee": {
-    "message": "우선 수수료 (GWEI)"
-  },
-  "transactionHistoryTotalGasFee": {
-    "message": "총 네트워크 수수료"
-  },
   "transactionIdCopied": {
     "message": "트랜잭션 ID 복사됨"
   },
@@ -12475,9 +12351,6 @@
   "unifiedSwapFromTo": {
     "message": "$1 $2를 $3(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
-  },
-  "units": {
-    "message": "단위"
   },
   "unknown": {
     "message": "알 수 없음"

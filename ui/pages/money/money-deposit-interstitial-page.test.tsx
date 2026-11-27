@@ -9,6 +9,7 @@ import { MoneyDepositInterstitialPage } from './money-deposit-interstitial-page'
 
 const mockNavigate = jest.fn();
 const mockUseMoneyAccountAvailability = jest.fn();
+const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -22,7 +23,7 @@ jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
 }));
 jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
-  useMoneyAccountDeposit: () => ({ initiateDeposit: mockInitiateDeposit }),
+  useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
 }));
 
 const AVAILABLE = {
@@ -43,6 +44,11 @@ describe('MoneyDepositInterstitialPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseMoneyAccountAvailability.mockReturnValue(AVAILABLE);
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
+      isLifecycleLoading: false,
+    });
     mockInitiateDeposit.mockResolvedValue(true);
   });
 
@@ -85,6 +91,29 @@ describe('MoneyDepositInterstitialPage', () => {
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
   });
 
+  it('waits for the lifecycle read before starting the deposit', async () => {
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
+      isLifecycleLoading: true,
+    });
+
+    const { rerender } = await renderPage();
+
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: false,
+      isLifecycleLoading: false,
+    });
+    rerender(<MoneyDepositInterstitialPage />);
+    await act(async () => undefined);
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+  });
+
   it('redirects ineligible users to the wallet home without depositing', async () => {
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: { isAvailable: false },
@@ -106,5 +135,20 @@ describe('MoneyDepositInterstitialPage', () => {
     await renderPage();
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
+  });
+
+  it('goes to Money Home when the account is read-only', async () => {
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isDisabled: true,
+      isLifecycleLoading: false,
+    });
+    mockInitiateDeposit.mockResolvedValue(false);
+
+    await renderPage();
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+    });
   });
 });

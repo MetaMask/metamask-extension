@@ -52,6 +52,12 @@ class NetworksPage {
   private readonly editNetworkButton =
     '[data-testid="network-list-item-options-edit"]';
 
+  private readonly networkOptionsButton = (chainId: string) =>
+    `[data-testid="network-list-item-options-button-${chainId}"]`;
+
+  private readonly networkOptionsMenu =
+    '.multichain-network-list-item-menu__popover';
+
   private readonly networksPageSuccessToast = {
     testId: 'networks-page-network-success-toast',
   };
@@ -288,9 +294,12 @@ class NetworksPage {
 
   async openNetworkListOptions(chainId: string): Promise<void> {
     console.log(`Open network options for ${chainId} on the networks page`);
-    await this.driver.clickElement(
-      `[data-testid="network-list-item-options-button-${chainId}"]`,
-    );
+    const optionsButton = this.networkOptionsButton(chainId);
+    // The network list can still grow after the page loads (e.g. non-EVM
+    // networks), pushing the anchor out of view and leaving the menu hidden.
+    await this.driver.waitForElementToStopMoving(optionsButton);
+    await this.driver.clickElement(optionsButton);
+    await this.driver.waitForSelector(this.networkOptionsMenu);
   }
 
   async openNetworkRPC(chainId: string): Promise<void> {

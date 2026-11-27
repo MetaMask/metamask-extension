@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { render, waitFor, act } from '@testing-library/react';
 import AdvancedChartIframe, {
   CHART_ORIGIN,
@@ -7,7 +8,10 @@ import AdvancedChartIframe, {
   getChartOrigin,
   LOAD_TIMEOUT_MS,
 } from './advanced-chart-iframe';
-import { VISIBLE_WINDOW_MS_BY_INTERVAL } from './chart-window-mapping';
+import {
+  getTvResolution,
+  VISIBLE_WINDOW_MS_BY_INTERVAL,
+} from './chart-window-mapping';
 
 type Bar = { time: number };
 
@@ -30,11 +34,13 @@ function setOhlcvPayload(
     lastBarTime !== undefined && windowMs !== undefined
       ? lastBarTime - windowMs
       : undefined;
+  const resolution = getTvResolution(interval);
   return {
     data,
     rnBackedPagination: { enabled: true },
-    atomicIntervalWindow: true,
+    boundedIntervalWindow: true,
     ...(visibleFromMs === undefined ? {} : { visibleFromMs }),
+    ...(resolution === undefined ? {} : { resolution }),
   };
 }
 
@@ -788,6 +794,35 @@ describe('AdvancedChartIframe', () => {
         );
       });
     });
+
+    it.each<[string, string]>([
+      ['5m', '5'],
+      ['4h', '240'],
+      ['1w', '1W'],
+    ])(
+      'sends the %s interval as TradingView resolution %s',
+      async (interval, expectedResolution) => {
+        const { rerender } = renderLoaded();
+
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            selectedInterval={interval}
+            ohlcvData={sameLengthOtherValues}
+          />,
+        );
+
+        await waitFor(() => {
+          const payloads = postMessageSpy.mock.calls
+            .map(([message]) => JSON.parse(message))
+            .filter(({ type }) => type === 'SET_OHLCV_DATA')
+            .map(({ payload }) => payload);
+          expect(payloads.at(-1)).toMatchObject({
+            resolution: expectedResolution,
+          });
+        });
+      },
+    );
 
     it('still sends a lightweight update when only the last bar moves', async () => {
       const { rerender } = renderLoaded();

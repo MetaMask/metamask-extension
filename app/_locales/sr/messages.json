@@ -217,9 +217,6 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasUsed": {
-    "message": "Korišćen gas"
-  },
   "general": {
     "message": "Opšte"
   },
@@ -336,9 +333,6 @@
   },
   "newContract": {
     "message": "Novi ugovor"
-  },
-  "newPassword": {
-    "message": "Nova lozinka (minimalno 8 karaktera)"
   },
   "next": {
     "message": "Даље"
@@ -545,9 +539,6 @@
   },
   "unapproved": {
     "message": "Neodobren"
-  },
-  "units": {
-    "message": "jedinice"
   },
   "unknown": {
     "message": "Непознато"

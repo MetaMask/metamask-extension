@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasUsed": {
-    "message": "گاز استفاده شد"
-  },
   "general": {
     "message": "عمومی"
   },
@@ -345,9 +342,6 @@
   },
   "newContract": {
     "message": "قرارداد جدید"
-  },
-  "newPassword": {
-    "message": "رمز عبور جدید (حداقل 8 حرف)"
   },
   "next": {
     "message": "بعدی"
@@ -557,9 +551,6 @@
   },
   "unapproved": {
     "message": "تصدیق ناشده"
-  },
-  "units": {
-    "message": "واحد ها"
   },
   "unknown": {
     "message": "ناشناس"
