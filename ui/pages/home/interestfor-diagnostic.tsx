@@ -7,13 +7,18 @@ export const InterestforDiagnostic = () => {
   const [polyfillInstalled, setPolyfillInstalled] = useState<boolean | null>(
     null,
   );
+  const [nativeSupport, setNativeSupport] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkPolyfill = () => {
-      const installed =
-        'interestForElement' in document.createElement('button');
+      const installed = '__interestForData' in document;
+      const native = 'interestForElement' in document.createElement('button');
       setPolyfillInstalled(installed);
-      console.info('[diagnostic] interestfor polyfill check:', installed);
+      setNativeSupport(native);
+      console.info('[diagnostic] interestfor polyfill check:', {
+        installed,
+        native,
+      });
     };
 
     checkPolyfill();
@@ -42,6 +47,10 @@ export const InterestforDiagnostic = () => {
       <div>
         Polyfill installed:{' '}
         {polyfillInstalled === null ? '...' : polyfillInstalled ? 'YES' : 'NO'}
+      </div>
+      <div>
+        Native interestForElement:{' '}
+        {nativeSupport === null ? '...' : nativeSupport ? 'YES' : 'NO'}
       </div>
       <div style={{ marginTop: '8px' }}>
         <button interestfor="mm-if-test" style={{ padding: '4px 8px' }}>
