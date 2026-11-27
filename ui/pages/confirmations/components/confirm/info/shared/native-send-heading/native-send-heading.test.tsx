@@ -7,7 +7,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import NativeSendHeading from './native-send-heading';
 
-function getMockStore(conversionRate: number) {
+function getMockStore(conversionRate: number, useCurrencyRateCheck = true) {
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       chainId: CHAIN_IDS.GOERLI,
@@ -22,6 +22,7 @@ function getMockStore(conversionRate: number) {
             conversionRate,
           },
         },
+        useCurrencyRateCheck,
       },
     },
   );
@@ -37,5 +38,17 @@ describe('<NativeSendHeading />', () => {
     expect(() =>
       renderWithConfirmContextProvider(<NativeSendHeading />, mockStore),
     ).not.toThrow();
+  });
+
+  it('hides fiat when currency-rate checks are disabled', () => {
+    const mockStore = getMockStore(0.07086574003221964, false);
+
+    const { getByTestId, queryByText } = renderWithConfirmContextProvider(
+      <NativeSendHeading />,
+      mockStore,
+    );
+
+    expect(getByTestId('confirm-send-amount')).toBeInTheDocument();
+    expect(queryByText(/\$/u)).not.toBeInTheDocument();
   });
 });

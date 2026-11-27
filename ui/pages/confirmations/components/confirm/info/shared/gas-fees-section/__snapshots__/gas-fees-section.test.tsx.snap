@@ -72,9 +72,9 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
             </button>
             <p
               class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-              data-testid="native-currency"
+              data-testid="first-gas-field"
             >
-              $0.07
+              0.0001
             </p>
             <div
               class="gap-1 items-center inline-flex"

@@ -439,12 +439,6 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
              
           </p>
         </div>
-        <p
-          class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-          data-testid="native-currency"
-        >
-          $1.26
-        </p>
       </div>
     </div>
     <div

@@ -13,9 +13,9 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
+import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
@@ -33,6 +33,7 @@ const SendHeading = () => {
     fiatDisplayValue,
     fiatValue,
     pending,
+    shouldShowFiat,
   } = useTokenValues(transactionMeta);
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
@@ -91,12 +92,11 @@ const SendHeading = () => {
       </Tooltip>
     );
 
-  const showFiatValue = !isTestnet || showFiatInTestnets;
-
   const TokenFiatValueSkeleton = (
     <Skeleton width={48} height={22} style={{ marginBottom: '2px' }} />
   );
 
+  const showFiatValue = shouldShowFiat && (!isTestnet || showFiatInTestnets);
   const TokenFiatValue =
     showFiatValue &&
     (pending

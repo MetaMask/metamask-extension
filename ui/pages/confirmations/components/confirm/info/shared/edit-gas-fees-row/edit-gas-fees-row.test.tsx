@@ -53,6 +53,7 @@ function render({
   isSponsorshipOptedOut = false,
   showFiatInTestnets = false,
   transactionType,
+  useCurrencyRateCheck = true,
 }: {
   addedProtectionFeeFiat?: string;
   showAddedProtectionFee?: boolean;
@@ -67,6 +68,7 @@ function render({
   isSponsorshipOptedOut?: boolean;
   showFiatInTestnets?: boolean;
   transactionType?: TransactionType;
+  useCurrencyRateCheck?: boolean;
 } = {}) {
   mockUseEstimationFailed.mockReturnValue(estimationFailed);
   mockUseIsGaslessSupported.mockReturnValue({
@@ -95,6 +97,7 @@ function render({
         showFiatInTestnets,
         gasSponsorshipOptOutByChainId: { [chainId]: isSponsorshipOptedOut },
       },
+      useCurrencyRateCheck,
     },
   });
 
@@ -122,6 +125,16 @@ describe('<EditGasFeesRow />', () => {
 
     expect(queryByTestId('added-protection-network-fee')).toBeNull();
     expect(container).toMatchSnapshot();
+  });
+
+  it('does not render added protection network fee when currency-rate checks are disabled', () => {
+    const { queryByTestId } = render({
+      chainId: CHAIN_IDS.MAINNET,
+      showAddedProtectionFee: true,
+      useCurrencyRateCheck: false,
+    });
+
+    expect(queryByTestId('added-protection-network-fee')).toBeNull();
   });
 
   it('renders metamask fee and falls back to transaction fiat fee when selected gas fee token fiat is empty', () => {
@@ -152,11 +165,11 @@ describe('<EditGasFeesRow />', () => {
 
   it('renders edit gas fee button', () => {
     const { getByTestId, getByText } = render({
+      chainId: CHAIN_IDS.MAINNET,
       gasFeeTokens: undefined,
       selectedGasFeeToken: undefined,
       fiatFee: '$12.34',
       showAddedProtectionFee: true,
-      showFiatInTestnets: true,
     });
 
     expect(getByTestId('edit-gas-fee-icon')).toBeInTheDocument();

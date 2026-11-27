@@ -100,6 +100,12 @@ describe('useFeeCalculations', () => {
 
     const mockStateWithBNBNetwork = merge({}, mockState, {
       metamask: {
+        currencyRates: {
+          BNB: {
+            conversionRate: 300,
+            usdConversionRate: 300,
+          },
+        },
         networkConfigurationsByChainId: {
           '0x38': {
             chainId: '0x38',
@@ -117,6 +123,7 @@ describe('useFeeCalculations', () => {
             blockExplorerUrls: [],
           },
         },
+        useCurrencyRateCheck: false,
       },
     });
 

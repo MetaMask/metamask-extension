@@ -47,6 +47,7 @@ describe('useTokenValues', () => {
       fiatDisplayValue: '$6.37',
       fiatValue: 6.37,
       pending: false,
+      shouldShowFiat: true,
     });
   });
 
@@ -81,6 +82,7 @@ describe('useTokenValues', () => {
       fiatDisplayValue: '$6.37',
       fiatValue: 6.37,
       pending: false,
+      shouldShowFiat: true,
     });
     expect(useTokenExchangeRateMock).toHaveBeenCalledWith(
       originalTxParams.to,
@@ -119,6 +121,38 @@ describe('useTokenValues', () => {
       fiatDisplayValue: undefined,
       fiatValue: undefined,
       pending: false,
+      shouldShowFiat: true,
+    });
+  });
+
+  it('returns no fiat balance when currency-rate checks are disabled', () => {
+    (useAssetDetailsMock as jest.Mock).mockImplementation(() => ({
+      decimals: '4',
+    }));
+
+    useTokenExchangeRateMock.mockReturnValue(new Numeric(0.91, 10));
+
+    const transactionMeta = genUnapprovedTokenTransferConfirmation({
+      amountHex:
+        '0000000000000000000000000000000000000000000000000000000000011170',
+    }) as TransactionMeta;
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useTokenValues(transactionMeta),
+      getMockConfirmStateForTransaction(transactionMeta, {
+        metamask: {
+          useCurrencyRateCheck: false,
+        },
+      }),
+    );
+
+    expect(result.current).toEqual({
+      decodedTransferValue: '7',
+      displayTransferValue: '7',
+      fiatDisplayValue: undefined,
+      fiatValue: undefined,
+      pending: false,
+      shouldShowFiat: false,
     });
   });
 });
