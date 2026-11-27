@@ -68,6 +68,7 @@ import {
   usePendingRedirectRoute,
   useRedirectAfterDefaultPage,
 } from './useHomeRedirects';
+import { InterestforDiagnostic } from './interestfor-diagnostic';
 
 /** Survives StrictMode remounts within the same extension session. */
 let hasLookupSelectedNetworksRun = false;
@@ -264,6 +265,7 @@ export default function Home() {
 
   const homeBody = (
     <>
+      <InterestforDiagnostic />
       <div className="home__container" data-testid="parent-selector-home">
         <MetaMetricsConsentContainer />
         <PasswordOutdatedModalContainer />
