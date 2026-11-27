@@ -8,8 +8,6 @@ import {
   ASSET_SECURITY_TRUST_ROUTE,
   DEFAULT_ROUTE,
   LEGACY_SETTINGS_V2_ROUTE,
-  MFA_SETTINGS_EMAIL_ROUTE,
-  MFA_SETTINGS_TOTP_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_EARN_ROUTE,
   MONEY_HOME_ROUTE,
@@ -20,10 +18,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   PERPS_TRANSACTION_DETAILS_ROUTE,
-  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-  SECURITY_REGISTER_PASSKEY_ROUTE,
   SETTINGS_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTES,
   TX_DETAILS_ROUTE,
 } from '../../../helpers/constants/routes';
 
@@ -31,6 +26,10 @@ import {
  * Screens where an update reloads nothing the user has entered. Trade, send,
  * swap, and other in-progress routes are absent on purpose: the takeover
  * waits until the user reaches one of these.
+ *
+ * Settings counts only at the top level and on a tab. Forms such as password
+ * change, passkeys, verification methods, and Shield claims sit deeper, so new
+ * settings sub-pages wait by default.
  */
 const RESTING_ROUTE_PATTERNS: { path: string; end: boolean }[] = [
   { path: DEFAULT_ROUTE, end: true },
@@ -39,8 +38,10 @@ const RESTING_ROUTE_PATTERNS: { path: string; end: boolean }[] = [
   { path: ASSET_DETAILS_ROUTE, end: true },
   { path: ASSET_SECURITY_TRUST_ROUTE, end: true },
   { path: ASSET_IMAGE_ROUTE, end: true },
-  { path: SETTINGS_ROUTE, end: false },
-  { path: LEGACY_SETTINGS_V2_ROUTE, end: false },
+  { path: SETTINGS_ROUTE, end: true },
+  { path: `${SETTINGS_ROUTE}/:tab`, end: true },
+  { path: LEGACY_SETTINGS_V2_ROUTE, end: true },
+  { path: `${LEGACY_SETTINGS_V2_ROUTE}/:tab`, end: true },
   { path: ACCOUNT_LIST_PAGE_ROUTE, end: true },
   { path: NOTIFICATIONS_ROUTE, end: true },
   { path: `${NOTIFICATIONS_ROUTE}/:uuid`, end: true },
@@ -57,18 +58,9 @@ const RESTING_ROUTE_PATTERNS: { path: string; end: boolean }[] = [
 
 /**
  * Routes that match a resting pattern above but hold a flow in progress: the
- * asset-activation loader shares the asset path shape, and these settings
- * screens are forms.
+ * asset-activation loader shares the asset path shape.
  */
-const NON_RESTING_ROUTES = [
-  ASSET_ACTIVATION_LOADER_ROUTE,
-  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-  SECURITY_REGISTER_PASSKEY_ROUTE,
-  MFA_SETTINGS_EMAIL_ROUTE,
-  MFA_SETTINGS_TOTP_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL,
-  TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL,
-];
+const NON_RESTING_ROUTES = [ASSET_ACTIVATION_LOADER_ROUTE];
 
 /**
  * Returns whether the takeover may cover this pathname.
