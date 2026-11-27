@@ -4,7 +4,6 @@ import {
   Subscription,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
-  Env as SubscriptionEnv,
   CANCEL_TYPES,
 } from '@metamask/subscription-controller';
 import { getShieldGatewayConfig } from './shield';
@@ -53,7 +52,7 @@ const setup = ({
   process.env.METAMASK_SHIELD_ENABLED = isShieldEnabled ? 'true' : 'false';
 
   mockLoadShieldConfig.mockReturnValue({
-    subscriptionEnv: SubscriptionEnv.PRD,
+    subscriptionApiUrl: 'https://subscription.api.cx.metamask.io',
     gatewayUrl: gatewayUrl ?? undefined,
   });
 

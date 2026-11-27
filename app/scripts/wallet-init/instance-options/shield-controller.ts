@@ -55,10 +55,10 @@ export function getShieldControllerInstanceOptions(): ShieldControllerInstanceOp
 }
 
 export function getShieldApiServiceInstanceOptions(): ShieldApiServiceInstanceOptions {
-  const { shieldEnv } = loadShieldConfig();
+  const { shieldApiUrl } = loadShieldConfig();
 
   return {
-    env: shieldEnv,
+    baseUrl: shieldApiUrl,
     captureException,
   };
 }
