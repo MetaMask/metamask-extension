@@ -1,10 +1,6 @@
 import React from 'react';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
   AvatarTokenSize,
-  BadgeWrapper,
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
@@ -20,6 +16,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import BigNumber from 'bignumber.js';
+import { TokenAvatar } from '#shared/components/token-avatar';
 import { useImageForChainId } from '../../../hooks/useImageForChainId';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
@@ -69,22 +66,17 @@ export function MoneyPotentialEarningsTokenRow({
       className="min-h-16"
       data-testid="money-potential-earnings-token-row"
     >
-      <BadgeWrapper
-        badge={
-          <AvatarNetwork
-            name={token.networkName ?? token.chainId}
-            src={networkImage}
-            size={AvatarNetworkSize.Xs}
-            className="rounded-md border-2 border-background-default bg-background-default"
-          />
-        }
-      >
-        <AvatarToken
-          name={token.title || token.symbol}
-          src={token.image}
-          size={AvatarTokenSize.Lg}
-        />
-      </BadgeWrapper>
+      <TokenAvatar
+        name={token.title || token.symbol}
+        src={token.image}
+        size={AvatarTokenSize.Lg}
+        network={{
+          name: token.networkName ?? token.chainId,
+          src: networkImage,
+          className:
+            'rounded-md border-2 border-background-default bg-background-default',
+        }}
+      />
 
       <Box className="min-w-0 flex-1">
         <Box

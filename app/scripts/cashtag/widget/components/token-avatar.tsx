@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
-  BadgeWrapper,
-} from '@metamask/design-system-react';
+import { AvatarTokenSize } from '@metamask/design-system-react';
+import { TokenAvatar as BaseTokenAvatar } from '#shared/components/token-avatar';
 import { getChainImageUrl } from '../../lib/helpers';
 import type { AssetData } from '../../lib/types';
 
@@ -21,27 +16,22 @@ const tokenSize = {
 
 export function TokenAvatar({ asset, size = 'sm' }: Props) {
   const chainSrc = getChainImageUrl(asset.chainId);
-  const networkName = asset.chainId ?? asset.ticker;
 
   return (
-    <BadgeWrapper
+    <BaseTokenAvatar
       className="shrink-0 self-center"
-      badge={
-        chainSrc ? (
-          <AvatarNetwork
-            name={networkName}
-            src={chainSrc}
-            size={AvatarNetworkSize.Xs}
-            hasBorder
-          />
-        ) : null
+      name={asset.ticker}
+      src={asset.iconUrl ?? undefined}
+      size={tokenSize[size]}
+      network={
+        chainSrc
+          ? {
+              name: asset.chainId ?? asset.ticker,
+              src: chainSrc,
+              hasBorder: true,
+            }
+          : undefined
       }
-    >
-      <AvatarToken
-        name={asset.ticker}
-        src={asset.iconUrl ?? undefined}
-        size={tokenSize[size]}
-      />
-    </BadgeWrapper>
+    />
   );
 }
