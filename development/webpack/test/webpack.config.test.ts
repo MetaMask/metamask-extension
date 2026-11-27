@@ -420,7 +420,7 @@ ${Object.entries(env)
           { INFURA_PROJECT_ID: 'sentinel-build-value' },
         );
         const source =
-          'const flags = [process.env.IN_TEST, process.env.NODE_ENV, process.env.INFURA_PROJECT_ID];';
+          'const flags = [process.env.IN_TEST, process.env.NODE_ENV, process.env.DEBUG, process.env.INFURA_PROJECT_ID];';
         const firstPartyUse = getSwcReactRules(config)[0].use as {
           options: SwcLoaderOptions;
         };
@@ -453,17 +453,28 @@ ${Object.entries(env)
               env: {
                 IN_TEST: 'runtime-test',
                 NODE_ENV: 'runtime-mode',
+                DEBUG: 'runtime-debug',
                 INFURA_PROJECT_ID: 'runtime-value',
               },
             },
           });
 
+          // DEBUG is only defined in dev and test builds, so production
+          // builds must leave it to the runtime (and never inline a value).
+          const inlinedDebug =
+            mode === 'development' || test ? null : 'runtime-debug';
+
           assert(Array.isArray(flags));
           assert.deepStrictEqual(
             [...flags],
             isCjs
-              ? ['runtime-test', 'runtime-mode', 'runtime-value']
-              : [test, mode, 'runtime-value'],
+              ? [
+                  'runtime-test',
+                  'runtime-mode',
+                  'runtime-debug',
+                  'runtime-value',
+                ]
+              : [test, mode, inlinedDebug, 'runtime-value'],
           );
         }
       });

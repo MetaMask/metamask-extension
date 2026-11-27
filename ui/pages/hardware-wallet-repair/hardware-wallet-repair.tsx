@@ -42,8 +42,8 @@ import {
 } from './hardware-wallet-repair-utils';
 
 /**
- * Maps repair-flow failures to user-facing copy.
- * Blind-signing errors must not collapse into "device not detected".
+ * Maps repair-flow failures to user-facing copy. Device-state errors must not
+ * leak the adapter's diagnostic message (e.g. "…got BOLOS").
  *
  * @param err - Error thrown during repair connect/readiness.
  * @param t - i18n translate helper.
@@ -53,18 +53,18 @@ function getRepairConnectErrorMessage(
   err: unknown,
   t: (key: string, substitutions?: string[]) => string,
 ): string {
-  if (
-    getHardwareWalletErrorCode(err) ===
-    ErrorCode.DeviceStateBlindSignNotSupported
-  ) {
-    return t('hardwareWalletErrorTitleBlindSignNotSupported');
-  }
+  switch (getHardwareWalletErrorCode(err)) {
+    case ErrorCode.DeviceStateBlindSignNotSupported:
+      return t('hardwareWalletErrorTitleBlindSignNotSupported');
 
-  if (err instanceof Error && err.message) {
-    return err.message;
-  }
+    case ErrorCode.DeviceStateEthAppClosed:
+      return t('hardwareWalletEthAppNotOpenDescription');
 
-  return t('hardwareWalletRepairDeviceNotDetected');
+    default:
+      return err instanceof Error && err.message
+        ? err.message
+        : t('hardwareWalletRepairDeviceNotDetected');
+  }
 }
 
 export const HardwareWalletRepair: React.FC = () => {

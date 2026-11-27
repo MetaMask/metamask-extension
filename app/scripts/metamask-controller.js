@@ -342,6 +342,7 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+import { updatePhishingLists } from './lib/update-phishing-lists';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
@@ -1624,7 +1625,9 @@ export default class MetamaskController extends EventEmitter {
     const { usePhishDetect } = this.preferencesController.state;
 
     if (usePhishDetect) {
-      this.phishingController.maybeUpdateState();
+      updatePhishingLists(this.phishingController).catch((error) => {
+        log.error('Failed to update phishing lists', error);
+      });
     }
 
     if (
@@ -3171,7 +3174,9 @@ export default class MetamaskController extends EventEmitter {
       if (this.onboardingController.state.completedOnboarding) {
         if (this.preferencesController.state.usePhishDetect) {
           const { hostname } = new URL(sender.url);
-          this.phishingController.maybeUpdateState();
+          updatePhishingLists(this.phishingController).catch((error) => {
+            log.error('Failed to update phishing lists', error);
+          });
           // Check if new connection is blocked if phishing detection is on
           const phishingTestResponse = this.phishingController.test(sender.url);
           if (phishingTestResponse?.result) {

@@ -359,6 +359,7 @@ jest.mock('@metamask/core-backend', () => ({
     queryClient: { fetchQuery: jest.fn().mockResolvedValue({}) },
     setCachedData: jest.fn(),
     getCachedData: jest.fn().mockReturnValue({}),
+    accounts: { fetchV2SupportedNetworks: jest.fn().mockResolvedValue({}) },
   }),
 }));
 
@@ -2628,7 +2629,7 @@ describe('MetaMaskController', () => {
       it('checks the sender hostname with the phishing controller', async () => {
         jest
           .spyOn(metamaskController.phishingController, 'maybeUpdateState')
-          .mockReturnValue();
+          .mockResolvedValue();
 
         jest
           .spyOn(metamaskController.phishingController, 'test')
