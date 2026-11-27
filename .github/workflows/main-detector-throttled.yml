@@ -90,7 +90,8 @@ jobs:
 
       - name: Run the benchmark
         # Job timeouts propagate to later jobs, step timeouts just cause job failure.
-        timeout-minutes: 25
+        # 10 minutes over run-benchmarks.yml's 25, as the job's own limit is, for the 2× CPU throttle.
+        timeout-minutes: 35
         run: yarn test:e2e:benchmark --preset "${{ matrix.pageType }}" --out "$RESULT" --retries 2
         shell: bash
 
