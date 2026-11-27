@@ -14,6 +14,7 @@ import {
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
+  getAccountGroupLiveTotalState,
   getMultichainNativeTokenBalance,
   selectAssetsHaveLoadedForSelectedAccountGroup,
   selectUnifiedBalanceBySelectedAccountGroup,
@@ -70,6 +71,13 @@ describe('AccountGroupBalance', () => {
     jest
       .mocked(selectAssetsHaveLoadedForSelectedAccountGroup)
       .mockReturnValue(assetsHaveLoaded);
+
+    jest.mocked(getAccountGroupLiveTotalState).mockReturnValue({
+      assets: [],
+      polledTotal: selectedGroupBalance?.totalBalanceInUserCurrency,
+      currency: selectedGroupBalance?.userCurrency,
+      hasBalance: selectedGroupBalance !== null,
+    });
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)

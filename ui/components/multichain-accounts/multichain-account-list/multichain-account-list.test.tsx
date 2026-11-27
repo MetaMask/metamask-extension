@@ -503,9 +503,22 @@ describe('MultichainAccountList', () => {
     const selectedGroupSpy = jest
       .spyOn(accountTreeSelectors, 'getSelectedAccountGroup')
       .mockReturnValue(walletOneGroupId);
+    const assetsByGroupForLiveTotalsSpy = jest
+      .spyOn(assetsSelectors, 'getAssetsByAccountGroupForLiveTotals')
+      .mockReturnValue({
+        [walletOneGroupId]: { '0x1': [asset] },
+      } as unknown as ReturnType<
+        typeof assetsSelectors.getAssetsByAccountGroupForLiveTotals
+      >);
     const livePricesSpy = jest
       .spyOn(marketStats, 'useMarketStats')
-      .mockReturnValue(new Map([[assetId, { price: 38 }]]));
+      .mockImplementation((select?: unknown) => {
+        const quotes = new Map([[assetId, { price: 38 }]]);
+        if (select && typeof select === 'function') {
+          return select(quotes);
+        }
+        return quotes;
+      });
 
     try {
       renderComponent();
@@ -518,6 +531,7 @@ describe('MultichainAccountList', () => {
       allAssetsSpy.mockRestore();
       selectedAssetsSpy.mockRestore();
       selectedGroupSpy.mockRestore();
+      assetsByGroupForLiveTotalsSpy.mockRestore();
       livePricesSpy.mockRestore();
     }
   });
