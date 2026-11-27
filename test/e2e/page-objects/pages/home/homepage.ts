@@ -145,7 +145,7 @@ class HomePage {
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
-  protected readonly swapButton = '[data-testid$="-overview-swap"]';
+  readonly swapButton = '[data-testid$="-overview-swap"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',

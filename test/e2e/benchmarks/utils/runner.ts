@@ -15,6 +15,7 @@ import type {
   WebVitalsSummary,
 } from '../../../../shared/constants/benchmarks';
 import { BENCHMARK_PERSONA } from '../../../../shared/constants/benchmarks';
+import type { Driver } from '../../webdriver/driver';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -45,6 +46,7 @@ import type {
   UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
+import { assertNoMissingTimers } from './missing-timers';
 
 /**
  * Promote web vitals aggregated stats into a TimerStatistics array.
@@ -101,13 +103,24 @@ async function runWithRetries(
   }
 }
 
+/**
+ * Runs `iterations` times and aggregates the runs after discarding the first
+ * `warmupRuns`, all their results alike, as the startup path does.
+ */
 export async function runBenchmarkWithIterations(
   name: string,
   benchmarkFn: BenchmarkFunction,
   iterations: number,
   retries: number,
   thresholdConfig: ThresholdConfig,
+  warmupRuns: number = 0,
 ): Promise<BenchmarkSummary> {
+  if (warmupRuns > 0 && iterations <= warmupRuns) {
+    throw new Error(
+      `iterations (${iterations}) must be greater than the warm-up runs (${warmupRuns})`,
+    );
+  }
+
   const allResults: BenchmarkRunResult[] = [];
   let successfulRuns = 0;
   let failedRuns = 0;
@@ -117,24 +130,35 @@ export async function runBenchmarkWithIterations(
     allResults.push(result);
 
     if (result.success) {
-      successfulRuns += 1;
       // Generate report after each successful run (like Mocha's afterEach)
       const timerCount = performanceTracker.getTimerCount();
       if (timerCount > 0) {
         performanceTracker.generateReport(`${name} - iteration ${i + 1}`, name);
       }
-    } else {
-      failedRuns += 1;
+    }
+
+    if (i >= warmupRuns) {
+      if (result.success) {
+        successfulRuns += 1;
+      } else {
+        failedRuns += 1;
+      }
     }
   }
+
+  // Discard the warm-up runs, failed or not, before any statistic.
+  const scoredResults = allResults.slice(warmupRuns);
+  const scoredIterations = iterations - warmupRuns;
+
+  assertNoMissingTimers(scoredResults);
 
   // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, MetricSample[]>();
   const zeroAllowedTimers = new Set<string>();
   const webVitalsRuns: WebVitalsRun[] = [];
 
-  for (let idx = 0; idx < allResults.length; idx++) {
-    const result = allResults[idx];
+  for (let idx = 0; idx < scoredResults.length; idx++) {
+    const result = scoredResults[idx];
     if (result.success) {
       for (const timer of result.timers) {
         if (!timerMap.has(timer.id)) {
@@ -142,7 +166,10 @@ export async function runBenchmarkWithIterations(
         }
         const timerSamples = timerMap.get(timer.id);
         if (timerSamples) {
-          timerSamples.push({ iteration: idx, value: timer.value });
+          timerSamples.push({
+            iteration: warmupRuns + idx,
+            value: timer.value,
+          });
         }
         if (timer.unit) {
           zeroAllowedTimers.add(timer.id);
@@ -150,7 +177,10 @@ export async function runBenchmarkWithIterations(
       }
 
       if (result.webVitals) {
-        webVitalsRuns.push({ ...result.webVitals, iteration: idx });
+        webVitalsRuns.push({
+          ...result.webVitals,
+          iteration: warmupRuns + idx,
+        });
       }
     }
   }
@@ -187,8 +217,8 @@ export async function runBenchmarkWithIterations(
   // Compute per-run total durations and derive total statistics from them
   // (min/max/percentiles are not additive across timers from different runs)
   const perRunTotals: MetricSample[] = [];
-  for (let idx = 0; idx < allResults.length; idx++) {
-    const result = allResults[idx];
+  for (let idx = 0; idx < scoredResults.length; idx++) {
+    const result = scoredResults[idx];
     if (result.success && result.timers.length > 0) {
       // Exclude long task diagnostic metrics (tagged with unit) from the
       // per-run total. They represent blocking time already captured within
@@ -196,7 +226,7 @@ export async function runBenchmarkWithIterations(
       const runTotal = result.timers
         .filter((t) => !t.unit)
         .reduce((acc, t) => acc + t.value, 0);
-      perRunTotals.push({ iteration: idx, value: runTotal });
+      perRunTotals.push({ iteration: warmupRuns + idx, value: runTotal });
     }
   }
   if (perRunTotals.length > 0) {
@@ -213,7 +243,7 @@ export async function runBenchmarkWithIterations(
 
   // Check overall run exclusion rate
   const overallExclusionCheck = checkExclusionRate(
-    iterations,
+    scoredIterations,
     failedRuns,
     MAX_EXCLUSION_RATE,
   );
@@ -230,11 +260,13 @@ export async function runBenchmarkWithIterations(
 
   const thresholdResult = validateThresholds(timerStats, thresholdConfig);
   // Extract benchmarkType from the first result (same across all iterations)
-  const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
+  const benchmarkType = scoredResults.find(
+    (r) => r.benchmarkType,
+  )?.benchmarkType;
 
   return {
     name,
-    iterations,
+    iterations: scoredIterations,
     successfulRuns,
     failedRuns,
     timers: timerStats,
@@ -350,6 +382,108 @@ export function convertSummaryToResults(
   );
 }
 
+/** Per-page-load metrics from a startup flow, with the series it adds. */
+export type StartupMetrics = Metrics & { heroPainted?: number };
+
+/** What the startup flows read from the page after each page load. */
+export type StartupPageSignals = {
+  /** `startTime` of the first `mm-hero-painted` mark; null if none was set. */
+  heroPainted: number | null;
+};
+
+/**
+ * Runs in the page. Kept free of closures: it is serialized and sent there.
+ */
+const readStartupPageSignalsInPage = (): StartupPageSignals => {
+  const marks = performance.getEntriesByName('mm-hero-painted', 'mark');
+  return { heroPainted: marks.length > 0 ? marks[0].startTime : null };
+};
+
+/**
+ * Read the hero mark, waiting for it so a late paint counts as slow.
+ * @param driver - The benchmark's driver, on the extension page.
+ * @param timeoutMs - How long to wait for the mark before reading null.
+ */
+export async function readStartupPageSignals(
+  driver: Driver,
+  timeoutMs = 10000,
+): Promise<StartupPageSignals> {
+  const pollMs = 100;
+  for (let waited = 0; ; waited += pollMs) {
+    const signals = (await driver.executeScript(
+      readStartupPageSignalsInPage,
+    )) as StartupPageSignals;
+    if (signals.heroPainted !== null || waited >= timeoutMs) {
+      return signals;
+    }
+    await driver.delay(pollMs);
+  }
+}
+
+/**
+ * Fold what `readStartupPageSignals` read into one page load's metrics.
+ * @param metrics - From `driver.collectMetrics()`.
+ * @param signals - From `readStartupPageSignals`.
+ */
+export function applyStartupPageSignals(
+  metrics: Metrics,
+  signals: StartupPageSignals,
+): StartupMetrics {
+  return {
+    ...metrics,
+    ...(signals.heroPainted !== null && { heroPainted: signals.heroPainted }),
+  };
+}
+
+/**
+ * Samples of every `ALL_METRICS` key; a key no result defines is left out.
+ *
+ * @param measuredResults - Page loads after the warm-up sessions.
+ * @param warmupSize - Page loads dropped as warm-up, so retained values keep
+ * their original iteration numbers.
+ */
+export function collectPageLoadMetricSamples(
+  measuredResults: Metrics[],
+  warmupSize = 0,
+): {
+  result: Record<string, number[]>;
+  trimmedCounts: StatisticalResult;
+  missingCounts: StatisticalResult;
+  values: MetricSamples;
+} {
+  const result: Record<string, number[]> = {};
+  const trimmedCounts: StatisticalResult = {};
+  const missingCounts: StatisticalResult = {};
+  const values: MetricSamples = {};
+  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
+    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
+    if (rawSamples.every((sample) => sample === undefined)) {
+      continue;
+    }
+    missingCounts[key] = rawSamples.filter(
+      (value) => !Number.isFinite(value),
+    ).length;
+    // A page load that set no hero mark has no `heroPainted` value: it stays in
+    // `values` and in `missingCount`, and is left out of the statistics. Any other
+    // metric that failed to read stays in them as NaN.
+    const { filtered, outlierCount } = detectOutliersIQR(
+      key === 'heroPainted'
+        ? rawSamples.filter((value) => Number.isFinite(value))
+        : rawSamples,
+    );
+    result[key] = [...filtered].sort((a, b) => a - b);
+    trimmedCounts[key] = outlierCount;
+    // `result[key]` is filtered and sorted, so neither the discarded samples nor
+    // the order survives it. The iteration numbering matches `WebVitalsRun`'s:
+    // warm-up sessions are dropped, and the remainder keep their original index.
+    values[key] = rawSamples.map((value, index) => ({
+      iteration: warmupSize + index,
+      value,
+    }));
+  }
+  return { result, trimmedCounts, missingCounts, values };
+}
+
 /**
  * Run the dApp page-load benchmark and aggregate results.
  *
@@ -451,22 +585,8 @@ export async function runPageLoadBenchmark(
     );
   }
 
-  const result: Record<string, number[]> = {};
-  const trimmedCounts: StatisticalResult = {};
-  const values: MetricSamples = {};
-  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
-    const rawSamples = measuredResults.map((m) => get(m, tracePath) as number);
-    const { filtered, outlierCount } = detectOutliersIQR(rawSamples);
-    result[key] = [...filtered].sort((a, b) => a - b);
-    trimmedCounts[key] = outlierCount;
-    // `result[key]` is filtered and sorted, so neither the discarded samples nor
-    // the order survives it. The iteration numbering matches `WebVitalsRun`'s:
-    // warm-up sessions are dropped, and the remainder keep their original index.
-    values[key] = rawSamples.map((value, index) => ({
-      iteration: warmupSize + index,
-      value,
-    }));
-  }
+  const { result, trimmedCounts, missingCounts, values } =
+    collectPageLoadMetricSamples(measuredResults, warmupSize);
 
   let webVitals: WebVitalsSummary | undefined;
   if (measuredWebVitalsRuns.length > 0) {
@@ -508,6 +628,7 @@ export async function runPageLoadBenchmark(
     p95,
     trimmedCount: trimmedCounts,
     outliers: { ...trimmedCounts },
+    missingCount: missingCounts,
     values,
     ...(webVitals && { webVitals }),
   };
@@ -518,8 +639,8 @@ export async function runUserActionBenchmark(
   benchmarkType?: BenchmarkType,
 ): Promise<BenchmarkRunResult> {
   try {
-    const { timers, webVitals } = await measureFn();
-    return { timers, webVitals, success: true, benchmarkType };
+    const { timers, webVitals, expectedTimers } = await measureFn();
+    return { timers, webVitals, expectedTimers, success: true, benchmarkType };
   } catch (error) {
     return {
       timers: [],
