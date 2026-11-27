@@ -5664,6 +5664,9 @@
   "mfaPickerPasskey": {
     "message": "Verify with Passkey"
   },
+  "mfaPickerPasskeyFailed": {
+    "message": "Couldn't use your passkey. Try again or use another method."
+  },
   "mfaPickerTitle": {
     "message": "Confirm with 2-step verification"
   },

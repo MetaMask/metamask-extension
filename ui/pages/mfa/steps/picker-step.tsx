@@ -12,9 +12,16 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { MfaMethod } from '../../../hooks/identity/mfa/engine/types';
+import type {
+  MfaFlowErrorCode,
+  MfaMethod,
+} from '../../../hooks/identity/mfa/engine/types';
 import { MfaFlowTestIds } from '../test-ids';
-import StepLayout, { MfaShield, type StepProps } from './step-layout';
+import StepLayout, {
+  MfaShield,
+  StepMessage,
+  type StepProps,
+} from './step-layout';
 
 /* eslint-disable @typescript-eslint/naming-convention -- the server's codes */
 const PICKER_LABEL_KEYS: Record<MfaMethod, string> = {
@@ -23,6 +30,13 @@ const PICKER_LABEL_KEYS: Record<MfaMethod, string> = {
   totp: 'mfaPickerTotp',
 };
 /* eslint-enable @typescript-eslint/naming-convention */
+
+// The sheet was closed or the passkey was refused: the user can try again or
+// choose another method from the same list.
+const PASSKEY_ERRORS = new Set<MfaFlowErrorCode>([
+  'passkey_ceremony_cancelled',
+  'invalid_assertion',
+]);
 
 /**
  * How to verify, as on mobile's sheet: a passkey, when offered, is the main
@@ -38,6 +52,8 @@ const PickerStep = ({ step, state, reason, onAction }: StepProps<'picker'>) => {
   const t = useI18nContext();
   const hasPasskey = step.options.includes('passkey');
   const others = step.options.filter((method) => method !== 'passkey');
+  const isPasskeyError =
+    state.error !== undefined && PASSKEY_ERRORS.has(state.error);
   const renderOption = (method: MfaMethod, isMain: boolean) => (
     <Button
       key={method}
@@ -61,7 +77,7 @@ const PickerStep = ({ step, state, reason, onAction }: StepProps<'picker'>) => {
       description={
         step.purpose === 'verify' ? reason.verifyDescription : undefined
       }
-      error={state.error}
+      error={isPasskeyError ? undefined : state.error}
       footer={
         <Box flexDirection={BoxFlexDirection.Column} gap={4}>
           {hasPasskey ? renderOption('passkey', true) : null}
@@ -81,7 +97,11 @@ const PickerStep = ({ step, state, reason, onAction }: StepProps<'picker'>) => {
           {others.map((method) => renderOption(method, false))}
         </Box>
       }
-    />
+    >
+      {isPasskeyError ? (
+        <StepMessage isError>{t('mfaPickerPasskeyFailed')}</StepMessage>
+      ) : null}
+    </StepLayout>
   );
 };
 
