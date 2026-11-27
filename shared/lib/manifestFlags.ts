@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import browser from 'webextension-polyfill';
+import type browser from 'webextension-polyfill';
 
 /**
  * Flags that we use to control runtime behavior of the extension. Typically
@@ -171,15 +171,20 @@ interface WebExtensionManifestWithFlags
  */
 export function getManifestFlags(): ManifestFlags {
   // If this is running in a unit test, there's no manifest, so just return an empty object
-  if (
-    process.env.JEST_WORKER_ID === undefined ||
-    !browser.runtime.getManifest
-  ) {
+  if (process.env.JEST_WORKER_ID === undefined) {
+    return {};
+  }
+
+  // Loaded here, not at module scope: the polyfill throws when loaded outside
+  // an extension, and e2e benchmark flows import this module in Node.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- load conditionally
+  const extension: typeof browser = require('webextension-polyfill');
+  if (!extension.runtime.getManifest) {
     return {};
   }
 
   return (
-    (browser.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
+    (extension.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
     {}
   );
 }
