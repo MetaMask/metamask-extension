@@ -173,7 +173,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/network-controller": "^38.0.1",
     "@metamask/transaction-controller": "^74.4.1",
     "reselect@npm:^5.1.1": "5.1.1",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
@@ -324,10 +323,8 @@
     "esbuild": "0.28.1",
     "valibot": "^1.4.2",
     "@metamask/snaps-controllers": "^23.0.1",
-    "@metamask/permission-controller@npm:^13.1.1": "^14.0.0",
     "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
     "@metamask/keyring-api": "^24.3.0",
-    "@metamask/accounts-controller": "^40.2.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/base-controller": "^10.1.0",
     "@metamask/messenger": "^3.0.0",
@@ -457,7 +454,7 @@
     "@metamask/money-account-utils": "^2.2.0",
     "@metamask/multichain-account-service": "^14.1.0",
     "@metamask/multichain-api-client": "^0.10.1",
-    "@metamask/multichain-api-middleware": "^3.1.4",
+    "@metamask/multichain-api-middleware": "^5.1.1",
     "@metamask/multichain-network-controller": "^4.1.1",
     "@metamask/multichain-transactions-controller": "^8.0.0",
     "@metamask/name-controller": "^10.0.0",
