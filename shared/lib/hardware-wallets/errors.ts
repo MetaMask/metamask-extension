@@ -6,6 +6,7 @@ import {
   LEDGER_ERROR_MAPPINGS,
   QR_WALLET_ERROR_MAPPINGS,
   KEYRING_ERROR_MAPPINGS,
+  TREZOR_ERROR_MAPPINGS,
 } from '@metamask/hw-wallet-sdk';
 import { HardwareWalletType } from './types';
 
@@ -29,8 +30,11 @@ export function createHardwareWalletError(
     metadata?: Record<string, unknown>;
   },
 ): HardwareWalletError {
-  // Get error properties based on error code
-  const { severity, category, userMessage } = getErrorProperties(code);
+  // Get error properties based on error code and wallet type
+  const { severity, category, userMessage } = getErrorProperties(
+    code,
+    walletType,
+  );
 
   return new HardwareWalletError(message || userMessage, {
     code,
@@ -90,16 +94,40 @@ const ERROR_PROPERTIES_MAP = (() => {
 })();
 
 /**
- * Get error properties based on error code
+ * Get error properties for a code, with wallet-specific copy where needed.
  *
- * @param code - The error code to get properties for
+ * @param code - The error code to get properties for.
+ * @param walletType - The hardware wallet type raising the error.
  * @returns Error properties including severity, category, etc.
  */
-function getErrorProperties(code: ErrorCode): {
+function getErrorProperties(
+  code: ErrorCode,
+  walletType: HardwareWalletType,
+): {
   severity: Severity;
   category: Category;
   userMessage: string;
 } {
+  if (code === ErrorCode.DeviceMultipleConnected) {
+    if (walletType === HardwareWalletType.Ledger) {
+      return {
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage:
+          "You can only connect one Ledger at a time. To use a different Ledger, remove the connected Ledger's accounts from MetaMask first.",
+      };
+    }
+
+    if (walletType === HardwareWalletType.Trezor) {
+      const trezor = TREZOR_ERROR_MAPPINGS.Device_MultipleNotSupported;
+      return {
+        severity: trezor.severity,
+        category: trezor.category,
+        userMessage: trezor.userMessage ?? trezor.message,
+      };
+    }
+  }
+
   return (
     ERROR_PROPERTIES_MAP.get(code) ?? {
       severity: Severity.Err,

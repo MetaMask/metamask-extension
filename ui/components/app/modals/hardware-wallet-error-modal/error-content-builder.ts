@@ -147,6 +147,33 @@ export function buildErrorContent(
         ]),
       };
 
+    // Ledger's account binding differs from other wallets' extra-device errors.
+    case ErrorCode.DeviceMultipleConnected:
+      return {
+        variant: HardwareWalletErrorContentVariant.Description,
+        icon: IconName.Danger,
+        iconColor: IconColor.WarningDefault,
+        title:
+          walletType === HardwareWalletType.Ledger
+            ? t('hardwareWalletErrorTitleDeviceAlreadyConnected', [
+                t(walletType),
+              ])
+            : t('hardwareWalletErrorTitleMultipleDevicesConnected', [
+                t(walletType),
+              ]),
+        showRepairLink: false,
+        description:
+          walletType === HardwareWalletType.Ledger
+            ? t('hardwareWalletErrorDeviceAlreadyConnectedDescription', [
+                t(walletType),
+                t(walletType),
+                t(walletType),
+              ])
+            : t('hardwareWalletErrorMultipleDevicesConnectedDescription', [
+                t(walletType),
+              ]),
+      };
+
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
     case ErrorCode.ConnectionTransportMissing:

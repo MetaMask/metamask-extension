@@ -1260,6 +1260,7 @@ export enum MetaMetricsHardwareWalletRecoveryErrorType {
   BlindSigningNotEnabled = 'Blind Signing Not Enabled',
   CameraPermissionDenied = 'Camera Permission Denied',
   CameraPermissionPromptDismissed = 'Camera Permission Prompt Dismissed',
+  MultipleDevicesConnected = 'Multiple Devices Connected',
   GenericError = 'Generic Error',
 }
 

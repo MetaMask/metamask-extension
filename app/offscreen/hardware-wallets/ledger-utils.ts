@@ -7,6 +7,8 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
+import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
+import type { ConnectedLedgerDeviceInfo } from '../../../shared/constants/offscreen-communication';
 import { extractMessageFromUnknownError } from '../../../shared/lib/error';
 
 /**
@@ -128,4 +130,19 @@ export function serializeLedgerError(error: unknown): SerializedLedgerError {
   }
 
   return serializeError(error);
+}
+
+/**
+ * Returns the connected (permitted) Ledger devices for the background gate.
+ *
+ * @returns One descriptor per connected device. Propagates rejection — the
+ * caller decides fail-open.
+ */
+export async function getConnectedLedgerDeviceInfo(): Promise<
+  ConnectedLedgerDeviceInfo[]
+> {
+  const devices = await navigator.hid.getDevices();
+  return devices
+    .filter((device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID))
+    .map((device) => ({ productId: device.productId }));
 }

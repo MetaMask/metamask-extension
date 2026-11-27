@@ -354,6 +354,30 @@ describe('LedgerDmkBridgeHandler', () => {
       });
     });
 
+    describe('getConnectedDeviceInfo', () => {
+      it('answers from navigator.hid without constructing the bridge', async () => {
+        mockHidGetDevices.mockResolvedValue([
+          { vendorId: Number(LEDGER_USB_VENDOR_ID), productId: 0x0400 },
+        ]);
+
+        const result = await handler.handleAction(
+          LedgerAction.getConnectedDeviceInfo,
+        );
+
+        expect(result).toStrictEqual([{ productId: 0x0400 }]);
+        expect(LedgerDmkBridge).not.toHaveBeenCalled();
+        expect(mockBridgeConnect).not.toHaveBeenCalled();
+      });
+
+      it('propagates getDevices() rejection', async () => {
+        mockHidGetDevices.mockRejectedValue(new Error('HID unavailable'));
+
+        await expect(
+          handler.handleAction(LedgerAction.getConnectedDeviceInfo),
+        ).rejects.toThrow('HID unavailable');
+      });
+    });
+
     describe('getPublicKey', () => {
       it('routes to bridge.getPublicKey()', async () => {
         const result = await handler.handleAction(LedgerAction.getPublicKey, {

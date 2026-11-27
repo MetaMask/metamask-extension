@@ -1,4 +1,5 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { buildErrorContent } from './error-content-builder';
@@ -86,6 +87,53 @@ describe('buildErrorContent', () => {
       'hardwareWalletErrorOnlyV4SupportedDescription',
       ['Ledger'],
     );
+  });
+
+  it('shows an acknowledge-only description for DeviceMultipleConnected', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Ledger) {
+        return 'Ledger';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = createHardwareWalletError(
+      ErrorCode.DeviceMultipleConnected,
+      HardwareWalletType.Ledger,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      icon: expect.anything(),
+      showRepairLink: false,
+      title: 'hardwareWalletErrorTitleDeviceAlreadyConnected:Ledger',
+      description:
+        'hardwareWalletErrorDeviceAlreadyConnectedDescription:Ledger,Ledger,Ledger',
+    });
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorDeviceAlreadyConnectedDescription',
+      ['Ledger', 'Ledger', 'Ledger'],
+    );
+  });
+
+  it('instructs Trezor users to unplug extra devices without removing accounts', () => {
+    const error = createHardwareWalletError(
+      ErrorCode.DeviceMultipleConnected,
+      HardwareWalletType.Trezor,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Trezor, tEn);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      showRepairLink: false,
+      title: 'Multiple Trezor devices connected',
+      description:
+        'Multiple Trezor devices are connected. Unplug the extra devices, then try again.',
+    });
   });
 
   describe('showRepairLink flag', () => {

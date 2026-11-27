@@ -38,6 +38,7 @@ const DEVICE_READ_METHODS = [
   'getFirstPage',
   'getNextPage',
   'getPreviousPage',
+  'getDeviceId', // only for Ledger — read of the persisted binding
   'isUnlocked', // only for Trezor/Ledger
   'getMode', // only for QR
   'getModel',

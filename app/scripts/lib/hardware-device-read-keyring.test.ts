@@ -67,6 +67,16 @@ describe('restrictKeyringForDeviceRead', () => {
     }).toThrow(TypeError);
   });
 
+  it('exposes getDeviceId for the Ledger gate', () => {
+    const keyring = {
+      ...buildKeyring(),
+      getDeviceId: jest.fn().mockReturnValue('4'),
+    };
+    const facade = restrictKeyringForDeviceRead(keyring);
+
+    expect(facade.getDeviceId()).toBe('4');
+  });
+
   it('omits read methods the wrapped keyring does not implement', () => {
     const facade = restrictKeyringForDeviceRead({
       hdPath: 'm/0',

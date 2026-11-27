@@ -4,6 +4,7 @@ import {
   fireEvent,
   waitFor,
   screen,
+  within,
 } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
@@ -37,6 +38,18 @@ import ConnectHardwareForm, {
 } from '.';
 
 const mockTrackEvent = jest.fn();
+const mockShowErrorModal = jest.fn();
+
+// The page test renders without the hardware wallet error provider.
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletError: () => ({
+    showErrorModal: mockShowErrorModal,
+    dismissErrorModal: jest.fn(),
+    isErrorModalVisible: false,
+    setErrorModalSuppressed: jest.fn(),
+  }),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -537,6 +550,27 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('getPage error handling', () => {
+    it('shows the acknowledge-only modal instead of inline text for DeviceMultipleConnected', async () => {
+      const blockedError = createHardwareWalletError(
+        ErrorCode.DeviceMultipleConnected,
+        HardwareWalletType.Ledger,
+      );
+      mockConnectHardware.mockRejectedValue(blockedError);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('ledger'));
+
+      await waitFor(() => {
+        expect(mockShowErrorModal).toHaveBeenCalledWith(
+          expect.objectContaining({ code: ErrorCode.DeviceMultipleConnected }),
+        );
+      });
+      expect(
+        screen.queryByText(blockedError.userMessage),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays a generic error message', async () => {
       mockConnectHardware.mockRejectedValue(new Error('Something went wrong'));
       const mockStore = configureMockStore([thunk])(createMockState());
@@ -775,6 +809,53 @@ describe('ConnectHardwareForm', () => {
         ).toBeInTheDocument();
       });
     });
+  });
+
+  describe('Ledger account import error handling', () => {
+    for (const errorType of ['hardware wallet error', 'serialized RPC error']) {
+      it(`shows the acknowledge-only modal for a multiple-device ${errorType}`, async () => {
+        const blockedError = createHardwareWalletError(
+          ErrorCode.DeviceMultipleConnected,
+          HardwareWalletType.Ledger,
+        );
+        const error =
+          errorType === 'hardware wallet error'
+            ? blockedError
+            : {
+                code: -32603,
+                message: blockedError.message,
+                data: {
+                  code: blockedError.code,
+                  severity: blockedError.severity,
+                  category: blockedError.category,
+                  userMessage: blockedError.userMessage,
+                },
+              };
+        mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+        mockUnlockHardwareWalletAccounts.mockRejectedValueOnce(error);
+        const mockStore = configureMockStore([thunk])(createMockState());
+        renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+        connectToDevice(tEn('ledger'));
+        const account = (
+          await screen.findAllByTestId('hw-account-list__item')
+        )[0];
+        fireEvent.click(within(account).getByRole('checkbox'));
+        fireEvent.click(screen.getByText(tEn('unlock')));
+
+        await waitFor(() => {
+          expect(mockShowErrorModal).toHaveBeenCalledWith(
+            expect.objectContaining({
+              code: ErrorCode.DeviceMultipleConnected,
+            }),
+          );
+        });
+        expect(
+          screen.queryByText(blockedError.userMessage),
+        ).not.toBeInTheDocument();
+        expect(mockUseNavigate).not.toHaveBeenCalled();
+      });
+    }
   });
 
   describe('account list interactions', () => {

@@ -473,6 +473,28 @@ describe('Ledger Offscreen', () => {
       });
     });
 
+    describe('getConnectedDeviceInfo', () => {
+      it('returns the connected Ledger device info', async () => {
+        const response = await sendAction(LedgerAction.getConnectedDeviceInfo);
+
+        expect(response.success).toBe(true);
+        expect(response.payload).toStrictEqual([{ productId: 0x0001 }]);
+      });
+
+      it('propagates getDevices() rejection', async () => {
+        mockGetDevices.mockRejectedValue(new Error('HID unavailable'));
+
+        const response = await sendAction(LedgerAction.getConnectedDeviceInfo);
+
+        expect(response.success).toBe(false);
+        expect(response.payload).toEqual({
+          error: expect.objectContaining({
+            message: expect.stringContaining('HID unavailable'),
+          }),
+        });
+      });
+    });
+
     describe('getAppNameAndVersion', () => {
       it('parses the app name and version from the raw transport response', async () => {
         const name = 'Ethereum';

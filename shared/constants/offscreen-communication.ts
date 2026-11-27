@@ -120,7 +120,17 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getAppConfiguration = 'ledger-get-app-configuration',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getConnectedDeviceInfo = 'ledger-get-connected-device-info',
 }
+
+/**
+ * Connected (permitted) Ledger device as reported by the offscreen handlers.
+ */
+export type ConnectedLedgerDeviceInfo = {
+  productId: number;
+};
 
 /**
  * Selects which Ledger handler implementation the offscreen document should
