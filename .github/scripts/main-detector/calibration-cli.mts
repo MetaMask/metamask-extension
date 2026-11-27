@@ -115,6 +115,10 @@ async function main(): Promise<void> {
   if (values.out) {
     fs.writeFileSync(values.out, JSON.stringify(report, null, 2));
   }
+  // A week with no readable canary checked nothing, so fail rather than pass green.
+  if (report.canaries === 0) {
+    process.exitCode = 1;
+  }
   if (!report.ping) {
     return;
   }
