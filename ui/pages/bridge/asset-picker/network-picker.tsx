@@ -1,7 +1,10 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { type CaipChainId } from '@metamask/utils';
 import { IconName } from '@metamask/design-system-react';
 import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../shared/constants/bridge';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
+import { getNetworkImageUrl } from '../../../../shared/lib/network.utils';
 import {
   NetworkSelectionModal,
   type NetworkSelectionSection,
@@ -36,6 +39,7 @@ const NetworkPickerContent = ({
   testId,
 }: NetworkPickerProps) => {
   const t = useI18nContext();
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
 
   const networkSections = useMemo(() => getNetworkSections(chains), [chains]);
 
@@ -48,7 +52,9 @@ const NetworkPickerContent = ({
           key: chainId,
           chainId,
           name,
-          iconSrc: BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[chainId],
+          iconSrc:
+            getNetworkImageUrl(chainId, networkImageUrls) ??
+            BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[chainId],
           selected: selectedChainId === chainId,
           disabled: disabledChainId === chainId,
           onClick: () => {
@@ -62,6 +68,7 @@ const NetworkPickerContent = ({
       })),
     [
       disabledChainId,
+      networkImageUrls,
       networkSections,
       onNetworkChange,
       selectedChainId,

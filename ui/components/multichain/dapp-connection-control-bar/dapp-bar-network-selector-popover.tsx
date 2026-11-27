@@ -47,6 +47,7 @@ import {
   updateCustomNonce,
 } from '../../../store/actions';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
+import { getChainIdToNetworkImageUrlMap } from '../../../selectors/config-registry/config-registry';
 import {
   convertCaipToHexChainId,
   getNetworkIcon,
@@ -89,6 +90,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const networkImageUrls = useSelector(getChainIdToNetworkImageUrlMap);
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const showTestnets = useSelector(getShouldShowTestNetworks);
@@ -311,7 +313,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
                 key={network.chainId}
                 chainId={network.chainId}
                 name={network.name}
-                iconSrc={getNetworkIcon(network)}
+                iconSrc={getNetworkIcon(network, networkImageUrls)}
                 iconSize={AvatarNetworkSize.Sm}
                 selected={isSelected}
                 focus={false}

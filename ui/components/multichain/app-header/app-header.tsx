@@ -1,17 +1,30 @@
 import React, { useRef } from 'react';
 import classnames from 'clsx';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '#shared/constants/app';
+import {
+  WIDE_SCREEN_REDESIGN_AB_KEY,
+  WIDE_SCREEN_REDESIGN_AB_TEST_VARIANTS,
+} from '#shared/lib/ab-testing/configs/wide-screen-redesign';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { useAppLayout } from '../../../contexts/app-layout';
+import { useABTest } from '../../../hooks/useABTest';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 
 export const AppHeader = () => {
   const menuRef = useRef<HTMLButtonElement>(null);
   const { isWideLayout } = useAppLayout();
-  // The wide layout shows the logo in the side nav instead.
+  const { variant: wideScreenVariant } = useABTest(
+    WIDE_SCREEN_REDESIGN_AB_KEY,
+    WIDE_SCREEN_REDESIGN_AB_TEST_VARIANTS,
+    undefined,
+    { trackExposure: false },
+  );
+
+  // The wide layout shows the logo in the side nav instead of the header.
   const showLegacyMMLogo =
-    !isWideLayout && getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
+    !wideScreenVariant.useWideLayout &&
+    getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
 
   return (
     <header

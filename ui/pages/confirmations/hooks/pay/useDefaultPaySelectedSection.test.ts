@@ -1,8 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderHook, waitFor } from '@testing-library/react';
-import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { useSelector } from 'react-redux';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
 import { selectMoneyAccountVaultConfig } from '../../../../selectors/money/money-account-feature-flags';
 import { updateTransactionPaymentToken } from '../../../../store/controller-actions/transaction-pay-controller';
@@ -190,8 +188,7 @@ describe('useDefaultPaySelectedSection', () => {
       expect(updateTransactionPaymentTokenMock).toHaveBeenCalledTimes(1);
       expect(updateTransactionPaymentTokenMock).toHaveBeenCalledWith({
         transactionId: TRANSACTION_ID,
-        tokenAddress: VAULT_UNDERLYING_TOKEN,
-        chainId: VAULT_CHAIN_ID,
+        assetId: `eip155:143/erc20:${VAULT_UNDERLYING_TOKEN}`,
       });
     });
 
@@ -219,8 +216,7 @@ describe('useDefaultPaySelectedSection', () => {
 
       expect(updateTransactionPaymentTokenMock).toHaveBeenCalledWith({
         transactionId: TRANSACTION_ID,
-        tokenAddress: MUSD_TOKEN_ADDRESS,
-        chainId: CHAIN_IDS.MONAD,
+        assetId: 'eip155:143/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
       });
     });
 

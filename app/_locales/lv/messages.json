@@ -220,9 +220,6 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasUsed": {
-    "message": "Izlietotie Gas"
-  },
   "general": {
     "message": "Vispārīgi"
   },
@@ -346,9 +343,6 @@
   "newContract": {
     "message": "Jauns līgums"
   },
-  "newPassword": {
-    "message": "Jauna parole (vism. 8 rakstzīmes)"
-  },
   "next": {
     "message": "Nākamais"
   },
@@ -403,9 +397,6 @@
   "privateKey": {
     "message": "Privātā atslēga",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "Privātais tīkls"
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
@@ -560,9 +551,6 @@
   },
   "unapproved": {
     "message": "Nav apstiprināts"
-  },
-  "units": {
-    "message": "vienības"
   },
   "unknown": {
     "message": "Nezināma"

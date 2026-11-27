@@ -32,7 +32,6 @@ export function getBridgeControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'RemoteFeatureFlagController:getState',
-      'CurrencyRateController:getState',
       'AuthenticationController:getBearerToken',
       'AssetsController:getExchangeRatesForBridge',
     ],

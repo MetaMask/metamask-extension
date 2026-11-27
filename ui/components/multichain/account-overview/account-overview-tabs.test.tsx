@@ -34,12 +34,15 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
 
 const renderTabs = ({
   isWideLayout = false,
+  useExternalServices = true,
 }: {
   isWideLayout?: boolean;
+  useExternalServices?: boolean;
 } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      useExternalServices,
       enabledNetworkMap: { eip155: { [CHAIN_IDS.MAINNET]: true } },
       remoteFeatureFlags: {
         ...mockState.metamask.remoteFeatureFlags,
@@ -66,6 +69,14 @@ describe('AccountOverviewTabs', () => {
     expect(getByTestId('account-overview__asset-tab')).toBeInTheDocument();
     expect(getByTestId('account-overview__defi-tab')).toBeInTheDocument();
     expect(getByTestId('account-overview__nfts-tab')).toBeInTheDocument();
+  });
+
+  it('hides the DeFi tab when Basic Functionality is off', () => {
+    const { queryByTestId } = renderTabs({ useExternalServices: false });
+
+    expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
+    expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
   });
 
   it.each<[boolean, string]>([

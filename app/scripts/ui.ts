@@ -1,8 +1,3 @@
-// ESLint complains that we are mixing imports and runtime code, which we are,
-// but we need to initialize React Devtools before importing React (which
-// happens in the UI code).
-/* eslint-disable import-x/first */
-
 // This import sets up safe intrinsics required for LavaDome to function securely.
 // It must be run before any less trusted code so that no such code can undermine it.
 import '@lavamoat/lavadome-react';
@@ -16,14 +11,7 @@ import './development/wdyr';
 import '../../shared/constants/infura-project-id';
 
 import type { Duplex } from 'stream';
-import * as reactDevtoolsCore from 'react-devtools-core';
 import type { Substream } from '@metamask/object-multiplex/dist/Substream';
-
-if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
-  const { initialize, connectToDevTools } = reactDevtoolsCore;
-  initialize();
-  connectToDevTools();
-}
 
 import browser from 'webextension-polyfill';
 

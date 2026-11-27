@@ -184,7 +184,6 @@ describe('MultichainAccountMenu', () => {
       onToggle: jest.fn(),
     });
 
-    expect(document.querySelector(menuButtonSelector)).toBeInTheDocument();
     expect(document.querySelector(popoverOpenSelector)).not.toBeInTheDocument();
   });
 
@@ -196,7 +195,6 @@ describe('MultichainAccountMenu', () => {
       onToggle: jest.fn(),
     });
 
-    expect(document.querySelector(menuButtonSelector)).toBeInTheDocument();
     expect(document.querySelector(popoverOpenSelector)).toBeInTheDocument();
   });
 

@@ -2,10 +2,6 @@
   "about": {
     "message": "關於"
   },
-  "acceptTermsOfUse": {
-    "message": "我已閱讀並同意$1",
-    "description": "$1 is the `terms` message"
-  },
   "accessingYourCamera": {
     "message": "正在存取您的攝影鏡頭..."
   },
@@ -124,9 +120,6 @@
   "blockExplorerUrl": {
     "message": "區塊鏈瀏覽器"
   },
-  "blockExplorerUrlDefinition": {
-    "message": "這個網路的區塊鏈瀏覽器網址。"
-  },
   "blockExplorerView": {
     "message": "在 $1 檢視帳戶",
     "description": "$1 replaced by URL for custom block explorer"
@@ -148,9 +141,6 @@
   },
   "chainId": {
     "message": "鏈 ID"
-  },
-  "chainIdDefinition": {
-    "message": "鏈 ID 用來簽署這個網路上的交易。"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包。"
@@ -262,9 +252,6 @@
   },
   "currencySymbol": {
     "message": "貨幣代碼"
-  },
-  "currencySymbolDefinition": {
-    "message": "用來代表這個網路的貨幣的代碼。"
   },
   "currentExtension": {
     "message": "目前擴充功能頁面"
@@ -421,9 +408,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "由於網路錯誤，gas 價格估計失敗。"
-  },
-  "gasUsed": {
-    "message": "Gas 用量"
   },
   "general": {
     "message": "一般"
@@ -596,10 +580,6 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
-  "mismatchedChainLinkText": {
-    "message": "驗證網路的詳細資料",
-    "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
-  },
   "name": {
     "message": "名稱"
   },
@@ -614,17 +594,8 @@
     "message": "您必須選擇一個檔案來匯入。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "networkDetails": {
-    "message": "網路詳細資料"
-  },
   "networkName": {
     "message": "網路名稱"
-  },
-  "networkNameDefinition": {
-    "message": "對應這個網路的名稱。"
-  },
-  "networkURL": {
-    "message": "網路 URL"
   },
   "networkURLDefinition": {
     "message": "用來存取這個網路的 URL。"
@@ -638,9 +609,6 @@
   },
   "newContract": {
     "message": "建立新合約"
-  },
-  "newPassword": {
-    "message": "新密碼（至少8個字元）"
   },
   "next": {
     "message": "下一頁"
@@ -715,9 +683,6 @@
   "privateKey": {
     "message": "私鑰",
     "description": "select this type of file to use to import an account"
-  },
-  "privateNetwork": {
-    "message": "私有網路"
   },
   "provide": {
     "message": "提供"
@@ -936,9 +901,6 @@
   },
   "unapproved": {
     "message": "未批准"
-  },
-  "units": {
-    "message": "單位"
   },
   "unknown": {
     "message": "未知"

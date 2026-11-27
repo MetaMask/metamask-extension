@@ -557,7 +557,7 @@ describe('selectLocalTransactions', () => {
           transactionData: Record<string, { accountOverride: string }>;
         }
       ).transactionData = {
-        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
+        'money-account-tx': { accountOverride: LEDGER_ACCOUNT_ID },
       };
 
       const ledgerState = structuredClone(state);
@@ -586,22 +586,87 @@ describe('selectLocalTransactions', () => {
       expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
     });
 
-    it('keeps withdrawals in the money account SRP account activity', () => {
-      const state = buildFundedDepositState(MONEY_ACCOUNT_ADDRESS, {
-        nestedTransactions: [{ type: EvmTransactionType.moneyAccountWithdraw }],
-      });
-      (
-        state.metamask as unknown as {
-          transactionData: Record<string, { accountOverride: string }>;
-        }
-      ).transactionData = {
-        'money-account-tx': { accountOverride: LEDGER_ADDRESS },
-      };
+    it('does not route deposits by the persisted Pay account override', () => {
+      const state = buildStateWithMoneyAccount(
+        buildMoneyAccountTransaction({
+          metamaskPay: { accountOverride: LEDGER_ACCOUNT_ID },
+        }),
+      );
       const ledgerState = structuredClone(state);
       selectLedger(ledgerState);
 
       expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
       expect(getGroupIds(ledgerState)).toStrictEqual([]);
+    });
+
+    describe('withdrawals', () => {
+      // transfer(to, 5 mUSD)
+      const encodeTransfer = (to: string) =>
+        `0xa9059cbb${to.slice(2).padStart(64, '0')}${'4c4b40'.padStart(64, '0')}`;
+
+      function buildWithdrawState(
+        transferTo: string,
+        overrides: Partial<TransactionMeta> = {},
+      ) {
+        return buildStateWithMoneyAccount(
+          buildMoneyAccountTransaction({
+            nestedTransactions: [
+              { type: EvmTransactionType.moneyAccountWithdraw },
+              {
+                type: EvmTransactionType.tokenMethodTransfer,
+                data: encodeTransfer(transferTo),
+              },
+            ] as TransactionMeta['nestedTransactions'],
+            ...overrides,
+          }),
+        );
+      }
+
+      function expectOnlyInLedgerActivity(
+        state: ReturnType<typeof buildWithdrawState>,
+      ) {
+        const ledgerState = structuredClone(state);
+        selectLedger(ledgerState);
+
+        expect(getGroupIds(state)).toStrictEqual([]);
+        expect(getGroupIds(ledgerState)).toStrictEqual(['money-account-tx']);
+      }
+
+      it('shows a pending withdrawal only in the recipient hardware account activity', () => {
+        const state = buildWithdrawState(MONEY_ACCOUNT_ADDRESS, {
+          status: EvmTransactionStatus.approved,
+        });
+        (
+          state.metamask as unknown as {
+            transactionData: Record<string, { accountOverride: string }>;
+          }
+        ).transactionData = {
+          'money-account-tx': { accountOverride: LEDGER_ACCOUNT_ID },
+        };
+
+        expectOnlyInLedgerActivity(state);
+      });
+
+      it('shows a finalized withdrawal only in the recipient hardware account activity', () => {
+        const state = buildWithdrawState(MONEY_ACCOUNT_ADDRESS, {
+          metamaskPay: { accountOverride: LEDGER_ACCOUNT_ID },
+        });
+
+        expectOnlyInLedgerActivity(state);
+      });
+
+      it('falls back to the nested transfer recipient without an account override', () => {
+        expectOnlyInLedgerActivity(buildWithdrawState(LEDGER_ADDRESS));
+      });
+
+      it('keeps the SRP rule when the recipient is unknown', () => {
+        const state = buildWithdrawState(MONEY_ACCOUNT_ADDRESS);
+        const ledgerState = structuredClone(state);
+        selectLedger(ledgerState);
+
+        expect(getGroupIds(state)).toStrictEqual(['money-account-tx']);
+        expect(getGroupIds(ledgerState)).toStrictEqual([]);
+      });
     });
   });
 });

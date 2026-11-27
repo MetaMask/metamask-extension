@@ -1,0 +1,48 @@
+{
+  "chainID": 1,
+  "confirmations": true,
+  "cubistSigners": [],
+  "explorer": "https://etherscan.io",
+  "gasless": {
+    "eip7702": {
+      "transactions": false,
+      "swaps": false,
+      "bridge": false
+    },
+    "stxSendBundle": {
+      "transactions": false,
+      "swaps": false,
+      "bridge": false
+    },
+    "feeTokens": [
+      {
+        "address": "",
+        "symbol": "",
+        "decimals": 0,
+        "aliasAddress": ""
+      }
+    ]
+  },
+  "group": "ethereum",
+  "hidden": false,
+  "name": "Mainnet",
+  "nativeCurrency": {
+    "name": "ETH",
+    "symbol": "ETH",
+    "decimals": 18,
+    "address": ""
+  },
+  "network": "ethereum-mainnet",
+  "relayTransactions": false,
+  "sendBundle": false,
+  "simulationIncludeFees": false,
+  "smartTransactions": true,
+  "sponsorship": {
+    "enabled": false,
+    "rules": [
+      {
+        "name": ""
+      }
+    ]
+  }
+}
