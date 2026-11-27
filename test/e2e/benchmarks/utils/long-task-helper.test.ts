@@ -1,3 +1,4 @@
+import { readLongTasksAtTrigger } from './in-page-step-timer';
 import {
   buildLongTaskTimerResults,
   legacyStepTimerId,
@@ -110,6 +111,297 @@ describe('long-task-helper', () => {
         longTaskMaxDuration: 110,
         tbt: 80,
         longTasksObserved: true,
+      });
+    });
+
+    it('resets before the action by default', async () => {
+      const order: string[] = [];
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(async () => {
+          order.push('reset');
+        }),
+        executeScript: jest.fn(),
+        collectLongTaskMetrics: jest.fn(async () => {
+          order.push('collect');
+          return null;
+        }),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      await measureStepWithLongTasks(mockDriver, 'step', async () => {
+        order.push('action');
+      });
+
+      expect(order).toStrictEqual(['reset', 'action', 'collect']);
+      expect(mockDriver.executeScript).not.toHaveBeenCalled();
+    });
+
+    it('when the window opens at the trigger, reads without resetting where the reset was, and logs what it read', async () => {
+      const log = jest
+        .spyOn(console, 'log')
+        .mockImplementation(() => undefined);
+      const order: string[] = [];
+      const mockDriver = {
+        resetLongTaskMetrics: jest.fn(),
+        executeScript: jest.fn(async () => {
+          order.push('read');
+          return { reset: true, metrics: { count: 1, totalDuration: 70 } };
+        }),
+        collectLongTaskMetrics: jest.fn(async () => {
+          order.push('collect');
+          return {
+            count: 3,
+            totalDuration: 250,
+            maxDuration: 120,
+            tbt: 100,
+            observed: true,
+            tbtRating: 'good',
+          };
+        }),
+      } as unknown as import('../../webdriver/driver').Driver;
+
+      const result = await measureStepWithLongTasks(
+        mockDriver,
+        'step',
+        async () => {
+          order.push('action');
+        },
+        { legacyTimerId: true, windowOpensAtTrigger: true },
+      );
+
+      expect(mockDriver.resetLongTaskMetrics).not.toHaveBeenCalled();
+      expect(mockDriver.executeScript).toHaveBeenCalledTimes(1);
+      expect(mockDriver.executeScript).toHaveBeenCalledWith(
+        readLongTasksAtTrigger,
+        'step',
+      );
+      expect(order).toStrictEqual(['read', 'action', 'collect']);
+      // The collected window, which runs from the trigger, is the result.
+      expect(result).toMatchObject({ longTaskCount: 3, tbt: 100 });
+      expect(log).toHaveBeenCalledWith(
+        "[benchmark] stepLegacy: 1 long task(s), 70 ms, between the trigger and the step timer's start",
+      );
+      log.mockRestore();
+    });
+
+    describe('when the window was asked to open at the trigger and did not', () => {
+      /**
+       * Run a step that asks for the window, over a read that answers `read`.
+       * @param read - What the page call does.
+       * @returns The driver, the log and the order of the driver calls.
+       */
+      async function runWhere(read: () => Promise<unknown>) {
+        const log = jest
+          .spyOn(console, 'log')
+          .mockImplementation(() => undefined);
+        const order: string[] = [];
+        const mockDriver = {
+          resetLongTaskMetrics: jest.fn(async () => {
+            order.push('reset');
+          }),
+          executeScript: jest.fn(read),
+          collectLongTaskMetrics: jest.fn(async () => {
+            order.push('collect');
+            return null;
+          }),
+        } as unknown as import('../../webdriver/driver').Driver;
+
+        await measureStepWithLongTasks(
+          mockDriver,
+          'step',
+          async () => {
+            order.push('action');
+          },
+          { windowOpensAtTrigger: true },
+        );
+        return { mockDriver, log, order };
+      }
+
+      it('opens the window after the click and says so when the probe did not reset', async () => {
+        const { mockDriver, log, order } = await runWhere(async () => ({
+          reset: false,
+          metrics: { count: 0, totalDuration: 0 },
+        }));
+
+        expect(order).toStrictEqual(['reset', 'action', 'collect']);
+        expect(mockDriver.executeScript).toHaveBeenCalledTimes(1);
+        expect(log).toHaveBeenCalledWith(
+          expect.stringContaining(
+            '[benchmark] step: the long-task window did not open at the trigger (the app has no reset hook, or the probe did not see the trigger); opening it after the click',
+          ),
+        );
+        log.mockRestore();
+      });
+
+      it('opens the window after the click and says why when the page cannot be read', async () => {
+        const { order, log } = await runWhere(async () => {
+          throw new Error('javascript error');
+        });
+
+        expect(order).toStrictEqual(['reset', 'action', 'collect']);
+        expect(log).toHaveBeenCalledWith(
+          expect.stringContaining(
+            'did not open at the trigger (the page could not be read: javascript error)',
+          ),
+        );
+        log.mockRestore();
+      });
+
+      it('says the hook is absent, not zero, where the probe reset but the app cannot report', async () => {
+        const { order, log } = await runWhere(async () => ({
+          reset: true,
+          metrics: null,
+        }));
+
+        expect(order).toStrictEqual(['action', 'collect']);
+        expect(log).toHaveBeenCalledWith(
+          "[benchmark] step: long-task hook absent, between the trigger and the step timer's start",
+        );
+        log.mockRestore();
+      });
+    });
+
+    describe('against an app that records a long task at the click', () => {
+      type Host = {
+        stateHooks?: {
+          getLongTaskMetricsWithTBT?: (reset?: boolean) => unknown;
+        };
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        __benchSteps?: Record<string, { longTasksReset: boolean }>;
+      };
+      const host = window as unknown as Host;
+
+      /**
+       * A driver over a fake long-task store shaped like the app's hooks: the
+       * `reset` argument of `getLongTaskMetricsWithTBT` and the reset hook
+       * clear it, a read without `reset` does not.
+       */
+      function driverOverStore() {
+        let count = 0;
+        let totalDuration = 0;
+        const read = (reset = false) => {
+          const metrics = {
+            count,
+            totalDuration,
+            maxDuration: totalDuration,
+            tbt: 0,
+            observed: true,
+            tbtRating: 'good',
+          };
+          if (reset) {
+            count = 0;
+            totalDuration = 0;
+          }
+          return metrics;
+        };
+        host.stateHooks = { getLongTaskMetricsWithTBT: read };
+        const driver = {
+          resetLongTaskMetrics: jest.fn(async () => {
+            count = 0;
+            totalDuration = 0;
+          }),
+          executeScript: jest.fn(
+            async (script: (args: unknown[]) => unknown, ...args: unknown[]) =>
+              script(args),
+          ),
+          collectLongTaskMetrics: jest.fn(async () => read(true)),
+        } as unknown as import('../../webdriver/driver').Driver;
+        const recordLongTask = (duration: number) => {
+          count += 1;
+          totalDuration += duration;
+        };
+        return { driver, recordLongTask };
+      }
+
+      beforeEach(() => {
+        // The probe has reset the app's metrics at the trigger.
+        host.__benchSteps = { step: { longTasksReset: true } };
+      });
+      afterEach(() => {
+        delete host.stateHooks;
+        delete host.__benchSteps;
+      });
+
+      it('loses the long task when the step resets after the click', async () => {
+        const log = jest
+          .spyOn(console, 'log')
+          .mockImplementation(() => undefined);
+        const { driver, recordLongTask } = driverOverStore();
+
+        // The click has returned and left a 66 ms long task behind.
+        recordLongTask(66);
+        const result = await measureStepWithLongTasks(
+          driver,
+          'step',
+          async () => undefined,
+        );
+
+        expect(result).toMatchObject({
+          longTaskCount: 0,
+          longTaskTotalDuration: 0,
+        });
+        log.mockRestore();
+      });
+
+      it('keeps the long task when the window opened at the trigger', async () => {
+        const log = jest
+          .spyOn(console, 'log')
+          .mockImplementation(() => undefined);
+        const { driver, recordLongTask } = driverOverStore();
+
+        recordLongTask(66);
+        const result = await measureStepWithLongTasks(
+          driver,
+          'step',
+          async () => {
+            recordLongTask(30);
+          },
+          { windowOpensAtTrigger: true },
+        );
+
+        expect(result).toMatchObject({
+          longTaskCount: 2,
+          longTaskTotalDuration: 96,
+        });
+        expect(log).toHaveBeenCalledWith(
+          "[benchmark] step: 1 long task(s), 66 ms, between the trigger and the step timer's start",
+        );
+        log.mockRestore();
+      });
+
+      it("reads the app's metrics in the page without resetting them", async () => {
+        const log = jest
+          .spyOn(console, 'log')
+          .mockImplementation(() => undefined);
+        const getLongTaskMetricsWithTBT = jest.fn(() => ({
+          count: 2,
+          totalDuration: 90,
+        }));
+        host.stateHooks = { getLongTaskMetricsWithTBT };
+        let pageFunction: ((args: unknown[]) => unknown) | undefined;
+        const mockDriver = {
+          executeScript: jest.fn(
+            async (
+              script: (args: unknown[]) => unknown,
+              ...args: unknown[]
+            ) => {
+              pageFunction = script;
+              return script(args);
+            },
+          ),
+          collectLongTaskMetrics: jest.fn(async () => null),
+        } as unknown as import('../../webdriver/driver').Driver;
+
+        await measureStepWithLongTasks(
+          mockDriver,
+          'step',
+          async () => undefined,
+          { windowOpensAtTrigger: true },
+        );
+
+        expect(getLongTaskMetricsWithTBT).toHaveBeenCalledWith(false);
+        delete host.stateHooks;
+        expect(pageFunction?.(['step'])).toMatchObject({ metrics: null });
+        log.mockRestore();
       });
     });
 

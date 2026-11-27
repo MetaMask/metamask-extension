@@ -17,12 +17,9 @@ import {
   waitForSentryTransactions,
 } from '../../utils/sentry-transactions';
 import { TraceName } from '../../../../../shared/lib/trace';
-import {
-  measureStepWithLongTasks,
-  buildLongTaskTimerResults,
-} from '../../utils/long-task-helper';
+import { buildLongTaskTimerResults } from '../../utils/long-task-helper';
 import { getSentryTransactionManifestFlags } from '../../utils/sentry-transaction-flags';
-import { measureStepInPage } from '../../utils/in-page-step-timer';
+import { measureAssetClickToPriceChart } from '../../utils/asset-price-chart-step';
 import {
   getTestSpecificMock,
   shouldUseMockedRequests,
@@ -39,14 +36,6 @@ import type {
   LongTaskStepResult,
   TimerResult,
 } from '../../utils/types';
-
-/**
- * The chart header's percent change, rendered only once real historical prices
- * load (`asset-chart.tsx`, `token-price-header.tsx`). It never appears unless
- * the historical-prices mock matches the URL the chart requests.
- */
-const PRICE_CHART_DATA =
-  '[data-testid="parent-selector-asset-details"] [data-testid="asset-price-percent-change"]';
 
 export const testTitle = 'benchmark-solana-asset-details-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
@@ -88,29 +77,14 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         const tokensTab = new TokensTab(driver);
         await tokensTab.checkTokenListIsDisplayed();
 
-        // Both timers end at `PRICE_CHART_DATA`, not at the page's first
-        // render, where the chart container and the percentage already are.
+        // Measure: Asset click to the price chart's data.
         inPageTimers.push(
-          ...(await measureStepInPage(driver, 'assetClickToPriceChart', {
-            endSelector: PRICE_CHART_DATA,
-            // `clickOnAsset` may first expand the low-value section, so only
-            // input inside a token row starts the in-page timer.
-            startWithin: '[data-testid="multichain-token-list-button"]',
-            trigger: () => tokensTab.clickOnAsset('Solana'),
-            settle: async () => {
-              steps.push(
-                await measureStepWithLongTasks(
-                  driver,
-                  'assetClickToPriceChart',
-                  async () => {
-                    await tokensTab.checkPriceChartIsShown();
-                    await driver.waitForSelector(PRICE_CHART_DATA);
-                  },
-                  { legacyTimerId: true },
-                ),
-              );
-            },
-          })),
+          ...(await measureAssetClickToPriceChart(
+            driver,
+            tokensTab,
+            'Solana',
+            steps,
+          )),
         );
 
         // `Asset Details` ends at the asset page's mount, before the chart data
