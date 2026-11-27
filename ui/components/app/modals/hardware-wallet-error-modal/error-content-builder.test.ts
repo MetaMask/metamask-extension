@@ -88,6 +88,36 @@ describe('buildErrorContent', () => {
     );
   });
 
+  it('shows an acknowledge-only description for DeviceMultipleConnected', () => {
+    const t = jest.fn((key: string, substitutions?: string[]) => {
+      if (key === HardwareWalletType.Ledger) {
+        return 'Ledger';
+      }
+
+      return substitutions ? `${key}:${substitutions.join(',')}` : key;
+    });
+
+    const error = createHardwareWalletError(
+      ErrorCode.DeviceMultipleConnected,
+      HardwareWalletType.Ledger,
+    );
+
+    const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
+
+    expect(content).toMatchObject({
+      variant: 'description',
+      icon: expect.anything(),
+      showRepairLink: false,
+      title: 'hardwareWalletErrorTitleDeviceAlreadyConnected:Ledger',
+      description:
+        'hardwareWalletErrorDeviceAlreadyConnectedDescription:Ledger,Ledger,Ledger',
+    });
+    expect(t).toHaveBeenCalledWith(
+      'hardwareWalletErrorDeviceAlreadyConnectedDescription',
+      ['Ledger', 'Ledger', 'Ledger'],
+    );
+  });
+
   describe('showRepairLink flag', () => {
     const t = jest.fn((key: string) => key);
 

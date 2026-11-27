@@ -56,6 +56,7 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   toHardwareWalletError,
   HardwareWalletType,
+  useHardwareWalletError,
 } from '../../../contexts/hardware-wallets';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
@@ -121,6 +122,7 @@ const ConnectHardwareForm = () => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch: MetaMaskReduxDispatch = useDispatch();
   const navigate = useNavigate();
+  const { showErrorModal } = useHardwareWalletError();
 
   // Selectors
   const chainId = useSelector(getCurrentChainId);
@@ -285,6 +287,12 @@ const ConnectHardwareForm = () => {
         if (deviceName === HardwareDeviceNames.ledger) {
           const hwError = toHardwareWalletError(e, HardwareWalletType.Ledger);
 
+          // Retrying can't succeed here; show the acknowledge-only modal.
+          if (hwError.code === ErrorCode.DeviceMultipleConnected) {
+            showErrorModal(hwError);
+            return;
+          }
+
           if (
             hwError.code !== ErrorCode.Unknown &&
             hwError.code !== ErrorCode.ConnectionClosed
@@ -356,6 +364,7 @@ const ConnectHardwareForm = () => {
       dispatch,
       hardwareAccounts.length,
       setCurrentDevice,
+      showErrorModal,
       showTemporaryAlert,
       t,
       unlocked,

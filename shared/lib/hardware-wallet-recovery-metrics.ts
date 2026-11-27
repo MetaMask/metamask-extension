@@ -271,6 +271,8 @@ export function mapHardwareWalletRecoveryErrorType(
       return MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied;
     case ErrorCode.PermissionCameraPromptDismissed:
       return MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionPromptDismissed;
+    case ErrorCode.DeviceMultipleConnected:
+      return MetaMetricsHardwareWalletRecoveryErrorType.MultipleDevicesConnected;
     default:
       return MetaMetricsHardwareWalletRecoveryErrorType.GenericError;
   }

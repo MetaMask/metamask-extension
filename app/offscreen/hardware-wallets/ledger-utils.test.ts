@@ -6,13 +6,55 @@ import {
   Severity,
 } from '@metamask/hw-wallet-sdk';
 
+import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
 import {
+  getConnectedLedgerDeviceInfo,
   serializeError,
   serializeLedgerError,
   isSerializedLedgerError,
 } from './ledger-utils';
 
 describe('ledger-utils', () => {
+  describe('getConnectedLedgerDeviceInfo', () => {
+    const mockGetDevices = jest.fn();
+    const device = (vendorId: number, productId = 0x0004) =>
+      ({ vendorId, productId }) as HIDDevice;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      Object.defineProperty(globalThis, 'navigator', {
+        value: { hid: { getDevices: mockGetDevices } },
+        writable: true,
+        configurable: true,
+      });
+    });
+
+    it('returns productId for Ledger-vendor devices only', async () => {
+      mockGetDevices.mockResolvedValue([
+        device(Number(LEDGER_USB_VENDOR_ID)),
+        device(0x1234),
+      ]);
+
+      await expect(getConnectedLedgerDeviceInfo()).resolves.toStrictEqual([
+        { productId: 0x0004 },
+      ]);
+    });
+
+    it('returns [] when no Ledger device is connected', async () => {
+      mockGetDevices.mockResolvedValue([device(0x1234)]);
+
+      await expect(getConnectedLedgerDeviceInfo()).resolves.toStrictEqual([]);
+    });
+
+    it('propagates rejection', async () => {
+      mockGetDevices.mockRejectedValue(new Error('HID unavailable'));
+
+      await expect(getConnectedLedgerDeviceInfo()).rejects.toThrow(
+        'HID unavailable',
+      );
+    });
+  });
+
   describe('serializeError', () => {
     it('serializes a plain Error keeping message and name', () => {
       const error = new Error('boom');

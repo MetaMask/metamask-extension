@@ -112,6 +112,16 @@ describe('hardware-wallet-recovery-metrics', () => {
       );
     });
 
+    it('maps DeviceMultipleConnected to a distinct type, not GenericError', () => {
+      expect(
+        mapHardwareWalletRecoveryErrorType({
+          code: ErrorCode.DeviceMultipleConnected,
+        }),
+      ).toBe(
+        MetaMetricsHardwareWalletRecoveryErrorType.MultipleDevicesConnected,
+      );
+    });
+
     it('maps unrecognized codes to GenericError', () => {
       expect(
         mapHardwareWalletRecoveryErrorType({ code: ErrorCode.Unknown }),

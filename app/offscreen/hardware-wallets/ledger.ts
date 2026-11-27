@@ -23,6 +23,7 @@ import {
   OffscreenCommunicationTarget,
 } from '../../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../../shared/constants/hardware-wallets';
+import { getConnectedLedgerDeviceInfo } from './ledger-utils';
 
 /** Idle grace period before closing the WebHID transport between action bursts. */
 const TRANSPORT_IDLE_TIMEOUT_MS = 5_000;
@@ -525,6 +526,10 @@ export class LedgerLegacyHandler {
           .toString('ascii');
         return { appName, version };
       }
+
+      case LedgerAction.getConnectedDeviceInfo:
+        // Answered from the permitted set; the background gates before a transport opens.
+        return await getConnectedLedgerDeviceInfo();
 
       case LedgerAction.getAppConfiguration:
         if (!this.transport) {

@@ -147,6 +147,23 @@ export function buildErrorContent(
         ]),
       };
 
+    // Single-device gate: another device is connected; retrying won't help.
+    case ErrorCode.DeviceMultipleConnected:
+      return {
+        variant: HardwareWalletErrorContentVariant.Description,
+        icon: IconName.Danger,
+        iconColor: IconColor.WarningDefault,
+        title: t('hardwareWalletErrorTitleDeviceAlreadyConnected', [
+          t(walletType),
+        ]),
+        showRepairLink: false,
+        description: t('hardwareWalletErrorDeviceAlreadyConnectedDescription', [
+          t(walletType),
+          t(walletType),
+          t(walletType),
+        ]),
+      };
+
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
     case ErrorCode.ConnectionTransportMissing:

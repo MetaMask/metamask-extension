@@ -1929,6 +1929,153 @@ describe('LegacyBackgroundApiService', () => {
         });
       });
     });
+
+    describe('Ledger single-device gate', () => {
+      const LEDGER_COPY =
+        "You can only connect one Ledger at a time. To use a different Ledger, remove the connected Ledger's accounts from MetaMask first.";
+
+      const connection = (productId: number) => ({ productId });
+
+      // Stub with a stateful binding, so a bind is visible to later calls.
+      const buildLedgerKeyring = ({
+        deviceId = '',
+        connected = [connection(0x0004)],
+      }: {
+        deviceId?: string;
+        connected?: ReturnType<typeof connection>[];
+      } = {}) => {
+        let currentDeviceId = deviceId;
+        let currentConnected = connected;
+        return {
+          get deviceId() {
+            return currentDeviceId;
+          },
+          set deviceId(id: string) {
+            currentDeviceId = id;
+          },
+          get connected() {
+            return currentConnected;
+          },
+          set connected(next: ReturnType<typeof connection>[]) {
+            currentConnected = next;
+          },
+          entropySource: 'entropy-1',
+          hdPath: "m/44'/60'/0'/0",
+          bridge: {
+            updateTransportMethod: jest.fn().mockResolvedValue(true),
+            getConnectedDeviceInfo: jest.fn(async () => currentConnected),
+          },
+          getDeviceId: jest.fn(() => currentDeviceId),
+          setDeviceId: jest.fn((id: string) => {
+            currentDeviceId = id;
+          }),
+          getAccounts: jest.fn().mockResolvedValue([]),
+          createAccounts: jest.fn().mockResolvedValue([{ address: '0xabc' }]),
+          getFirstPage: jest.fn().mockResolvedValue([]),
+          getNextPage: jest.fn().mockResolvedValue([]),
+          getPreviousPage: jest.fn().mockResolvedValue([]),
+          forgetDevice: jest.fn().mockResolvedValue(undefined),
+        };
+      };
+
+      const connectLedger = async (
+        rootMessenger: RootMessenger,
+        keyring: ReturnType<typeof buildLedgerKeyring>,
+      ) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:withController',
+          jest.fn().mockImplementation(async (callback) =>
+            callback({
+              keyrings: [{ type: LedgerKeyring.type }],
+              addNewKeyring: jest.fn(),
+            }),
+          ),
+        );
+        registerWithKeyringV2(rootMessenger, keyring);
+
+        return rootMessenger.call(
+          'LegacyBackgroundApiService:connectHardware',
+          'ledger',
+          0,
+        );
+      };
+
+      it('binds the model on first Ledger import and blocks a different one', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring();
+          registerWithKeyringV2(rootMessenger, keyring);
+          rootMessenger.registerActionHandler(
+            'AccountsController:listAccounts',
+            jest.fn().mockReturnValue([]),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:getAccountByAddress',
+            jest.fn().mockReturnValue({ id: 'account-1' }),
+          );
+          rootMessenger.registerActionHandler(
+            'AccountsController:setSelectedAccount',
+            jest.fn(),
+          );
+
+          await rootMessenger.call(
+            'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+            0,
+            HardwareDeviceNames.ledger,
+          );
+          expect(keyring.setDeviceId).toHaveBeenCalledWith('4');
+
+          keyring.connected = [connection(0x0001)];
+          keyring.setDeviceId.mockClear();
+          keyring.createAccounts.mockClear();
+
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+              1,
+              HardwareDeviceNames.ledger,
+            ),
+          ).rejects.toMatchObject({
+            code: ErrorCode.DeviceMultipleConnected,
+            userMessage: LEDGER_COPY,
+          });
+          expect(keyring.createAccounts).not.toHaveBeenCalled();
+        });
+      });
+
+      it('blocks a different model at connect without binding', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring({
+            deviceId: '4',
+            connected: [connection(0x0001)],
+          });
+
+          await expect(
+            connectLedger(rootMessenger, keyring),
+          ).rejects.toMatchObject({
+            code: ErrorCode.DeviceMultipleConnected,
+            userMessage: LEDGER_COPY,
+          });
+          expect(keyring.setDeviceId).not.toHaveBeenCalled();
+          expect(keyring.getFirstPage).not.toHaveBeenCalled();
+        });
+      });
+
+      it('forgets the Ledger despite a different model being connected', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const keyring = buildLedgerKeyring({ deviceId: '4' });
+          registerWithKeyringV2(rootMessenger, keyring);
+
+          // A different model connected used to deadlock recovery.
+          keyring.connected = [connection(0x0001)];
+          await expect(
+            rootMessenger.call(
+              'LegacyBackgroundApiService:forgetDevice',
+              HardwareDeviceNames.ledger,
+            ),
+          ).resolves.toBe(true);
+        });
+      });
+    });
   });
 
   describe('checkDelegationDisabled', () => {

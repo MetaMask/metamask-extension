@@ -327,6 +327,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
+import { LedgerDeviceGate } from '../lib/ledger-device-gate';
 import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
@@ -873,6 +874,8 @@ export class LegacyBackgroundApiService {
   readonly #createVaultMutex: Mutex;
 
   readonly #offscreenPromise: Promise<void>;
+
+  readonly #ledgerDeviceGate = new LedgerDeviceGate();
 
   #passkeyAutoUnlockSuppressedResetTimeoutId: NodeJS.Timeout | null = null;
 
@@ -3242,6 +3245,11 @@ export class LegacyBackgroundApiService {
       { name: deviceName, hdPath, create: true, deviceRead: true },
       async (keyring) => {
         const ledgerKeyring = keyring as LedgerKeyringV2;
+        if (deviceName === HardwareDeviceNames.ledger) {
+          await this.#ledgerDeviceGate.enforceSingleDevice(ledgerKeyring, {
+            allowBind: false,
+          });
+        }
         let accounts: AccountPage = [];
         switch (page) {
           case -1:
@@ -3421,6 +3429,10 @@ export class LegacyBackgroundApiService {
 
         switch (deviceName) {
           case HardwareDeviceNames.ledger: {
+            await this.#ledgerDeviceGate.enforceSingleDevice(
+              keyring as LedgerKeyringV2,
+              { allowBind: true },
+            );
             // Ledger Live mode uses a per-account hardened third segment;
             // Legacy and BIP-44 modes are `${hdPath}/${index}`.
             const derivationPath = (
