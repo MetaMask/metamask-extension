@@ -53,7 +53,7 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - Install by running `npm install -g corepack`, then enable by running `corepack enable` within the metamask-extension project.
   - Corepack manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
 - Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
-  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
+  - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.metamask.io/developer-tools/dashboard/how-to/secure-an-api/).
     - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
   - If debugging unhandled exceptions, you'll need to add a value for `SENTRY_DSN` [Sentry Dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/), see [Developing on MetaMask - Sentry](./development/README.md#sentry).
@@ -82,7 +82,7 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 ## AI Agent Skills (`yarn skills`)
 
-AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [MetaMask/skills](https://github.com/MetaMask/skills) repo, with an optional private overlay from [Consensys/skills](https://github.com/Consensys/skills). Per [ADR #57](https://github.com/MetaMask/decisions/pull/162) this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
+AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [MetaMask/skills](https://github.com/MetaMask/skills) repo (with an optional private Consensys overlay when available). Per ADR #57 this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
 
 Zero-config setup:
 
