@@ -3,14 +3,13 @@
     "cancellationFeeWei": 0,
     "cancellationReason": "not_cancelled",
     "deadlineRatio": 0,
-    "duplicated": false,
     "isSettled": true,
     "minedHash": "0xec9d6214684d6dc191133ae4a7ec97db3e521fff9cfe5c4f48a84cb6c93a5fa5",
     "minedTx": "success",
-    "originalTransactionStatus": "VALIDATED",
+    "wouldRevertMessage": "",
+    "duplicated": false,
     "proxied": false,
     "timedOut": true,
-    "wouldRevertMessage": "",
-    "type": "sentinel"
+    "originalTransactionStatus": "VALIDATED"
   }
 }

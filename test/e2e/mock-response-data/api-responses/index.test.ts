@@ -7,6 +7,8 @@ import {
   bridgeGetTokensPopular,
   bridgeGetTokensSearch,
   bridgeGetTxStatus,
+  contentfulServedAssets,
+  findDuplicateEndpoints,
   fourByteSignatures,
   gasPrices,
   priceV1ExchangeRates,
@@ -61,13 +63,14 @@ describe('API endpoint definitions', () => {
       });
     }
 
-    it('registers fixture defaults only for the endpoints that have one', () => {
-      expect(
-        endpoints
-          .filter(([, endpoint]) => endpoint.hasFixtureDefault)
-          .map(([key]) => key)
-          .sort(),
-      ).toStrictEqual(['accounts-supported-networks-v2', 'gas-prices']);
+    it('has no duplicate ids or endpoints', () => {
+      expect(findDuplicateEndpoints(endpoints)).toStrictEqual([]);
+    });
+
+    it('serves the fixture as the default for 4byte, tx-sentinel /network and the token list', () => {
+      expect(fourByteSignatures.hasFixtureDefault).toBe(true);
+      expect(txSentinelNetwork.hasFixtureDefault).toBe(true);
+      expect(tokenList.hasFixtureDefault).toBe(true);
     });
   });
 
@@ -134,8 +137,10 @@ describe('API endpoint definitions', () => {
       expect(entry.price).toBe(0.9999);
       expect(entry.totalVolume).toBe(0);
       expect(entry.dilutedMarketCap).toBe(0);
+      expect(entry).not.toHaveProperty('pricePercentChange1d');
+      const { pricePercentChange1d: _unset, ...fixtureKeys } = fixtureEntry;
       expect(Object.keys(entry).sort()).toStrictEqual(
-        Object.keys(fixtureEntry).sort(),
+        Object.keys(fixtureKeys).sort(),
       );
     });
   });
@@ -281,6 +286,23 @@ describe('API endpoint definitions', () => {
       expect(response.count).toBe(fourByteSignatures.body.count);
       expect(response.results).toHaveLength(1);
       expect(response.results[0].bytes_signature).toBe('');
+    });
+  });
+
+  describe('contentfulServedAssets', () => {
+    it('returns no assets when includes is missing', () => {
+      expect(contentfulServedAssets({})).toStrictEqual([]);
+      expect(contentfulServedAssets({ includes: {} })).toStrictEqual([]);
+    });
+
+    it('drops placeholder assets that have no id', () => {
+      expect(
+        contentfulServedAssets({
+          includes: {
+            Asset: [{ sys: { id: '' } }, { sys: { id: 'banner' } }],
+          },
+        }),
+      ).toStrictEqual([{ sys: { id: 'banner' } }]);
     });
   });
 });

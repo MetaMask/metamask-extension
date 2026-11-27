@@ -938,18 +938,13 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
           ],
         };
       }),
-    await priceV3Spot.rule(mockServer).thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: priceV3Spot.response({
-          'eip155:1/slip44:60': {
-            id: 'ethereum',
-            price: 1700,
-            marketCap: 382623505141,
-            pricePercentChange1d: 0,
-          },
-        }),
-      };
+    await priceV3Spot.mock(mockServer, {
+      'eip155:1/slip44:60': {
+        id: 'ethereum',
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
     }),
   ];
 }

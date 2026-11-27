@@ -1,0 +1,153 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "chainId": 0,
+    "assetId": "",
+    "symbol": "ETH",
+    "decimals": 18,
+    "name": "Ethereum",
+    "coingeckoId": "ethereum",
+    "aggregators": [],
+    "occurrences": 100,
+    "iconUrl": "https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  },
+  {
+    "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "chainId": 0,
+    "assetId": "",
+    "symbol": "DAI",
+    "decimals": 18,
+    "name": "Dai Stablecoin",
+    "coingeckoId": "",
+    "aggregators": [
+      "aave",
+      "bancor",
+      "cmc",
+      "cryptocom",
+      "coinGecko",
+      "oneInch",
+      "pmm",
+      "zerion",
+      "lifi"
+    ],
+    "occurrences": 9,
+    "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  },
+  {
+    "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "chainId": 0,
+    "assetId": "",
+    "symbol": "USDC",
+    "decimals": 6,
+    "name": "USD Coin",
+    "coingeckoId": "",
+    "aggregators": [
+      "aave",
+      "bancor",
+      "cryptocom",
+      "coinGecko",
+      "oneInch",
+      "pmm",
+      "zerion",
+      "lifi"
+    ],
+    "occurrences": 8,
+    "iconUrl": "https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  },
+  {
+    "address": "0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f",
+    "chainId": 0,
+    "assetId": "",
+    "symbol": "INUINU",
+    "decimals": 18,
+    "name": "Inu Inu",
+    "coingeckoId": "",
+    "aggregators": ["coinGecko"],
+    "occurrences": 1,
+    "iconUrl": "https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  }
+]

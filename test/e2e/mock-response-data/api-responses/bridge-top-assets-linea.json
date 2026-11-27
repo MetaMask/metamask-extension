@@ -1,0 +1,18 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "symbol": "ETH"
+  },
+  {
+    "address": "0x176211869cA2b568f2A7D4EE941E073a821EE1ff",
+    "symbol": "USDC"
+  },
+  {
+    "address": "0xa219439258ca9da29e9cc4ce5596924745e12b93",
+    "symbol": "USDT"
+  },
+  {
+    "address": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
+    "symbol": "WETH"
+  }
+]

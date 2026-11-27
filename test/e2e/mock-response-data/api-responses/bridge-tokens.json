@@ -1,0 +1,134 @@
+[
+  {
+    "address": "0x0000000000000000000000000000000000000000",
+    "chainId": 1,
+    "assetId": "",
+    "symbol": "ETH",
+    "decimals": 18,
+    "name": "Ethereum",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  },
+  {
+    "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "chainId": 1,
+    "assetId": "",
+    "symbol": "USDC",
+    "decimals": 6,
+    "name": "USD Coin",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  },
+  {
+    "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "chainId": 1,
+    "assetId": "",
+    "symbol": "USDT",
+    "decimals": 6,
+    "name": "Tether USD",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  },
+  {
+    "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "chainId": 1,
+    "assetId": "",
+    "symbol": "DAI",
+    "decimals": 18,
+    "name": "Dai Stablecoin",
+    "coingeckoId": "",
+    "aggregators": [""],
+    "occurrences": 0,
+    "iconUrl": "",
+    "coinLabel": "",
+    "rwaData": {
+      "instrumentType": "",
+      "market": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "nextPause": {
+        "end": "",
+        "start": "",
+        "reason": ""
+      },
+      "ticker": "",
+      "offhours": {
+        "nextOpen": "",
+        "nextClose": ""
+      },
+      "custodians": [""],
+      "isOpen": false
+    },
+    "badgeLabel": ""
+  }
+]

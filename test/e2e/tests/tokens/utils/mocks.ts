@@ -47,10 +47,7 @@ const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
   `${PRICE_API_URL}/${version}/chains/${chainId}/${endpoint}`;
 
 export const mockEmptyPrices = async (mockServer: Mockttp) => {
-  return priceV3Spot.rule(mockServer).thenCallback(() => ({
-    statusCode: 200,
-    json: {},
-  }));
+  return priceV3Spot.mockRaw(mockServer, {});
 };
 
 /**

@@ -1,0 +1,40 @@
+{
+  "includes": {
+    "Asset": [
+      {
+        "sys": {
+          "id": ""
+        },
+        "fields": {
+          "file": {
+            "url": ""
+          }
+        }
+      }
+    ]
+  },
+  "items": [
+    {
+      "sys": {
+        "id": ""
+      },
+      "fields": {
+        "headline": "",
+        "teaser": "",
+        "image": {
+          "sys": {
+            "id": ""
+          }
+        },
+        "linkUrl": "",
+        "undismissable": false
+      }
+    }
+  ],
+  "limit": 0,
+  "skip": 0,
+  "sys": {
+    "type": ""
+  },
+  "total": 0
+}

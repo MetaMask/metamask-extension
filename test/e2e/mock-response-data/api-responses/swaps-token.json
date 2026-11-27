@@ -1,0 +1,17 @@
+{
+  "address": "0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf",
+  "aggregators": ["dynamic"],
+  "assetId": "",
+  "chainId": 0,
+  "decimals": 0,
+  "iconUrl": "",
+  "metadata": {
+    "storage": {
+      "balance": 0,
+      "approval": 0
+    }
+  },
+  "name": "",
+  "occurrences": 0,
+  "symbol": "AGLT"
+}

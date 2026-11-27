@@ -133,25 +133,21 @@ describe('Add existing token using search', function () {
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
     return [
-      await tokensV3Assets.rule(mockServer).thenCallback(() => ({
-        statusCode: 200,
-        json: [
-          {
-            assetId: 'eip155:56/slip44:714',
-            name: 'BNB',
-            symbol: 'BNB',
-            decimals: 18,
-          },
-          {
-            assetId:
-              'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-            name: 'Basic Attention Token',
-            symbol: 'BAT',
-            decimals: 18,
-            occurrences: 100,
-          },
-        ],
-      })),
+      await tokensV3Assets.mockRaw(mockServer, [
+        {
+          assetId: 'eip155:56/slip44:714',
+          name: 'BNB',
+          symbol: 'BNB',
+          decimals: 18,
+        },
+        {
+          assetId: 'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+          name: 'Basic Attention Token',
+          symbol: 'BAT',
+          decimals: 18,
+          occurrences: 100,
+        },
+      ]),
     ];
   }
 

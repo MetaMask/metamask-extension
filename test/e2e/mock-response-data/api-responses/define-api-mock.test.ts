@@ -3,7 +3,12 @@
  */
 import http from 'http';
 import { getLocal, type Mockttp } from 'mockttp';
-import { defineApiMock, placeholderOf, withOverrides } from './define-api-mock';
+import {
+  defineApiMock,
+  findDuplicateEndpoints,
+  placeholderOf,
+  withOverrides,
+} from './define-api-mock';
 
 const BODY = { value: 'fixture', nested: { a: 1, b: 2 }, list: [1, 2] };
 
@@ -150,6 +155,47 @@ describe('defineApiMock', () => {
         undefined,
       );
       expect((await proxyGet(server, 'http://api.test/none')).status).toBe(503);
+    });
+  });
+
+  describe('one override per matcher', () => {
+    it('warns on a second mock() for the same matcher on the same server', async () => {
+      const warn = jest.spyOn(console, 'warn').mockImplementation(() => {
+        // Silences the expected warnings.
+      });
+      await endpoint.mock(server, { value: 'first' }, { chainId: 1 });
+      expect(warn).not.toHaveBeenCalled();
+
+      await endpoint.mock(server, { value: 'second' }, { chainId: 1 });
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'test-endpoint: a mock for GET http://api.test/networks/1/data is already registered on this server (by test-endpoint)',
+        ),
+      );
+      await endpoint.mockVariant(server, 'failed', { chainId: 1 });
+      await endpoint.mockRaw(server, {}, { chainId: 1 });
+      expect(warn).toHaveBeenCalledTimes(3);
+      expect(
+        (await proxyGet(server, 'http://api.test/networks/1/data')).json,
+      ).toStrictEqual({ ...BODY, value: 'first' });
+    });
+
+    it('allows one override per instance and per server', async () => {
+      await endpoint.mock(server, { value: 'chain 1' }, { chainId: 1 });
+      await endpoint.mock(server, { value: 'chain 2' }, { chainId: 2 });
+
+      const other = getLocal();
+      await other.start();
+      try {
+        await expect(
+          endpoint.mock(other, { value: 'chain 1' }, { chainId: 1 }),
+        ).resolves.toBeDefined();
+      } finally {
+        await other.stop();
+      }
+      expect(
+        (await proxyGet(server, 'http://api.test/networks/2/data')).json,
+      ).toStrictEqual({ ...BODY, value: 'chain 2' });
     });
   });
 
@@ -329,5 +375,33 @@ describe('placeholderOf', () => {
       tags: [],
       rows: [{ name: '' }],
     });
+  });
+});
+
+describe('findDuplicateEndpoints', () => {
+  const entry = (id: string, url: string, syncUrl = url) =>
+    [id, { id, method: 'GET', url, syncUrl }] as [
+      string,
+      { id: string; method: string; url: string; syncUrl: string },
+    ];
+
+  it('accepts distinct endpoints', () => {
+    expect(
+      findDuplicateEndpoints([entry('a', 'http://a'), entry('b', 'http://b')]),
+    ).toStrictEqual([]);
+  });
+
+  it('reports a key that is not the id, a repeated id, and a repeated endpoint', () => {
+    expect(
+      findDuplicateEndpoints([
+        entry('a', 'http://a'),
+        ['b', { id: 'a', method: 'GET', url: 'http://b', syncUrl: 'http://b' }],
+        entry('c', 'http://a', 'http://c'),
+      ]),
+    ).toStrictEqual([
+      'b is registered under a different id (a)',
+      'a is defined more than once',
+      'c and a define the same URL matcher: GET http://a',
+    ]);
   });
 });

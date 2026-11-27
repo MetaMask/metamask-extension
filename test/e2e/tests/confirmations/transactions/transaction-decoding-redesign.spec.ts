@@ -241,31 +241,30 @@ async function mockTokensAndInfura(mockServer: MockttpServer) {
 }
 
 async function mockWethAndUsdcToken(mockServer: MockttpServer) {
-  return await tokenList.rule(mockServer, { chainId: 1 }).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: [
-        {
-          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-          symbol: 'WETH',
-          decimals: 18,
-          name: 'Wrapped Ether',
-          iconUrl: '',
-          aggregators: [],
-          occurrences: 1,
-        },
-        {
-          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USDC',
-          iconUrl: '',
-          aggregators: [],
-          occurrences: 1,
-        },
-      ],
-    };
-  });
+  return await tokenList.mockRaw(
+    mockServer,
+    [
+      {
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        symbol: 'WETH',
+        decimals: 18,
+        name: 'Wrapped Ether',
+        iconUrl: '',
+        aggregators: [],
+        occurrences: 1,
+      },
+      {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USDC',
+        iconUrl: '',
+        aggregators: [],
+        occurrences: 1,
+      },
+    ],
+    { chainId: 1 },
+  );
 }
 
 async function mockInfura(mockServer: MockttpServer) {

@@ -105,8 +105,21 @@ export type ApiMockDefinition<
   url: string | RegExp;
   /** Matches one instance of the endpoint, e.g. one chain or one host. */
   urlFor?: (params: Params) => string;
-  /** The live URL the fixture was taken from. */
+  /**
+   * The live URL the fixture was taken from. `$NAME` comes from the
+   * environment when the sync fetches it.
+   */
   syncUrl: string;
+  /**
+   * Why `yarn test:e2e:sync-api-mocks` does not fetch `syncUrl`, for example
+   * a POST or an authenticated endpoint. POST endpoints are never fetched.
+   */
+  syncSkip?: string;
+  /**
+   * Dot paths, `''` for the root, of objects whose keys are data such as
+   * chain names. The sync aligns their values and never adds or drops keys.
+   */
+  syncMapPaths?: string[];
   body: Body;
   /** Only for responses with a different structure than `body`. */
   variants?: Record<Variant, unknown>;
@@ -132,6 +145,8 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   readonly method: 'GET' | 'POST';
   readonly url: string | RegExp;
   readonly syncUrl: string;
+  readonly syncSkip: string | undefined;
+  readonly syncMapPaths: readonly string[];
   /** The fixture. Deep-frozen: build a new object to change a value. */
   readonly body: Body;
   /** Deep-frozen, like `body`. */
@@ -140,7 +155,9 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   readonly hasFixtureDefault: boolean;
   /**
    * Escape hatch: the endpoint's rule builder, for handlers that match on a
-   * query or answer from a callback. The URL still comes from the definition.
+   * query or a request body, need a completion rule, or build their body when
+   * a request arrives. The URL still comes from the definition. An override
+   * of an endpoint with a default needs `.always()` to answer every request.
    *
    * @param server - The mock server.
    * @param params - Narrows the matcher to one instance of the endpoint.
@@ -151,8 +168,9 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   /**
    * Replaces the default for this endpoint. `.always()` keeps it ahead of
    * the default, which `mock-e2e.js` registers after the test's mocks. For
-   * the same reason, the first `mock()` for a matcher answers every request
-   * and a later `mock()` for the same matcher is never served.
+   * the same reason, the first `mock()` for a matcher answers every request,
+   * so a second `mock()`, `mockVariant()` or `mockRaw()` for the same matcher
+   * on the same server throws.
    */
   mock: (
     server: Mockttp,
@@ -177,6 +195,85 @@ export type ApiMock<Body, Input, Response, Params, Variant extends string> = {
   ) => Promise<MockedEndpoint | undefined>;
 };
 
+type EndpointIdentity = {
+  id: string;
+  method: string;
+  url: string | RegExp;
+  syncUrl: string;
+};
+
+/**
+ * Registry errors: an entry keyed by another id, an id defined twice, or two
+ * definitions for the same endpoint (same method and URL matcher, or same
+ * method and sync URL). A duplicate endpoint means two fixtures for one API,
+ * and mockttp only serves the first.
+ *
+ * @param entries - `[key, endpoint]` pairs from the registry.
+ * @returns One message per problem; empty when the registry is consistent.
+ */
+export function findDuplicateEndpoints(
+  entries: [string, EndpointIdentity][],
+): string[] {
+  const errors: string[] = [];
+  const seen = new Map<string, string>();
+  const claim = (key: string, id: string, what: string) => {
+    const previous = seen.get(key);
+    if (previous === undefined) {
+      seen.set(key, id);
+    } else if (previous !== id) {
+      errors.push(`${id} and ${previous} define the same ${what}: ${key}`);
+    }
+  };
+  const ids = new Set<string>();
+  for (const [key, endpoint] of entries) {
+    if (key !== endpoint.id) {
+      errors.push(`${key} is registered under a different id (${endpoint.id})`);
+    }
+    if (ids.has(endpoint.id)) {
+      errors.push(`${endpoint.id} is defined more than once`);
+    }
+    ids.add(endpoint.id);
+    claim(
+      `${endpoint.method} ${String(endpoint.url)}`,
+      endpoint.id,
+      'URL matcher',
+    );
+    claim(`${endpoint.method} ${endpoint.syncUrl}`, endpoint.id, 'sync URL');
+  }
+  return errors;
+}
+
+/** `mock()` matchers already registered on each mock server, with their endpoint id. */
+const registeredMatchers = new WeakMap<Mockttp, Map<string, string>>();
+
+/**
+ * Records an `.always()` override for a matcher, and warns when the server
+ * already has one: mockttp would never serve the second.
+ *
+ * @param server - The mock server.
+ * @param method - The HTTP method.
+ * @param matcher - The URL matcher the override uses.
+ * @param id - The endpoint id, for the error message.
+ */
+function claimMatcher(
+  server: Mockttp,
+  method: string,
+  matcher: string | RegExp,
+  id: string,
+): void {
+  const claimed = registeredMatchers.get(server) ?? new Map<string, string>();
+  registeredMatchers.set(server, claimed);
+  const key = `${method} ${String(matcher)}`;
+  const previous = claimed.get(key);
+  if (previous !== undefined) {
+    console.warn(
+      `${id}: a mock for ${key} is already registered on this server (by ${previous}). mockttp serves the first .always() rule, so this one would never answer. Pass every value to the first mock() call instead.`,
+    );
+    return;
+  }
+  claimed.set(key, id);
+}
+
 /**
  * Defines one API endpoint for E2E mocks: its matcher, fixture body,
  * variants and override path.
@@ -199,9 +296,17 @@ export function defineApiMock<
     (definition.variants ?? {}) as Record<Variant, unknown>,
   );
 
+  const matcherFor = (params?: Params) =>
+    params !== undefined && urlFor ? urlFor(params) : url;
+
   const rule = (server: Mockttp, params?: Params) => {
-    const matcher = params !== undefined && urlFor ? urlFor(params) : url;
+    const matcher = matcherFor(params);
     return method === 'GET' ? server.forGet(matcher) : server.forPost(matcher);
+  };
+
+  const override = (server: Mockttp, params?: Params) => {
+    claimMatcher(server, method, matcherFor(params), id);
+    return rule(server, params).always();
   };
 
   const response = (input?: Input): Response =>
@@ -222,21 +327,23 @@ export function defineApiMock<
     method,
     url,
     syncUrl,
+    syncSkip: definition.syncSkip,
+    syncMapPaths: definition.syncMapPaths ?? [],
     body,
     variants,
     hasFixtureDefault: Boolean(defaultMock),
     rule,
     response: (...args) => response(args[0]),
     mock: (server, ...args) =>
-      reply(() => response(args[0]))(rule(server, args[1]).always()),
+      reply(() => response(args[0]))(override(server, args[1])),
     mockVariant: (server, variant, params) => {
       if (!(variant in variants)) {
         throw new Error(`No "${variant}" variant for the ${id} mock`);
       }
-      return reply(() => variants[variant])(rule(server, params).always());
+      return reply(() => variants[variant])(override(server, params));
     },
     mockRaw: (server, json, params) =>
-      reply(() => json)(rule(server, params).always()),
+      reply(() => json)(override(server, params)),
     mockDefault: async (server, context) => {
       if (!defaultMock) {
         return undefined;

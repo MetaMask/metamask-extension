@@ -1,0 +1,11 @@
+{
+  "data": {
+    "version": 2,
+    "tolerance": 2,
+    "lastUpdated": 1,
+    "fuzzylist": [],
+    "allowlist": [],
+    "blocklist": [],
+    "blocklistPaths": []
+  }
+}
