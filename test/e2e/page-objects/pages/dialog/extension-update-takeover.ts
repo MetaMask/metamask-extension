@@ -1,7 +1,6 @@
-import { Key, Origin } from 'selenium-webdriver';
+import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { regularDelayMs } from '../../../helpers';
-import { WINDOW_TITLES } from '../../../constants';
 
 type PromptType = 'versionUpdate' | 'unsupportedVersion';
 
@@ -35,46 +34,14 @@ async function readBackgroundState(driver: Driver): Promise<BackgroundState> {
   }, TAKEOVER_TEST_ID);
 }
 
-async function findWindowsWithTitle(
-  driver: Driver,
-  title: string,
-): Promise<string[]> {
-  const matches: string[] = [];
-  for (const handle of await driver.driver.getAllWindowHandles()) {
-    try {
-      await driver.driver.switchTo().window(handle);
-      if ((await driver.driver.getTitle()) === title) {
-        matches.push(handle);
-      }
-    } catch {
-      // The extension reload can close windows while they are inspected.
-    }
-  }
-  return matches;
-}
-
-async function waitForFocusedTestId(
-  driver: Driver,
-  expectedTestId: string,
-): Promise<void> {
-  await driver.driver.wait(
-    async () =>
-      (await driver.executeScript(
-        () => document.activeElement?.getAttribute('data-testid') ?? '',
-      )) === expectedTestId,
-    driver.timeout,
-    `Expected focus on [data-testid="${expectedTestId}"]`,
-  );
-}
-
 /**
  * Full-screen extension update takeover.
  *
  * Screen: takeover portaled over the current UI (`data-testid="extension-update-takeover"`).
- * Owns: variant checks, dismiss, update, initial focus, and pointer blocking.
- * Boundaries: stops at the takeover. Update leaves the driver on the
- * "MetaMask Updating" tab; anything after the extension reload belongs to the
- * caller.
+ * Owns: variant checks, dismiss, the Update click, initial focus, and pointer
+ * blocking.
+ * Boundaries: stops at the takeover. Update reloads the extension; the windows
+ * it closes and opens belong to the caller.
  *
  * @see ui/components/app/extension-update-takeover/extension-update-takeover.tsx
  */
@@ -125,7 +92,12 @@ class ExtensionUpdateTakeover {
 
   async checkPrimaryButtonIsFocused(): Promise<void> {
     await this.driver.waitForSelector(this.updateButton);
-    await waitForFocusedTestId(this.driver, this.updateButton.testId);
+    await this.driver.wait(
+      async () =>
+        (await this.driver.executeScript(
+          () => document.activeElement?.getAttribute('data-testid') ?? '',
+        )) === this.updateButton.testId,
+    );
   }
 
   /**
@@ -155,7 +127,7 @@ class ExtensionUpdateTakeover {
       `[data-testid="${TAKEOVER_TEST_ID}"][data-variant="${promptType}"]`,
     );
     await this.driver.waitForSelector({
-      css: `[data-testid="${this.title.testId}"]`,
+      testId: this.title.testId,
       text: titleText,
     });
   }
@@ -172,56 +144,44 @@ class ExtensionUpdateTakeover {
    * buttons.
    */
   async clickOutsideContent(): Promise<void> {
-    await this.driver.driver
-      .actions()
-      .move({ origin: Origin.VIEWPORT, x: 4, y: 4 })
-      .click()
-      .perform();
+    await this.driver.clickViewportPoint(4, 4);
   }
 
   /**
-   * Clicks Update, waits for the extension reload to close the current window,
-   * and checks exactly one "MetaMask Updating" tab was opened. Leaves the
-   * driver on that tab.
+   * Clicks Update. The extension then reloads, so this window closes.
    *
-   * @param options - Update options.
+   * @param options - Click options.
    * @param options.doubleClick - Double-clicks Update to check that the
    * takeover's busy state ignores a second click in the same window.
    */
-  async confirmUpdate({
+  async clickUpdate({
     doubleClick = false,
   }: { doubleClick?: boolean } = {}): Promise<void> {
-    // Window lookups below bypass the background socket, which disconnects
-    // while the extension reloads.
-    const takeoverHandle = await this.driver.getCurrentWindowHandle();
     if (doubleClick) {
-      const button = await this.driver.findClickableElement(this.updateButton);
-      await this.driver.driver.actions().doubleClick(button).perform();
+      await this.driver.doubleClickElement(this.updateButton);
     } else {
       await this.driver.clickElement(this.updateButton);
     }
-    await this.driver.wait(async () => {
-      const handles = await this.driver.driver.getAllWindowHandles();
-      return !handles.includes(takeoverHandle);
-    });
-    let updatingHandles: string[] = [];
-    // A duplicate Update would open its tab moments after the first, so the
-    // single tab has to hold, not just appear.
-    await this.driver.waitUntil(
-      async () => {
-        updatingHandles = await findWindowsWithTitle(
-          this.driver,
-          WINDOW_TITLES.ExtensionUpdating,
-        );
-        return updatingHandles.length === 1;
-      },
-      { timeout: this.driver.timeout, interval: 500, stableFor: 2000 },
-    );
-    await this.driver.driver.switchTo().window(updatingHandles[0]);
   }
 
   async dismiss(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.dismissButton);
+  }
+
+  /**
+   * Opens an extension page in a new tab and waits for the takeover there.
+   *
+   * @param page - Extension HTML entry point.
+   * @param route - Optional hash route, for example `#settings`.
+   */
+  async openInNewExtensionTab(
+    page: 'home' | 'popup',
+    route = '',
+  ): Promise<void> {
+    await this.driver.openNewPage(
+      `${this.driver.extensionUrl}/${page}.html${route}`,
+    );
+    await this.checkPageIsLoaded();
   }
 
   async pressEscape(): Promise<void> {

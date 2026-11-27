@@ -57,8 +57,7 @@ export function ExtensionUpdateTakeover({
     viewedPromptType.current = promptType;
 
     // useAnalytics swallows send failures, so this promise does not reject.
-    // eslint-disable-next-line no-void -- Sonar requires a floating promise to be explicitly ignored
-    void trackEvent(
+    trackEvent(
       createEventBuilder(
         MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
       )
