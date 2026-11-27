@@ -296,6 +296,12 @@ export const GRAVITY_DISPLAY_NAME = 'Gravity';
 export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
 export const ZERO_G_DISPLAY_NAME = '0G';
 export const SOMNIA_DISPLAY_NAME = 'Somnia';
+// Whitechain (chain 1875) and Whitechain Sepolia (chain 1874). Not in CHAIN_IDS,
+// since that list is used for validation.
+export const WHITECHAIN_CHAIN_ID = '0x753';
+export const WHITECHAIN_SEPOLIA_CHAIN_ID = '0x752';
+export const WHITECHAIN_DISPLAY_NAME = 'Whitechain';
+export const WHITECHAIN_SEPOLIA_DISPLAY_NAME = 'Whitechain Sepolia';
 
 /**
  * The Arc USDC ERC20 token contract. On Arc the native gas token is USDC, so
@@ -407,6 +413,7 @@ export const CURRENCY_SYMBOLS = {
   ZERO_G: '0G',
   GRAVITY: 'G',
   SOMNIA: 'SOMI',
+  WBT: 'WBT',
 } as const;
 
 // Non-EVM currency symbols
@@ -658,6 +665,8 @@ export const ARC_NETWORK_IMAGE_URL = './images/arc-network-logo.svg';
 export const GRAVITY_IMAGE_URL = './images/gravity.svg';
 export const SOMNIA_IMAGE_URL = './images/somnia.svg';
 export const SOMNIA_NATIVE_TOKEN_IMAGE_URL = './images/somnia.svg';
+export const WHITECHAIN_IMAGE_URL = './images/whitechain.png';
+export const WBT_TOKEN_IMAGE_URL = './images/wbt.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -850,6 +859,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_DISPLAY_NAME,
   [CHAIN_IDS.ZERO_G]: ZERO_G_DISPLAY_NAME,
   [CHAIN_IDS.SOMNIA]: SOMNIA_DISPLAY_NAME,
+  [WHITECHAIN_CHAIN_ID]: WHITECHAIN_DISPLAY_NAME,
+  [WHITECHAIN_SEPOLIA_CHAIN_ID]: WHITECHAIN_SEPOLIA_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1026,6 +1037,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ROBINHOOD_CHAIN]: CURRENCY_SYMBOLS.ETH,
   [CHAIN_IDS.ZERO_G]: CURRENCY_SYMBOLS.ZERO_G,
   [CHAIN_IDS.SOMNIA]: CURRENCY_SYMBOLS.SOMNIA,
+  [WHITECHAIN_CHAIN_ID]: CURRENCY_SYMBOLS.WBT,
+  [WHITECHAIN_SEPOLIA_CHAIN_ID]: CURRENCY_SYMBOLS.WBT,
 } as const;
 
 /**
@@ -1225,6 +1238,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
   // Kinetiq Elysium (chain 99901). Not in CHAIN_IDS, since that list is used for validation.
   '0x1863d': ELYSIUM_NETWORK_IMAGE_URL,
+  [WHITECHAIN_CHAIN_ID]: WHITECHAIN_IMAGE_URL,
+  [WHITECHAIN_SEPOLIA_CHAIN_ID]: WHITECHAIN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1328,6 +1343,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_NATIVE_TOKEN_IMAGE_URL,
+  [WHITECHAIN_CHAIN_ID]: WBT_TOKEN_IMAGE_URL,
+  [WHITECHAIN_SEPOLIA_CHAIN_ID]: WBT_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
