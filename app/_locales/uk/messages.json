@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Таймер автоматичного виходу (хвилин)"
   },
-  "average": {
-    "message": "У середньому"
-  },
   "back": {
     "message": "Назад"
   },

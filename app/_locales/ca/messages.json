@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
-  "average": {
-    "message": "Mitjana"
-  },
   "back": {
     "message": "Enrere"
   },

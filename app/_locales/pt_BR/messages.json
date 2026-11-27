@@ -142,9 +142,6 @@
   "autoLockTimeLimit": {
     "message": "Timer com bloqueio automático (minutos)"
   },
-  "average": {
-    "message": "Média"
-  },
   "back": {
     "message": "Voltar"
   },

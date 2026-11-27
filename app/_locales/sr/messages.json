@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Tajmer za automatsko odjavljivanje (u minutama)"
   },
-  "average": {
-    "message": "Prosečno"
-  },
   "back": {
     "message": "Назад"
   },

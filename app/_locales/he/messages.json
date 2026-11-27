@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "טיימר התנתקות אוטומטית (דקות)"
   },
-  "average": {
-    "message": "ממוצע"
-  },
   "back": {
     "message": "חזור"
   },

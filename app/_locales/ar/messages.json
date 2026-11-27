@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
   },
-  "average": {
-    "message": "المتوسط"
-  },
   "back": {
     "message": "الرجوع إلى الوراء"
   },

@@ -96,9 +96,6 @@
   "autoLockTimeLimit": {
     "message": "自動登出計時器（分）"
   },
-  "average": {
-    "message": "平均"
-  },
   "back": {
     "message": "上一頁"
   },

@@ -75,9 +75,6 @@
   "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "average": {
-    "message": "Purata"
-  },
   "back": {
     "message": "Kembali"
   },
