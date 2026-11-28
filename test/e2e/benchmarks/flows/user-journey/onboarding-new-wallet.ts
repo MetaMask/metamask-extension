@@ -164,15 +164,15 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
             },
           ),
         );
-        // BUG #42792 This test is failing with the ASSETS_UNIFIED_STATE_ENABLED='true'
-        // commenting out temporarily to unblock the release
-        /*
+        // `cls` from this flow is in GATED_METRIC_VALUES, so collection must run:
+        // without it the metric has no value and cannot fail its threshold. It was
+        // disabled as a workaround for #42792 (onboarding benchmarks degraded with
+        // Assets Unified State on), which is closed.
         try {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
           console.error('Error collecting web vitals:', error);
         }
-        */
       },
     );
 
