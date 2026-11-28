@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "添加钱包"
   },
-  "add_device_error_connection": {
-    "message": "无法与您的手机保持安全连接。请检查网络连接后重试。"
-  },
-  "add_device_error_expired": {
-    "message": "此同步会话已过期。请重新开始以生成新的二维码。"
-  },
-  "add_device_error_generic": {
-    "message": "与手机同步时出现问题。请重试。"
-  },
-  "add_device_error_invalid_code": {
-    "message": "验证码有误。请重新开始以同步您的手机。"
-  },
-  "add_device_error_rejected": {
-    "message": "同步已在您的手机上取消。请重新开始以尝试同步。"
-  },
-  "add_device_error_sync_failed": {
-    "message": "无法将您的账户完整同步至手机。请重试。"
-  },
-  "add_device_error_title": {
-    "message": "同步未能完成"
-  },
-  "add_device_success_title": {
-    "message": "设备已配对"
-  },
-  "add_device_syncing_desc": {
-    "message": "正在将您选择的账户同步到手机。"
-  },
   "add_device_syncing_title": {
     "message": "正在导入账户"
-  },
-  "add_device_try_again": {
-    "message": "请重试"
-  },
-  "add_wallets": {
-    "message": "选择要同步的内容"
-  },
-  "add_wallets_desc": {
-    "message": "选择要导入到手机的钱包和账户。您之后可以更改。"
   },
   "added": {
     "message": "已添加"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "输入验证码"
   },
-  "enter_verification_code_desc": {
-    "message": "为了安全起见，请输入您设备上 MetaMask 应用中显示的验证码。"
-  },
-  "enter_verification_code_error": {
-    "message": "验证码错误。请重试。"
-  },
-  "enter_verification_code_expired": {
-    "message": "验证码已过期"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "错误次数过多。请使用新的二维码重新开始。"
-  },
   "enter_your_password": {
     "message": "输入您的密码"
-  },
-  "enter_your_password_desc": {
-    "message": "为了账户安全，请输入密码查看二维码。"
   },
   "enteredMalicious": {
     "message": "你输入的地址"
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "查看您的权益"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "您添加的资金将按 1:1 转换为 MetaMask USD，且无手续费。"
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "按 1:1 转换为 MetaMask USD"
   },
@@ -5958,9 +5904,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "自动赚取收益"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "可发送到任意钱包或银行，或使用 MetaMask 卡消费，最高可获得 3% 返还。"
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "随处发送或消费"
   },
@@ -5969,12 +5912,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "使用同一余额交易"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "无锁定期，无通知期，无罚金。您的资金始终由您随时提取。"
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "随时提现"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money 是一个稳定币账户，最高可赚取 $1 年化收益率，内置交易、发送和消费功能。",
@@ -9815,9 +9752,6 @@
   "scanQrCode": {
     "message": "扫描二维码"
   },
-  "scan_qr_code_desc": {
-    "message": "请使用您要添加的设备上的 MetaMask 应用扫描此二维码。"
-  },
   "scrollDown": {
     "message": "向下滚动"
   },
@@ -11979,9 +11913,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "符号不得超过11个字符。"
   },
-  "syncAccounts": {
-    "message": "与移动设备同步"
-  },
   "syncing": {
     "message": "同步中……"
   },
@@ -12544,17 +12475,8 @@
   "visitSite": {
     "message": "访问网站"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "确认"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "您是否愿意将 MetaMask 标识符和应用程序版本信息分享给我们的支持中心？这将有助于我们更好地解决您的问题，但此操作为可选。"
-  },
   "visitSupportDataConsentModalReject": {
     "message": "不分享"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "与支持团队分享设备信息"
   },
   "visitWebSite": {
     "message": "访问我们的网站"

@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Adicionar carteira"
   },
-  "add_device_error_connection": {
-    "message": "Não foi possível manter uma conexão segura com seu telefone. Verifique sua conexão com a internet e tente novamente."
-  },
-  "add_device_error_expired": {
-    "message": "Esta sessão de sincronização expirou. Recomece para gerar um novo código QR."
-  },
-  "add_device_error_generic": {
-    "message": "Algo deu errado durante a sincronização com o seu telefone. Tente novamente."
-  },
-  "add_device_error_invalid_code": {
-    "message": "O código de verificação estava incorreto. Recomece para tentar sincronizar seu telefone."
-  },
-  "add_device_error_rejected": {
-    "message": "A sincronização foi cancelada no seu telefone. Recomece para tentar sincronizar."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Não foi possível finalizar a sincronização das suas contas com o seu telefone. Tente novamente."
-  },
-  "add_device_error_title": {
-    "message": "Não foi possível concluir a sincronização"
-  },
-  "add_device_success_title": {
-    "message": "Dispositivo emparelhado"
-  },
-  "add_device_syncing_desc": {
-    "message": "Enviando suas contas selecionadas para o seu telefone."
-  },
   "add_device_syncing_title": {
     "message": "Importação de contas"
-  },
-  "add_device_try_again": {
-    "message": "Tentar novamente"
-  },
-  "add_wallets": {
-    "message": "Escolha o que sincronizar"
-  },
-  "add_wallets_desc": {
-    "message": "Escolha as carteiras e contas para importar para o seu telefone. Você pode mudar isso mais tarde."
   },
   "added": {
     "message": "Adicionado"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Insira o código de verificação"
   },
-  "enter_verification_code_desc": {
-    "message": "Por segurança, insira o código exibido no aplicativo MetaMask em seu dispositivo."
-  },
-  "enter_verification_code_error": {
-    "message": "Código incorreto. Tente novamente."
-  },
-  "enter_verification_code_expired": {
-    "message": "Código de verificação expirado"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Excesso de tentativas incorretas. Comece com um novo código QR."
-  },
   "enter_your_password": {
     "message": "Digite sua senha"
-  },
-  "enter_your_password_desc": {
-    "message": "Para segurança da conta, insira sua senha para visualizar o código QR."
   },
   "enteredMalicious": {
     "message": "O endereço que você inseriu"
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "Explore seus benefícios"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Os fundos que você adicionar são convertidos na proporção 1:1 para MetaMask USD, sem taxas."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Conversão para MetaMask USD, 1:1"
   },
@@ -5958,9 +5904,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Ganhe automaticamente"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Envie para qualquer carteira ou banco, ou utilize o cartão MetaMask Card para receber até 3% de cashback."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Envie ou gaste em qualquer lugar"
   },
@@ -5969,12 +5912,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Negocie usando o mesmo saldo"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Sem prazos de carência, aviso prévio ou multas. Seu dinheiro está sempre livre para você sacar."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Saque quando quiser"
   },
   "moneyFtueDescription": {
     "message": "O MetaMask Money é uma conta de moeda estável com rendimento de até $1 APY, com recursos integrados para negociar, enviar e gastar.",
@@ -9809,9 +9746,6 @@
   "scanQrCode": {
     "message": "Ler código QR"
   },
-  "scan_qr_code_desc": {
-    "message": "Escaneie esta opção com o aplicativo MetaMask no dispositivo que você deseja adicionar."
-  },
   "scrollDown": {
     "message": "Role para baixo"
   },
@@ -11973,9 +11907,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter até 11 caracteres."
   },
-  "syncAccounts": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
   "syncing": {
     "message": "Sincronizando..."
   },
@@ -12538,17 +12469,8 @@
   "visitSite": {
     "message": "Visitar site"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Confirmar"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Deseja compartilhar seu identificador e versão do aplicativo MetaMask com a nossa Central de Suporte? Isso pode nos ajudar a resolver melhor o seu problema, mas é opcional."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Não compartilhar"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Compartilhar detalhes do dispositivo com o suporte"
   },
   "visitWebSite": {
     "message": "Visite nosso site"

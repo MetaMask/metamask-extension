@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Προσθήκη πορτοφολιού"
   },
-  "add_device_error_connection": {
-    "message": "Δεν ήταν δυνατή η διατήρηση ασφαλούς σύνδεσης με το τηλέφωνό σας. Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και προσπαθήστε ξανά."
-  },
-  "add_device_error_expired": {
-    "message": "Η συνεδρία συγχρονισμού έληξε. Ξεκινήστε ξανά για να δημιουργήσετε έναν νέο κωδικό QR."
-  },
-  "add_device_error_generic": {
-    "message": "Παρουσιάστηκε κάποιο πρόβλημα κατά τον συγχρονισμό με το τηλέφωνό σας. Προσπαθήστε ξανά."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Ο κωδικός επαλήθευσης ήταν λανθασμένος. Ξεκινήστε ξανά για να προσπαθήσετε να συγχρονίσετε το τηλέφωνό σας."
-  },
-  "add_device_error_rejected": {
-    "message": "Ο συγχρονισμός ακυρώθηκε στο τηλέφωνό σας. Ξεκινήστε ξανά για να προσπαθήσετε να συγχρονίσετε."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Δεν μπορέσαμε να ολοκληρώσουμε τον συγχρονισμό των λογαριασμών σας με το τηλέφωνό σας. Προσπαθήστε ξανά."
-  },
-  "add_device_error_title": {
-    "message": "Ο συγχρονισμός δεν ολοκληρώθηκε"
-  },
-  "add_device_success_title": {
-    "message": "Η συσκευή συνδέθηκε"
-  },
-  "add_device_syncing_desc": {
-    "message": "Αποστολή των επιλεγμένων λογαριασμών στο τηλέφωνό σας."
-  },
   "add_device_syncing_title": {
     "message": "Εισαγωγή λογαριασμών"
-  },
-  "add_device_try_again": {
-    "message": "Προσπαθήστε ξανά"
-  },
-  "add_wallets": {
-    "message": "Επιλέξτε τι θέλετε να συγχρονίσετε"
-  },
-  "add_wallets_desc": {
-    "message": "Επιλέξτε ποια πορτοφόλια και λογαριασμούς θέλετε να εισαγάγετε στο τηλέφωνό σας. Μπορείτε να το αλλάξετε αργότερα."
   },
   "added": {
     "message": "Προστέθηκε"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Εισάγετε τον κωδικό επαλήθευσης"
   },
-  "enter_verification_code_desc": {
-    "message": "Για λόγους ασφαλείας, εισάγετε τον κωδικό που εμφανίζεται στην εφαρμογή MetaMask στη συσκευή σας."
-  },
-  "enter_verification_code_error": {
-    "message": "Λανθασμένος κωδικός. Προσπαθήστε ξανά."
-  },
-  "enter_verification_code_expired": {
-    "message": "Ο κωδικός επαλήθευσης έληξε"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Πάρα πολλές λανθασμένες προσπάθειες. Ξεκινήστε με νέο κωδικό QR."
-  },
   "enter_your_password": {
     "message": "Εισάγετε τον κωδικό πρόσβασης"
-  },
-  "enter_your_password_desc": {
-    "message": "Για την ασφάλεια του λογαριασμού σας, εισάγετε τον κωδικό πρόσβασής σας για να δείτε τον κωδικό QR."
   },
   "enteredMalicious": {
     "message": "Η διεύθυνση που πληκτρολογήσατε"
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "Εξερευνήστε τα οφέλη σας"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Τα κεφάλαια που προσθέτετε μετατρέπονται σε MetaMask USD με αναλογία 1:1, χωρίς χρεώσεις."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Μετατρέπεται σε MetaMask USD, αναλογία 1:1"
   },
@@ -5958,9 +5904,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Κερδίζετε αυτόματα"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Στείλετε σε οποιοδήποτε πορτοφόλι ή τράπεζα, ή πραγματοποιήστε πληρωμές με την κάρτα MetaMask κερδίζοντας έως και 3% επιστροφή."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Στείλε ή ξόδεψε οπουδήποτε"
   },
@@ -5969,12 +5912,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Πραγματοποιήστε συναλλαγές από το ίδιο υπόλοιπο"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Χωρίς δεσμεύσεις, περιόδους προειδοποίησης ή ποινές. Τα χρήματά σας είναι πάντα δικά σας για να τα αποσύρετε."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Κάντε ανάληψη ανά πάσα στιγμή"
   },
   "moneyFtueDescription": {
     "message": "Το MetaMask Money είναι ένας λογαριασμός stablecoin που αποφέρει ετήσια απόδοση (APY) έως και $1 – με ενσωματωμένες δυνατότητες συναλλαγών, αποστολής και δαπανών.",
@@ -9809,9 +9746,6 @@
   "scanQrCode": {
     "message": "Σάρωση κωδικού QR"
   },
-  "scan_qr_code_desc": {
-    "message": "Σαρώστε το με την εφαρμογή MetaMask στη συσκευή που θέλετε να προσθέσετε."
-  },
   "scrollDown": {
     "message": "Κύλιση προς τα κάτω"
   },
@@ -11973,9 +11907,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Το σύμβολο πρέπει να αποτελείται από 11 ή λιγότερους χαρακτήρες."
   },
-  "syncAccounts": {
-    "message": "Συγχρονισμός με κινητό"
-  },
   "syncing": {
     "message": "Γίνεται συγχρονισμός..."
   },
@@ -12538,17 +12469,8 @@
   "visitSite": {
     "message": "Επισκεφθείτε τον ιστότοπο"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Επιβεβαίωση"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Μπορείτε να μας δώσετε το MetaMask Identifier καθώς και την έκδοση της εφαρμογής σας στο Κέντρο Υποστήριξης; Αυτό θα μας βοηθήσει να κατανοήσουμε καλύτερα το πρόβλημά σας, αλλά είναι προαιρετικό."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Δεν θέλω"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Παρέχετε τα στοιχεία της συσκευής στην υποστήριξη"
   },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"

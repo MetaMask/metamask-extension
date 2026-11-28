@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Thêm ví"
   },
-  "add_device_error_connection": {
-    "message": "Chúng tôi không thể duy trì kết nối an toàn với điện thoại của bạn. Hãy kiểm tra kết nối Internet và thử lại."
-  },
-  "add_device_error_expired": {
-    "message": "Phiên đồng bộ này đã hết hạn. Hãy bắt đầu lại để tạo mã QR mới."
-  },
-  "add_device_error_generic": {
-    "message": "Đã xảy ra lỗi khi đồng bộ với điện thoại của bạn. Hãy thử lại."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Mã xác minh không chính xác. Hãy bắt đầu lại để thử đồng bộ điện thoại của bạn."
-  },
-  "add_device_error_rejected": {
-    "message": "Quá trình đồng bộ đã bị hủy trên điện thoại của bạn. Hãy bắt đầu lại để thử đồng bộ."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Chúng tôi không thể hoàn tất quá trình đồng bộ tài khoản với điện thoại của bạn. Hãy thử lại."
-  },
-  "add_device_error_title": {
-    "message": "Không thể hoàn tất quá trình đồng bộ"
-  },
-  "add_device_success_title": {
-    "message": "Đã ghép nối thiết bị"
-  },
-  "add_device_syncing_desc": {
-    "message": "Đang gửi các tài khoản đã chọn đến điện thoại của bạn."
-  },
   "add_device_syncing_title": {
     "message": "Đang nhập tài khoản"
-  },
-  "add_device_try_again": {
-    "message": "Thử lại"
-  },
-  "add_wallets": {
-    "message": "Chọn những gì cần đồng bộ"
-  },
-  "add_wallets_desc": {
-    "message": "Chọn các ví và tài khoản để nhập vào điện thoại của bạn. Bạn có thể thay đổi sau."
   },
   "added": {
     "message": "Đã thêm"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Nhập mã xác minh"
   },
-  "enter_verification_code_desc": {
-    "message": "Để bảo mật, hãy nhập mã được hiển thị trong ứng dụng MetaMask trên thiết bị của bạn."
-  },
-  "enter_verification_code_error": {
-    "message": "Mã không đúng. Hãy thử lại."
-  },
-  "enter_verification_code_expired": {
-    "message": "Mã xác minh đã hết hạn"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Đã nhập sai quá nhiều lần. Hãy bắt đầu với mã QR mới."
-  },
   "enter_your_password": {
     "message": "Nhập mật khẩu"
-  },
-  "enter_your_password_desc": {
-    "message": "Để bảo mật tài khoản, hãy nhập mật khẩu để xem mã QR."
   },
   "enteredMalicious": {
     "message": "Địa chỉ bạn đã nhập"
@@ -5950,9 +5899,6 @@
   "moneyExploreBenefits": {
     "message": "Khám phá các quyền lợi của bạn"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Số tiền bạn nạp được chuyển đổi sang MetaMask USD theo tỷ lệ 1:1, hoàn toàn miễn phí."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Chuyển đổi sang MetaMask USD theo tỷ lệ 1:1"
   },
@@ -5962,9 +5908,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Tự động sinh lời"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Gửi tiền đến bất kỳ ví hoặc ngân hàng nào, hoặc chi tiêu bằng MetaMask Card để được hoàn tiền đến 3%."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Gửi tiền hoặc chi tiêu ở bất cứ đâu"
   },
@@ -5973,12 +5916,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Giao dịch từ cùng một số dư"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Tiền không bị khóa. Bạn không cần báo trước hay chịu phạt. Bạn luôn có thể rút tiền của mình."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Rút tiền bất cứ lúc nào"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Tài chính là tài khoản đồng ổn định có thể sinh lời với APY lên đến $1, tích hợp tính năng giao dịch, gửi tiền và chi tiêu.",
@@ -9823,9 +9760,6 @@
   "scanQrCode": {
     "message": "Quét mã QR"
   },
-  "scan_qr_code_desc": {
-    "message": "Quét mã này bằng ứng dụng MetaMask trên thiết bị mà bạn muốn thêm."
-  },
   "scrollDown": {
     "message": "Cuộn xuống"
   },
@@ -11987,9 +11921,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Ký hiệu không được dài quá 11 ký tự."
   },
-  "syncAccounts": {
-    "message": "Đồng bộ với thiết bị di động"
-  },
   "syncing": {
     "message": "Đang đồng bộ..."
   },
@@ -12552,17 +12483,8 @@
   "visitSite": {
     "message": "Truy cập trang web"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Xác nhận"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Bạn có muốn chia sẻ Mã định danh MetaMask và phiên bản ứng dụng của mình với Trung tâm hỗ trợ không? Điều này có thể giúp chúng tôi giải quyết vấn đề của bạn tốt hơn, nhưng không bắt buộc."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Không chia sẻ"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Chia sẻ thông tin thiết bị với bộ phận hỗ trợ"
   },
   "visitWebSite": {
     "message": "Truy cập trang web của chúng tôi"

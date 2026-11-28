@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "지갑 추가"
   },
-  "add_device_error_connection": {
-    "message": "휴대전화와의 안전한 연결을 유지할 수 없습니다. 인터넷 연결을 확인한 후 다시 시도하세요."
-  },
-  "add_device_error_expired": {
-    "message": "동기화 세션이 만료되었습니다. 새 QR 코드를 생성하려면 다시 시작하세요."
-  },
-  "add_device_error_generic": {
-    "message": "휴대폰과 동기화하는 중 문제가 발생했습니다. 다시 시도하세요."
-  },
-  "add_device_error_invalid_code": {
-    "message": "인증 코드가 정확하지 않습니다. 휴대전화를 동기화하려면 다시 시작하세요."
-  },
-  "add_device_error_rejected": {
-    "message": "휴대전화에서 동기화가 취소되었습니다. 동기화하려면 다시 시작하세요."
-  },
-  "add_device_error_sync_failed": {
-    "message": "계정을 휴대폰과 동기화할 수 없습니다. 다시 시도하세요."
-  },
-  "add_device_error_title": {
-    "message": "동기화를 완료할 수 없습니다"
-  },
-  "add_device_success_title": {
-    "message": "장치 페어링됨"
-  },
-  "add_device_syncing_desc": {
-    "message": "선택한 계정을 휴대전화로 전송하고 있습니다."
-  },
   "add_device_syncing_title": {
     "message": "계정 가져오기"
-  },
-  "add_device_try_again": {
-    "message": "다시 시도"
-  },
-  "add_wallets": {
-    "message": "동기화할 항목 선택"
-  },
-  "add_wallets_desc": {
-    "message": "휴대전화에 가져올 지갑과 계정을 선택하세요. 이후에 선택한 항목을 변경할 수 있습니다."
   },
   "added": {
     "message": "추가함"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "인증 코드 입력"
   },
-  "enter_verification_code_desc": {
-    "message": "보안을 위해 기기의 MetaMask 앱에 표시된 코드를 입력하세요."
-  },
-  "enter_verification_code_error": {
-    "message": "잘못된 코드입니다. 다시 시도하세요."
-  },
-  "enter_verification_code_expired": {
-    "message": "인증 코드 만료됨"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "입력 가능 횟수를 초과했습니다. 새 QR 코드로 다시 시작하세요."
-  },
   "enter_your_password": {
     "message": "비밀번호 입력"
-  },
-  "enter_your_password_desc": {
-    "message": "계정 보안을 위해 비밀번호를 입력하여 QR 코드를 확인하세요."
   },
   "enteredMalicious": {
     "message": "입력하신 주소"
@@ -5950,9 +5899,6 @@
   "moneyExploreBenefits": {
     "message": "혜택 살펴보기"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "입금한 자금은 수수료 없이 MetaMask USD로 1:1 전환됩니다."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "MetaMask USD로 1:1 전환"
   },
@@ -5962,9 +5908,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "자동으로 수익 얻기"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "모든 지갑이나 은행으로 송금하거나, MetaMask Card로 결제하고 최대 3% 캐시백을 받으세요."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "어디서나 송금 및 결제"
   },
@@ -5973,12 +5916,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "동일한 잔고로 바로 거래"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "락업이나 사전 신청 기간, 위약금이 없습니다. 자금을 언제든 자유롭게 출금할 수 있습니다."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "언제든지 출금 가능"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money는 거래, 송금, 결제 기능이 기본 내장되어 있으며 최대 $1 APY의 수익을 제공하는 스테이블코인 계정입니다.",
@@ -9817,9 +9754,6 @@
   "scanQrCode": {
     "message": "QR 코드 스캔"
   },
-  "scan_qr_code_desc": {
-    "message": "추가하려는 기기의 MetaMask 앱으로 이 코드를 스캔하세요."
-  },
   "scrollDown": {
     "message": "화면을 아래로 내리세요"
   },
@@ -11981,9 +11915,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "기호는 11자 이하여야 합니다."
   },
-  "syncAccounts": {
-    "message": "모바일과 동기화"
-  },
   "syncing": {
     "message": "동기화 중..."
   },
@@ -12546,17 +12477,8 @@
   "visitSite": {
     "message": "사이트 방문"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "컨펌"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "MetaMask 식별자와 앱 버전을 지원 센터에 공유하시겠습니까? 문제 해결에 도움이 될 수 있으며, 선택 사항입니다."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "공유하지 않기"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "지원팀과 장치 세부정보 공유"
   },
   "visitWebSite": {
     "message": "웹사이트를 방문하세요"

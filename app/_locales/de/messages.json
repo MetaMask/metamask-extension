@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Wallet hinzufügen"
   },
-  "add_device_error_connection": {
-    "message": "Wir konnten keine sichere Verbindung zu Ihrem Smartphone herstellen. Überprüfen Sie bitte Ihre Internetverbindung und versuchen Sie es erneut."
-  },
-  "add_device_error_expired": {
-    "message": "Diese Synchronisierungssitzung ist abgelaufen. Zur Generierung eines neuen QR-Codes starten Sie bitte erneut."
-  },
-  "add_device_error_generic": {
-    "message": "Bei der Synchronisierung mit Ihrem Smartphone ist etwas schiefgelaufen. Versuchen Sie es erneut."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Der Verifizierungscode war falsch. Bitte versuchen Sie erneut, Ihr Smartphone zu synchronisieren."
-  },
-  "add_device_error_rejected": {
-    "message": "Die Synchronisierung wurde auf Ihrem Smartphone abgebrochen. Versuchen Sie die Synchronisierung erneut."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Das Synchronisieren Ihrer Konten mit Ihrem Smartphone konnte nicht abgeschlossen werden. Versuchen Sie es erneut."
-  },
-  "add_device_error_title": {
-    "message": "Synchronisierung konnte nicht abgeschlossen werden"
-  },
-  "add_device_success_title": {
-    "message": "Gerät gekoppelt"
-  },
-  "add_device_syncing_desc": {
-    "message": "Übermittlung Ihrer ausgewählten Konten an Ihr Smartphone."
-  },
   "add_device_syncing_title": {
     "message": "Import von Konten"
-  },
-  "add_device_try_again": {
-    "message": "Erneut versuchen"
-  },
-  "add_wallets": {
-    "message": "Wählen Sie aus, was synchronisiert werden soll."
-  },
-  "add_wallets_desc": {
-    "message": "Wählen Sie die Wallets und Konten aus, die auf Ihr Smartphone importiert werden sollen. Sie können dies später ändern."
   },
   "added": {
     "message": "Hinzugefügt"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Verifizierungscode eingeben"
   },
-  "enter_verification_code_desc": {
-    "message": "Geben Sie aus Sicherheitsgründen den Code ein, der in der MetaMask-App auf Ihrem Gerät angezeigt wird."
-  },
-  "enter_verification_code_error": {
-    "message": "Falscher Code. Versuchen Sie es erneut."
-  },
-  "enter_verification_code_expired": {
-    "message": "Verifizierungscode abgelaufen"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Zu viele Fehlversuche. Bitte versuchen Sie es mit einem neuen QR-Code."
-  },
   "enter_your_password": {
     "message": "Geben Sie Ihr Passwort ein"
-  },
-  "enter_your_password_desc": {
-    "message": "Geben Sie aus Sicherheitsgründen Ihr Passwort ein, um den QR-Code anzuzeigen."
   },
   "enteredMalicious": {
     "message": "Die Adresse, die Sie eingegeben haben"
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "Erkunden Sie Ihre Vorteile"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Die von Ihnen hinzugefügten Gelder werden gebührenfrei 1:1 in MetaMask USD konvertiert."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Wird in MetaMask USD zu 1:1 konvertiert"
   },
@@ -5958,9 +5904,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Automatisch verdienen"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "An jede Wallet oder Bank senden oder mit der MetaMask Card ausgeben und bis zu 3 % zurückerhalten."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Überall überweisen oder ausgeben"
   },
@@ -5969,12 +5912,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Mit demselben Guthaben handeln"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Keine Sperrfristen, Kündigungsfristen oder Strafgebühren. Sie können jederzeit über Ihr Geld verfügen."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Jederzeit auszahlen"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money ist ein Stablecoin-Konto, mit dem Sie bis zu $1 APY erzielen können – inklusive integrierter Funktionen für Handel, Überweisungen und Ausgaben.",
@@ -9809,9 +9746,6 @@
   "scanQrCode": {
     "message": "QR-Code scannen"
   },
-  "scan_qr_code_desc": {
-    "message": "Scannen Sie dies mit der MetaMask-App auf dem Gerät, das Sie hinzufügen möchten."
-  },
   "scrollDown": {
     "message": "Herunterscrollen"
   },
@@ -11973,9 +11907,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Das Symbol darf maximal 11 Zeichen lang sein."
   },
-  "syncAccounts": {
-    "message": "Mit Mobilgerät synchronisieren"
-  },
   "syncing": {
     "message": "Synchronisierung ..."
   },
@@ -12538,17 +12469,8 @@
   "visitSite": {
     "message": "Seite besuchen"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Bestätigen"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Möchten Sie Ihre MetaMask-Kennung und Ihre App-Version mit unserem Support Center teilen? Dies kann uns bei der Lösung Ihres Problems helfen, ist aber optional."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Nicht teilen"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Gerätedetails mit dem Support teilen"
   },
   "visitWebSite": {
     "message": "Besuchen Sie unsere Webseite."

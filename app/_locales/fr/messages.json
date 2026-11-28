@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Ajouter un portefeuille"
   },
-  "add_device_error_connection": {
-    "message": "Nous n’avons pas pu établir une connexion sécurisée avec votre téléphone. Vérifiez votre connexion Internet et réessayez."
-  },
-  "add_device_error_expired": {
-    "message": "Cette session de synchronisation a expiré. Recommencez pour générer un nouveau code QR."
-  },
-  "add_device_error_generic": {
-    "message": "Une erreur s’est produite lors de la synchronisation avec votre téléphone. Réessayez."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Le code de vérification était incorrect. Recommencez pour relancer le processus de synchronisation de votre téléphone."
-  },
-  "add_device_error_rejected": {
-    "message": "La synchronisation a été annulée sur votre téléphone. Recommencez pour relancer le processus de synchronisation."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Impossible de terminer la synchronisation de vos comptes avec votre téléphone. Ressayez."
-  },
-  "add_device_error_title": {
-    "message": "La synchronisation n’a pas être terminée"
-  },
-  "add_device_success_title": {
-    "message": "Appareil appairé"
-  },
-  "add_device_syncing_desc": {
-    "message": "Envoi des comptes sélectionnés vers votre téléphone."
-  },
   "add_device_syncing_title": {
     "message": "Importation des comptes"
-  },
-  "add_device_try_again": {
-    "message": "Réessayer"
-  },
-  "add_wallets": {
-    "message": "Choisissez ce que vous souhaitez synchroniser"
-  },
-  "add_wallets_desc": {
-    "message": "Sélectionnez les portefeuilles et les comptes à importer sur votre téléphone. Vous pourrez modifier ce choix ultérieurement."
   },
   "added": {
     "message": "Ajoutée"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Saisissez le code de vérification"
   },
-  "enter_verification_code_desc": {
-    "message": "Pour des raisons de sécurité, saisissez le code affiché dans l’application MetaMask sur votre appareil."
-  },
-  "enter_verification_code_error": {
-    "message": "Code erroné. Réessayez."
-  },
-  "enter_verification_code_expired": {
-    "message": "Le code de vérification a expiré"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Trop de tentatives infructueuses. Commencez avec un nouveau code QR."
-  },
   "enter_your_password": {
     "message": "Saisissez votre mot de passe"
-  },
-  "enter_your_password_desc": {
-    "message": "Pour assurer la sécurité de votre compte, saisissez votre mot de passe pour afficher le code QR."
   },
   "enteredMalicious": {
     "message": "L’adresse que vous avez saisie"
@@ -5141,7 +5090,7 @@
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "L’appareil Ledger n’est pas connecté. Si vous souhaitez le connecter, cliquez à nouveau sur « Continuer » et approuvez la connexion au HID",
+    "message": "L’appareil Ledger n’est pas connecté. Si vous souhaitez le connecter, cliquez à nouveau sur « Continuer » et approuvez la connexion HID",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
@@ -5435,7 +5384,7 @@
     "message": "Connectez-vous pour continuer."
   },
   "mfaErrorTooManyAttempts": {
-    "message": "Trop de codes erronés. Saisissez un nouveau code."
+    "message": "Trop de codes erronés. Obtenez un nouveau code."
   },
   "mfaErrorTotpExpired": {
     "message": "Cela a pris trop de temps. Saisissez le code actuel affiché dans votre application."
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "Découvrez vos avantages"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Les fonds que vous ajoutez sont convertis à parité 1:1 en MetaMask USD, sans frais."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Convertit en MetaMask USD, à parité 1:1"
   },
@@ -5957,9 +5903,6 @@
   },
   "moneyFtueBenefitEarnTitle": {
     "message": "Générez des revenus automatiquement"
-  },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Envoyez vos fonds vers un portefeuille ou compte bancaire, ou utilisez votre MetaMask Card pour récupérer jusqu’à 3 %."
   },
   "moneyFtueBenefitSpendTitle": {
     "message": "Envoyer ou dépenser partout"
@@ -5970,14 +5913,8 @@
   "moneyFtueBenefitTradeTitle": {
     "message": "Trader avec le même solde"
   },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Aucun blocage, ni préavis, ni pénalité : vous pouvez retirer votre argent à tout moment."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Retirer à tout moment"
-  },
   "moneyFtueDescription": {
-    "message": "MetaMask Money est un compte de stablecoinss offrant jusqu’à $1 de TRA (APY) et des fonctionnalités de trading, d’envoi et de dépense.",
+    "message": "MetaMask Money est un compte de stablecoins offrant jusqu’à $1 de TRA (APY) et des fonctionnalités de trading, d’envoi et de dépense.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyFtueHeadline": {
@@ -9809,9 +9746,6 @@
   "scanQrCode": {
     "message": "Scannez le code QR"
   },
-  "scan_qr_code_desc": {
-    "message": "Scannez ce code à l’aide de l’application MetaMask sur l’appareil que vous souhaitez ajouter."
-  },
   "scrollDown": {
     "message": "Faites défiler vers le bas"
   },
@@ -11973,9 +11907,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Le symbole doit comporter 11 caractères ou moins."
   },
-  "syncAccounts": {
-    "message": "Synchroniser avec le mobile"
-  },
   "syncing": {
     "message": "Synchronisation..."
   },
@@ -12538,17 +12469,8 @@
   "visitSite": {
     "message": "Visiter le site"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Confirmer"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Voulez-vous partager votre identifiant MetaMask et la version de l’application que vous utilisez actuellement avec notre centre d’assistance ? Cela peut nous aider à résoudre le problème, mais vous n’êtes pas obligé à le faire."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Ne pas partager"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Partager les détails de l’appareil avec le centre d’assistance"
   },
   "visitWebSite": {
     "message": "Visitez notre site web"
