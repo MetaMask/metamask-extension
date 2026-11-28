@@ -462,6 +462,14 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
 const SENTRY_PERFORMANCE_ENVELOPE_URL =
   'https://sentry.io/api/4510302346608640/envelope/';
 
+/**
+ * Envelope endpoint for the fake Sentry DSN (`https://fake@sentry.io/0000000`).
+ * Cross-repo CI does not receive `SENTRY_DSN_PERFORMANCE`, so performance
+ * tracing uses this DSN instead. It is test infrastructure, same as the
+ * performance project endpoint.
+ */
+const SENTRY_FAKE_ENVELOPE_URL = 'https://sentry.io/api/0000000/envelope/';
+
 const browserAPIRequestDomains =
   /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
 
@@ -1024,14 +1032,12 @@ async function setupMocking(
     };
   });
 
-  await server
-    .forPost('https://sentry.io/api/0000000/envelope/')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {},
-      };
-    });
+  await server.forPost(SENTRY_FAKE_ENVELOPE_URL).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {},
+    };
+  });
 
   await server
     .forPost('https://sentry.io/api/0000000/store/')
@@ -2897,4 +2903,5 @@ module.exports = {
   browserAPIRequestDomains,
   getWellKnownTokenAssetMetadata,
   SENTRY_PERFORMANCE_ENVELOPE_URL,
+  SENTRY_FAKE_ENVELOPE_URL,
 };
