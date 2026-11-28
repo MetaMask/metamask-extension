@@ -204,6 +204,63 @@ export const DEFAULT_RELATIVE_THRESHOLDS: RelativeThresholds = {
   warnPercent: 0.05,
 };
 
+/**
+ * Network population a benchmark run measured.
+ *
+ * `mocked` — upstream HTTP is served by the mock suite, so timings are a
+ * property of the commit under test. `live` — requests reach real servers,
+ * so timings also carry upstream latency, which is not attributable to the
+ * commit and drifts independently of it.
+ *
+ * The two are different statistical populations and must never be compared
+ * to each other, nor held to the same absolute ceiling.
+ */
+export const BENCHMARK_MOCK_MODE = {
+  MOCKED: 'mocked',
+  LIVE: 'live',
+} as const;
+
+export type BenchmarkMockMode =
+  (typeof BENCHMARK_MOCK_MODE)[keyof typeof BENCHMARK_MOCK_MODE];
+
+/**
+ * Resolves the network population for a run.
+ *
+ * An explicit `override` decides it. Failing that, the branch heuristic
+ * applies: `main` and `release/*` exercise real servers (introduced by #39587
+ * to keep a real-world signal on the trunk); every other ref — PRs, local
+ * dev — runs against the mock suite for determinism.
+ *
+ * Pure function of its inputs so both the benchmark harness and the quality
+ * gate can derive the same answer without sharing runtime state.
+ *
+ * @param branch - Branch name, e.g. `process.env.GITHUB_REF_NAME`.
+ * @param override - Explicit population, `mocked` or `live`, e.g.
+ * `process.env.BENCHMARK_MOCK_MODE`. Any other value, including the empty
+ * string an unset workflow input expands to, falls through to the branch.
+ */
+export function resolveBenchmarkMockMode(
+  branch: string | undefined,
+  override?: string | undefined,
+): BenchmarkMockMode {
+  // An explicit override wins over the branch heuristic. The per-commit path
+  // sets it to `mocked` on every branch including main, so the series the gate
+  // compares against is one population throughout; the scheduled drift job sets
+  // it to `live`. The branch heuristic remains the fallback for local runs and
+  // for any caller that does not set it.
+  if (override === BENCHMARK_MOCK_MODE.MOCKED) {
+    return BENCHMARK_MOCK_MODE.MOCKED;
+  }
+  if (override === BENCHMARK_MOCK_MODE.LIVE) {
+    return BENCHMARK_MOCK_MODE.LIVE;
+  }
+  const name = branch ?? '';
+  const isMainOrRelease = name === 'main' || name.startsWith('release/');
+  return isMainOrRelease
+    ? BENCHMARK_MOCK_MODE.LIVE
+    : BENCHMARK_MOCK_MODE.MOCKED;
+}
+
 export const BENCHMARK_PLATFORMS = {
   CHROME: 'chrome',
   FIREFOX: 'firefox',
