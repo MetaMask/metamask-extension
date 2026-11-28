@@ -1074,6 +1074,7 @@ export enum MetaMetricsEventName {
   RpcRemoved = 'RPC Removed',
   TokenDetailsOpened = 'Token Details Opened',
   WebWidgetViewed = 'Web Widget Viewed',
+  XWidgetInteracted = 'X Widget Interacted',
   TokenDetailsCtaClicked = 'Token Details CTA Clicked',
   ExploreSearchInteracted = 'Explore Search Interacted',
   ChartInteracted = 'Chart Interacted',
