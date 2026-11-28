@@ -1,4 +1,4 @@
-import { isTronAddress } from './tron';
+import { areTronAddressesEqual, isTronAddress } from './tron';
 
 // Valid TRON addresses in Base58 format (starting with T)
 const VALID_BASE58_ADDRESSES = [
@@ -149,6 +149,31 @@ describe('TRON Address Validator', () => {
         const modifiedAddress = validAddress.toLowerCase();
 
         expect(isTronAddress(modifiedAddress)).toBe(false);
+      });
+    });
+
+    describe('areTronAddressesEqual', () => {
+      it('returns true for the same Base58 address', () => {
+        const address = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+        expect(areTronAddressesEqual(address, address)).toBe(true);
+      });
+
+      it('returns true when hex and Base58 refer to the same account', () => {
+        expect(
+          areTronAddressesEqual(
+            '41a614f803b6fd780986a42c78ec9c7f77e6ded13c',
+            'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+          ),
+        ).toBe(true);
+      });
+
+      it('returns false for different valid addresses', () => {
+        expect(
+          areTronAddressesEqual(
+            'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+            'THPvaUhoh2Qn2y9THCZML3H815hhFhn5YC',
+          ),
+        ).toBe(false);
       });
     });
 

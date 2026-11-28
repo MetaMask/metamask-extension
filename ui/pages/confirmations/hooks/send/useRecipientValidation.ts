@@ -26,7 +26,7 @@ const VALIDATION_DEBOUNCE_MS = 500;
 
 export const useRecipientValidation = () => {
   const t = useI18nContext();
-  const { asset, chainId, to } = useSendContext();
+  const { asset, chainId, from, to } = useSendContext();
   const {
     isBitcoinSendType,
     isEvmSendType,
@@ -65,7 +65,7 @@ export const useRecipientValidation = () => {
       }
 
       if (isTronSendType && isTronAddress(toAddress)) {
-        return validateTronAddress(toAddress);
+        return validateTronAddress(toAddress, from, asset);
       }
 
       if (isStellarSendType && isStellarAddress(toAddress)) {
@@ -83,6 +83,7 @@ export const useRecipientValidation = () => {
     [
       asset,
       chainId,
+      from,
       isBitcoinSendType,
       isEvmSendType,
       isSolanaSendType,
