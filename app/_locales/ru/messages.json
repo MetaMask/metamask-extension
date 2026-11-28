@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Добавить кошелек"
   },
-  "add_device_error_connection": {
-    "message": "Не удалось сохранить безопасное соединение с вашим телефоном. Проверьте подключение к интернету и повторите попытку."
-  },
-  "add_device_error_expired": {
-    "message": "Срок сеанса синхронизации истек. Начните заново, чтобы сгенерировать новый QR-код."
-  },
-  "add_device_error_generic": {
-    "message": "Что-то пошло не так при синхронизации с вашим телефоном. Повторите попытку."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Неверный код подтверждения. Начните заново, чтобы попытаться синхронизировать телефон."
-  },
-  "add_device_error_rejected": {
-    "message": "Синхронизация отменена на вашем телефоне. Начните заново, чтобы попытаться синхронизировать."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Не удалось завершить синхронизацию ваших счетов с телефоном. Повторите попытку."
-  },
-  "add_device_error_title": {
-    "message": "Не удалось завершить синхронизацию"
-  },
-  "add_device_success_title": {
-    "message": "Устройство сопряжено"
-  },
-  "add_device_syncing_desc": {
-    "message": "Отправка выбранных счетов на ваш телефон."
-  },
   "add_device_syncing_title": {
     "message": "Выполняется импорт счетов"
-  },
-  "add_device_try_again": {
-    "message": "Повторить попытку"
-  },
-  "add_wallets": {
-    "message": "Выберите, что синхронизировать"
-  },
-  "add_wallets_desc": {
-    "message": "Выберите кошельки и счета для импорта на ваш телефон. Вы сможете изменить это позже."
   },
   "added": {
     "message": "Добавлено"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Введите код подтверждения"
   },
-  "enter_verification_code_desc": {
-    "message": "В целях безопасности введите код, отображаемый в приложении MetaMask на вашем устройстве."
-  },
-  "enter_verification_code_error": {
-    "message": "Неверный код. Повторите попытку."
-  },
-  "enter_verification_code_expired": {
-    "message": "Срок действия проверочного кода истек"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Слишком много неверных попыток. Начните с новым QR-кодом."
-  },
   "enter_your_password": {
     "message": "Введите свой пароль"
-  },
-  "enter_your_password_desc": {
-    "message": "В целях безопасности аккаунта введите пароль для просмотра QR-кода."
   },
   "enteredMalicious": {
     "message": "Введенный вами адрес"
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "Изучите свои преимущества"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Внесенные средства конвертируются в MetaMask USD по курсу 1:1 без комиссий."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Конвертация в MetaMask USD по курсу 1:1"
   },
@@ -5958,9 +5904,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Зарабатывайте автоматически"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Переводите средства на любой кошелек или банковский счет либо оплачивайте покупки картой MetaMask Card и получайте до 3% кешбэка."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Переводите средства и оплачивайте покупки где угодно"
   },
@@ -5969,12 +5912,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Торгуйте с того же баланса"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Без блокировок, предварительного уведомления и штрафов. Вы можете вывести свои деньги в любой момент."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Выводите средства в любое время"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money — это счет в стейблкоинах с годовой процентной доходностью до $1 и встроенными возможностями торговли, переводов и оплаты покупок.",
@@ -9809,9 +9746,6 @@
   "scanQrCode": {
     "message": "Сканировать QR-код"
   },
-  "scan_qr_code_desc": {
-    "message": "Отсканируйте это с помощью приложения MetaMask на устройстве, которое хотите добавить."
-  },
   "scrollDown": {
     "message": "Прокрутить вниз"
   },
@@ -11973,9 +11907,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Символ должен состоять из 11 или менее знаков."
   },
-  "syncAccounts": {
-    "message": "Синхронизировать с мобильным устройством"
-  },
   "syncing": {
     "message": "Синхронизируется..."
   },
@@ -12538,17 +12469,8 @@
   "visitSite": {
     "message": "Посетить сайт"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Подтвердить"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Хотите сообщить свой идентификатор MetaMask и версию приложения в наш Центр поддержки? Возможно, это поможет нам лучше решить вашу проблему, хотя это не гарантируется."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Не сообщать"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Передать сведения об устройстве в службу поддержки"
   },
   "visitWebSite": {
     "message": "Посетите наш веб-сайт"

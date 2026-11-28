@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "वॉलेट जोड़ें"
   },
-  "add_device_error_connection": {
-    "message": "हम आपके फ़ोन से सुरक्षित कनेक्शन बनाए नहीं रख सके। कृपया अपना इंटरनेट कनेक्शन जाँचें और फिर से प्रयास करें।"
-  },
-  "add_device_error_expired": {
-    "message": "यह सिंक सत्र समाप्त हो गया है। नया QR कोड जनरेट करने के लिए फिर से शुरू करें।"
-  },
-  "add_device_error_generic": {
-    "message": "आपके फ़ोन के साथ सिंक करते समय कुछ गड़बड़ी हुई। फिर से प्रयास करें।"
-  },
-  "add_device_error_invalid_code": {
-    "message": "सत्यापन कोड गलत था। अपने फ़ोन को सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
-  },
-  "add_device_error_rejected": {
-    "message": "आपके फ़ोन पर सिंक कैंसिल कर दिया गया था। सिंक करने की कोशिश करने के लिए फिर से शुरू करें।"
-  },
-  "add_device_error_sync_failed": {
-    "message": "हम आपके एकाउंट्स को आपके फ़ोन के साथ सिंक करना पूरा नहीं कर सके। फिर से प्रयास करें।"
-  },
-  "add_device_error_title": {
-    "message": "सिंक पूरा नहीं हो सका"
-  },
-  "add_device_success_title": {
-    "message": "डिवाइस जोड़ा गया"
-  },
-  "add_device_syncing_desc": {
-    "message": "आपके चुने हुए अकाउंट आपके फ़ोन पर भेजे जा रहे हैं।"
-  },
   "add_device_syncing_title": {
     "message": "अकाउंट इंपोर्ट किए जा रहे हैं"
-  },
-  "add_device_try_again": {
-    "message": "फिर से प्रयास करें"
-  },
-  "add_wallets": {
-    "message": "चुनें कि क्या सिंक करना है"
-  },
-  "add_wallets_desc": {
-    "message": "अपने फ़ोन पर इंपोर्ट करने के लिए वॉलेट और अकाउंट चुनें। आप इसे बाद में बदल सकते हैं।"
   },
   "added": {
     "message": "जोड़ा गया"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "वेरिफ़िकेशन कोड दर्ज करें"
   },
-  "enter_verification_code_desc": {
-    "message": "सुरक्षा के लिए, अपने डिवाइस पर MetaMask ऐप में दिखाया गया कोड दर्ज करें।"
-  },
-  "enter_verification_code_error": {
-    "message": "गलत कोड। फिर से प्रयास करें।"
-  },
-  "enter_verification_code_expired": {
-    "message": "वेरिफिकेशन कोड एक्सपायर हो गया है"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "बहुत अधिक गलत प्रयास हुए। नए QR कोड के साथ शुरू करें।"
-  },
   "enter_your_password": {
     "message": "अपना पासवर्ड डालें"
-  },
-  "enter_your_password_desc": {
-    "message": "अपने अकाउंट की सुरक्षा के लिए, QR कोड देखने के लिए अपना पासवर्ड दर्ज करें।"
   },
   "enteredMalicious": {
     "message": "आपके द्वारा दर्ज किया गया एड्रेस"
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "अपने फ़ायदे जानें"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "आप जो फ़ंड डालते हैं, वे बिना किसी फ़ीस के 1:1 MetaMask USD में कन्वर्ट होते हैं।"
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "MetaMask USD, 1:1 में कन्वर्ट होता है"
   },
@@ -5958,9 +5904,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "ऑटोमैटिकली कमाएं"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "किसी भी वॉलेट या बैंक में भेजें, या MetaMask कार्ड से खर्च करें और 3% तक वापस पाएं।"
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "कहीं भी भेजें या खर्च करें"
   },
@@ -5969,12 +5912,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "उसी बैलेंस से ट्रेड करें"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "कोई लॉकअप, नोटिस पीरियड या पेनल्टी नहीं। आपका पैसा हमेशा आपका होता है, आप इसे कभी भी निकाल सकते हैं।"
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "कभी भी निकालें"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money एक स्टेबलकॉइन अकाउंट है जो $1 APY तक कमाता है - जिसमें ट्रेडिंग, भेजने और खर्च करने की बिल्ट-इन सुविधा है।",
@@ -9809,9 +9746,6 @@
   "scanQrCode": {
     "message": "QR कोड स्कैन करें"
   },
-  "scan_qr_code_desc": {
-    "message": "इसे उस डिवाइस पर MetaMask ऐप से स्कैन करें जिसे आप जोड़ना चाहते हैं।"
-  },
   "scrollDown": {
     "message": "नीचे स्क्रॉल करें"
   },
@@ -11973,9 +11907,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
   },
-  "syncAccounts": {
-    "message": "मोबाइल के साथ सिंक करें"
-  },
   "syncing": {
     "message": "सिंक किया जा रहा है..."
   },
@@ -12538,17 +12469,8 @@
   "visitSite": {
     "message": "साइट पर जाएं"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "कन्फर्म करें"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "क्या आप अपना MetaMask पहचानकर्ता और ऐप संस्करण हमारे सपोर्ट सेंटर के साथ साझा करना चाहते हैं? इससे हमें आपकी समस्या को बेहतर ढंग से हल करने में मदद मिल सकती है, लेकिन यह वैकल्पिक है।"
-  },
   "visitSupportDataConsentModalReject": {
     "message": "साझा न करें"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "सपोर्ट के साथ डिवाइस विवरण साझा करें"
   },
   "visitWebSite": {
     "message": "हमारी वेबसाइट पर जाएं"

@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "ウォレットを追加"
   },
-  "add_device_error_connection": {
-    "message": "お使いのスマートフォンとの安全な接続を維持できませんでした。インターネット接続を確認して、もう一度お試しください。"
-  },
-  "add_device_error_expired": {
-    "message": "この同期セッションは期限切れになりました。もう一度やり直して、新しいQRコードを生成してください。"
-  },
-  "add_device_error_generic": {
-    "message": "スマートフォンとの同期中に問題が発生しました。再試行してください。"
-  },
-  "add_device_error_invalid_code": {
-    "message": "確認コードが正しくありませんでした。もう一度やり直して、スマートフォンを同期してみてください。"
-  },
-  "add_device_error_rejected": {
-    "message": "お使いのスマートフォンで同期がキャンセルされました。もう一度同期してみてください。"
-  },
-  "add_device_error_sync_failed": {
-    "message": "アカウントとスマートフォンの同期を完了できませんでした。再試行してください。"
-  },
-  "add_device_error_title": {
-    "message": "同期を完了できませんでした"
-  },
-  "add_device_success_title": {
-    "message": "デバイスがペアリングされました"
-  },
-  "add_device_syncing_desc": {
-    "message": "選択したアカウントを携帯電話に送信します。"
-  },
   "add_device_syncing_title": {
     "message": "アカウントのインポート"
-  },
-  "add_device_try_again": {
-    "message": "もう一度お試しください"
-  },
-  "add_wallets": {
-    "message": "同期する項目を選択"
-  },
-  "add_wallets_desc": {
-    "message": "携帯電話にインポートするウォレットとアカウントを選択します。これは後で変更できます。"
   },
   "added": {
     "message": "追加されました"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "確認コードを入力"
   },
-  "enter_verification_code_desc": {
-    "message": "セキュリティ確保のため、デバイスのMetaMaskアプリ内に表示されているコードを入力してください。"
-  },
-  "enter_verification_code_error": {
-    "message": "コードが正しくありません。もう一度お試しください。"
-  },
-  "enter_verification_code_expired": {
-    "message": "認証コードの有効期限が切れました"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "間違った試行が多すぎます。新しいQRコードを使ってやり直してください。"
-  },
   "enter_your_password": {
     "message": "パスワードを入力"
-  },
-  "enter_your_password_desc": {
-    "message": "アカウントのセキュリティ確保のため、QRコードを表示するにはパスワードを入力してください。"
   },
   "enteredMalicious": {
     "message": "入力したアドレス"
@@ -5950,9 +5899,6 @@
   "moneyExploreBenefits": {
     "message": "特典を確認"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "追加した資金は1対1の比率でMetaMask USDに交換され、手数料はかかりません。"
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "1対1の比率でMetaMask USDに交換"
   },
@@ -5962,9 +5908,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "自動で報酬がもらえる"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "お好きなウォレットや銀行に送金できるほか、MetaMask Cardで支払いに利用すれば、最大3%の還元を受けられます。"
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "どこでも送金や支払いが可能"
   },
@@ -5973,12 +5916,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "同じ残高を多様な取引に使える"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "ロックアップ、通知期間、ペナルティは一切なし。自分のお金をいつでも自由に取り出せます。"
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "いつでも出金可能"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Moneyは最大$1のAPYを獲得できるステーブルコインアカウントで、取引・送金・支払いの機能が組み込まれています。",
@@ -9813,9 +9750,6 @@
   "scanQrCode": {
     "message": "QRコードをスキャン"
   },
-  "scan_qr_code_desc": {
-    "message": "追加したいデバイス上でMetaMaskアプリを使ってこのコードをスキャンします。"
-  },
   "scrollDown": {
     "message": "下にスクロール"
   },
@@ -11977,9 +11911,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "シンボルは11文字以下でなければなりません."
   },
-  "syncAccounts": {
-    "message": "モバイルと同期"
-  },
   "syncing": {
     "message": "同期中..."
   },
@@ -12542,17 +12473,8 @@
   "visitSite": {
     "message": "サイトにアクセス"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "確定"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "MetaMaskの識別子とアプリのバージョンをサポートセンターと共有しますか？これにより問題を解決しやすくなりますが、あくまでもオプションです。"
-  },
   "visitSupportDataConsentModalReject": {
     "message": "共有しない"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "デバイス情報をサポートと共有する"
   },
   "visitWebSite": {
     "message": "弊社Webサイトにアクセス"

@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Magdagdag ng wallet"
   },
-  "add_device_error_connection": {
-    "message": "Hindi namin mapanatili ang maayos na koneksyon sa iyong telepono. Suriin ang iyong koneksyon sa internet at subukan muli."
-  },
-  "add_device_error_expired": {
-    "message": "Nag-expire ang sync session na ito. Magsimula muli para makalikha ng bagong QR code."
-  },
-  "add_device_error_generic": {
-    "message": "Nagkaproblema habang sini-sync sa iyong telepono. Subukan muli."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Mali ang verification code. Magsimula muli para subukang i-sync ang iyong telepono."
-  },
-  "add_device_error_rejected": {
-    "message": "Kinansela ang sync sa iyong telepono. Simulan muli para subukang i-sync."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Hindi namin matapos ang pag-sync ng iyong mga account sa iyong telepono. Subukan muli."
-  },
-  "add_device_error_title": {
-    "message": "Hindi makumpleto ang pag-sync"
-  },
-  "add_device_success_title": {
-    "message": "Naka-pair ang device"
-  },
-  "add_device_syncing_desc": {
-    "message": "Ipinapadala ang napili mong mga account sa telepono mo."
-  },
   "add_device_syncing_title": {
     "message": "Ini-import ang mga account"
-  },
-  "add_device_try_again": {
-    "message": "Subukang muli"
-  },
-  "add_wallets": {
-    "message": "Piliin kung ano ang isi-sync"
-  },
-  "add_wallets_desc": {
-    "message": "Piliin ang mga wallet at account para ma-import sa telepono mo. Maaari mo itong palitan mamaya."
   },
   "added": {
     "message": "Naidagdag"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Ilagay ang code ng pag-verify"
   },
-  "enter_verification_code_desc": {
-    "message": "Para sa seguridad, ilagay ang code na ipinapakita ng MetaMask app sa iyong device."
-  },
-  "enter_verification_code_error": {
-    "message": "Maling code. Subukan muli."
-  },
-  "enter_verification_code_expired": {
-    "message": "Nag-expire ang code sa pag-verify"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Masyado ng maraming maling pagtatangka. Magsimula gamit ang bagong QR code."
-  },
   "enter_your_password": {
     "message": "Ilagay ang password mo"
-  },
-  "enter_your_password_desc": {
-    "message": "Para sa seguridad ng account, ilagay ang iyong password para makita ang QR code."
   },
   "enteredMalicious": {
     "message": "Ang Address Na Inilagay Mo"
@@ -5946,9 +5895,6 @@
   "moneyExploreBenefits": {
     "message": "Alamin ang mga benepisyo mo"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Ang mga pondo na idinadagdag mo ay nako-convert ng 1:1 sa MetaMask USD, nang walang bayarin."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Nako-convert sa MetaMask USD, 1:1"
   },
@@ -5958,9 +5904,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Kumita nang awtomatiko"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Ipadala sa anumang wallet o bangko, o gastusin gamit ang MetaMask Card para sa hanggang 3% na balik."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Ipadala o gastusin kahit saan"
   },
@@ -5969,12 +5912,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "I-trade mula sa parehong balanse"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Walang mga lockup, abiso sa panahon, o mga penalty. Pwede mong ilabas ang pera mo anumang oras."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "I-withdraw anumang oras"
   },
   "moneyFtueDescription": {
     "message": "Ang MetaMask Money ay isang stablecoin account na kumikita nang hanggang $1 APY - sa pamamagitan ng pagti-trade, pagpapadala, at paggastos na naka-built in.",
@@ -9809,9 +9746,6 @@
   "scanQrCode": {
     "message": "Mag-scan ng QR code"
   },
-  "scan_qr_code_desc": {
-    "message": "I-scan ito gamit ang MetaMask app sa device na gusto mong idagdag."
-  },
   "scrollDown": {
     "message": "Mag-scroll pababa"
   },
@@ -11973,9 +11907,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Dapat ay 11 character o mas kaunti ang simbolo."
   },
-  "syncAccounts": {
-    "message": "I-sync sa mobile"
-  },
   "syncing": {
     "message": "Sini-sync..."
   },
@@ -12538,17 +12469,8 @@
   "visitSite": {
     "message": "Bisitahin ang site"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Kumpirmahin"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Gusto mo bang ibahagi ang Identifier at bersyon ng app ng MetaMask sa aming Sentro ng Suporta? Makakatulong ito sa amin na malutas ang problema mo, pero opsyonal ito."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Huwag ibahagi"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Magbahagi ng mga detalye ng device sa suporta"
   },
   "visitWebSite": {
     "message": "Bisitahin ang aming website"

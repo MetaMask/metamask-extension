@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Cüzdan ekle"
   },
-  "add_device_error_connection": {
-    "message": "Telefonunuzla güvenli bir bağlantı sürdüremedik. İnternet bağlantınızı kontrol edip tekrar deneyin."
-  },
-  "add_device_error_expired": {
-    "message": "Bu senkronizasyon oturumunun süresi doldu. Yeni bir QR kodu oluşturmak için yeniden başlatın."
-  },
-  "add_device_error_generic": {
-    "message": "Telefonunuzla senkronizasyon gerçekleştirilirken bir şeyler ters gitti. Tekrar deneyin."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Doğrulama kodu yanlıştı. Telefonunuzla senkronizasyonu denemek için yeniden başlatın."
-  },
-  "add_device_error_rejected": {
-    "message": "Senkronizasyon telefonunuzda iptal edildi. Senkronizasyonu denemek için yeniden başlatın."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Hesaplarınızı telefonunuza senkronize etme işlemini tamamlayamadık. Tekrar deneyin."
-  },
-  "add_device_error_title": {
-    "message": "Senkronizasyon tamamlanamadı"
-  },
-  "add_device_success_title": {
-    "message": "Cihaz eşleştirildi"
-  },
-  "add_device_syncing_desc": {
-    "message": "Seçili hesaplarınız telefonunuza gönderiliyor."
-  },
   "add_device_syncing_title": {
     "message": "Hesaplar içe aktarılıyor"
-  },
-  "add_device_try_again": {
-    "message": "Tekrar deneyin"
-  },
-  "add_wallets": {
-    "message": "Nelerin senkronize edileceğini seçin"
-  },
-  "add_wallets_desc": {
-    "message": "Telefonunuza aktarılacak cüzdanları ve hesapları seçin. Bunu daha sonra değiştirebilirsiniz."
   },
   "added": {
     "message": "Eklendi"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Doğrulama kodunu girin"
   },
-  "enter_verification_code_desc": {
-    "message": "Güvenlik için cihazınızda MetaMask uygulamasında gösterilen kodu girin."
-  },
-  "enter_verification_code_error": {
-    "message": "Kod yanlış. Tekrar deneyin."
-  },
-  "enter_verification_code_expired": {
-    "message": "Doğrulama kodunun süresi doldu"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Çok sayıda yanlış deneme yapıldı. Yeni bir QR kodu ile başlayın."
-  },
   "enter_your_password": {
     "message": "Şifrenizi girin"
-  },
-  "enter_your_password_desc": {
-    "message": "Hesap güvenliği için şifrenizi girerek QR kodunu görüntüleyin."
   },
   "enteredMalicious": {
     "message": "Girdiğiniz Adres"
@@ -5950,9 +5899,6 @@
   "moneyExploreBenefits": {
     "message": "Faydalarınızı keşfedin"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Eklediğiniz fonlar hiçbir ücret kesilmeden 1:1 oranda olmak üzere MetaMask USD'ye dönüşür."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "1:1 oranda olmak üzere MetaMask USD'ye dönüştürür"
   },
@@ -5962,9 +5908,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Otomatik kazanın"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Dilediğiniz cüzdana veya bankaya gönderin veya MetaMask Card ile harcama yaparak %3'e varan iade kazanın."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Dilediğiniz yere gönderin veya dilediğiniz yerde harcayın"
   },
@@ -5973,12 +5916,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Aynı bakiyeden işlem yapın"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Kilitleme, ihbar süresi veya para cezası yok. Paranız her zaman çekilmeye hazırdır."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Dilediğiniz zaman çekin"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money, işlem, gönderim ve harcama özelliklerini bünyesinde bulunduran, $1 APY tutara kadar kazanç sağlayan bir stabil kripto para hesabıdır.",
@@ -9823,9 +9760,6 @@
   "scanQrCode": {
     "message": "QR kodunu tara"
   },
-  "scan_qr_code_desc": {
-    "message": "Bunu, eklemek istediğiniz cihazda MetaMask uygulaması ile tarayın."
-  },
   "scrollDown": {
     "message": "Aşağı kaydır"
   },
@@ -11987,9 +11921,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Sembol en fazla 11 karakter olmalıdır."
   },
-  "syncAccounts": {
-    "message": "Mobil ile senkronize et"
-  },
   "syncing": {
     "message": "Senkronize ediliyor..."
   },
@@ -12552,17 +12483,8 @@
   "visitSite": {
     "message": "Siteyi ziyaret edin"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Onayla"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "MetaMask Tanımlayıcınızı ve uygulama sürümünüzü Destek Merkezimizle paylaşmak ister misiniz? Probleminizi daha iyi bir şekilde çözmemize yardımcı olabilir ancak isteğe bağlıdır."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Paylaşma"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Cihaz bilgilerini destek ile paylaş"
   },
   "visitWebSite": {
     "message": "Web sitemizi ziyaret et"

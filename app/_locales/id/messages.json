@@ -1254,44 +1254,8 @@
   "addWallet": {
     "message": "Tambahkan dompet"
   },
-  "add_device_error_connection": {
-    "message": "Kami tidak dapat terhubung dengan aman ke ponsel Anda. Periksa koneksi internet dan coba lagi."
-  },
-  "add_device_error_expired": {
-    "message": "Sesi sinkronisasi ini telah berakhir. Mulai lagi untuk menghasilkan kode QR baru."
-  },
-  "add_device_error_generic": {
-    "message": "Terjadi kesalahan saat menyinkronkan ke ponsel Anda. Coba lagi."
-  },
-  "add_device_error_invalid_code": {
-    "message": "Kode verifikasi salah. Mulai lagi untuk mencoba menyinkronkan ponsel Anda."
-  },
-  "add_device_error_rejected": {
-    "message": "Sinkronisasi dibatalkan di ponsel Anda. Mulai lagi untuk mencoba menyinkronkan."
-  },
-  "add_device_error_sync_failed": {
-    "message": "Kami tidak dapat menyelesaikan sinkronisasi akun ke ponsel Anda. Coba lagi."
-  },
-  "add_device_error_title": {
-    "message": "Sinkronisasi tidak dapat diselesaikan"
-  },
-  "add_device_success_title": {
-    "message": "Perangkat terpasang"
-  },
-  "add_device_syncing_desc": {
-    "message": "Mengirim akun yang dipilih ke ponsel Anda."
-  },
   "add_device_syncing_title": {
     "message": "Mengimpor akun"
-  },
-  "add_device_try_again": {
-    "message": "Coba lagi"
-  },
-  "add_wallets": {
-    "message": "Pilih yang ingin disinkronkan"
-  },
-  "add_wallets_desc": {
-    "message": "Pilih dompet dan akun yang ingin diimpor ke ponsel Anda. Anda dapat mengubahnya nanti."
   },
   "added": {
     "message": "Ditambahkan"
@@ -3940,23 +3904,8 @@
   "enter_verification_code": {
     "message": "Masukkan kode verifikasi"
   },
-  "enter_verification_code_desc": {
-    "message": "Demi keamanan, masukkan kode yang ditampilkan di aplikasi MetaMask pada perangkat Anda."
-  },
-  "enter_verification_code_error": {
-    "message": "Kode salah. Coba lagi."
-  },
-  "enter_verification_code_expired": {
-    "message": "Kode verifikasi telah kedaluwarsa"
-  },
-  "enter_verification_code_max_attempts": {
-    "message": "Terlalu banyak percobaan yang salah. Mulailah dengan kode QR baru."
-  },
   "enter_your_password": {
     "message": "Masukkan kata sandi"
-  },
-  "enter_your_password_desc": {
-    "message": "Demi keamanan akun, masukkan kata sandi Anda untuk melihat kode QR."
   },
   "enteredMalicious": {
     "message": "Alamat yang Anda Masukkan"
@@ -5950,9 +5899,6 @@
   "moneyExploreBenefits": {
     "message": "Jelajahi manfaat Anda"
   },
-  "moneyFtueBenefitConvertDescription": {
-    "message": "Dana yang Anda tambahkan dikonversi dengan rasio 1:1 ke MetaMask USD tanpa biaya."
-  },
   "moneyFtueBenefitConvertTitle": {
     "message": "Dikonversi ke MetaMask USD dengan rasio 1:1"
   },
@@ -5962,9 +5908,6 @@
   "moneyFtueBenefitEarnTitle": {
     "message": "Dapatkan secara otomatis"
   },
-  "moneyFtueBenefitSpendDescription": {
-    "message": "Kirim ke dompet atau bank mana pun, atau gunakan dengan MetaMask Card dan dapatkan pengembalian hingga 3%."
-  },
   "moneyFtueBenefitSpendTitle": {
     "message": "Kirim atau gunakan di mana pun"
   },
@@ -5973,12 +5916,6 @@
   },
   "moneyFtueBenefitTradeTitle": {
     "message": "Berdagang dari saldo yang sama"
-  },
-  "moneyFtueBenefitWithdrawDescription": {
-    "message": "Tanpa penguncian, periode pemberitahuan, ataupun penalti. Uang Anda sepenuhnya milik Anda untuk ditarik."
-  },
-  "moneyFtueBenefitWithdrawTitle": {
-    "message": "Tarik setiap saat"
   },
   "moneyFtueDescription": {
     "message": "MetaMask Money adalah akun stablecoin yang memberikan hingga $1 APY dan dilengkapi dengan fitur untuk melakukan perdagangan, pengiriman, dan penggunaan.",
@@ -9817,9 +9754,6 @@
   "scanQrCode": {
     "message": "Pindai kode QR"
   },
-  "scan_qr_code_desc": {
-    "message": "Pindai ini dengan aplikasi MetaMask di perangkat yang ingin ditambahkan."
-  },
   "scrollDown": {
     "message": "Gulir ke bawah"
   },
@@ -11981,9 +11915,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbol harus terdiri dari 11 karakter atau lebih sedikit."
   },
-  "syncAccounts": {
-    "message": "Sinkronkan dengan seluler"
-  },
   "syncing": {
     "message": "Menyinkronkan..."
   },
@@ -12546,17 +12477,8 @@
   "visitSite": {
     "message": "Kunjungi situs"
   },
-  "visitSupportDataConsentModalAccept": {
-    "message": "Konfirmasikan"
-  },
-  "visitSupportDataConsentModalDescription": {
-    "message": "Ingin membagikan Pengidentifikasi MetaMask dan versi aplikasi dengan Pusat Dukungan kami? Ini dapat membantu kami menyelesaikan masalah Anda dengan lebih baik, tetapi tindakan ini bersifat opsional."
-  },
   "visitSupportDataConsentModalReject": {
     "message": "Jangan bagikan"
-  },
-  "visitSupportDataConsentModalTitle": {
-    "message": "Bagikan detail perangkat kepada dukungan"
   },
   "visitWebSite": {
     "message": "Kunjungi situs web kami"
