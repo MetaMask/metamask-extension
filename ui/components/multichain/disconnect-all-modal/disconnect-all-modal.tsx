@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  Button,
+  ButtonSize,
   FontWeight,
   Text,
   TextVariant,
@@ -11,7 +13,6 @@ import {
   ModalOverlay,
   ModalContent,
 } from '@metamask/design-system-react';
-import { Button } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getURLHost } from '../../../helpers/utils/util';
 
@@ -56,7 +57,13 @@ export const DisconnectAllModal = ({
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={onClick} block data-testid="disconnect-all" danger>
+          <Button
+            onClick={onClick}
+            size={ButtonSize.Md}
+            isFullWidth
+            data-testid="disconnect-all"
+            isDanger
+          >
             {t('disconnect')}
           </Button>
         </ModalFooter>

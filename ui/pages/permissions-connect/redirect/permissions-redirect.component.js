@@ -7,9 +7,11 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
 } from '@metamask/design-system-react';
 import {
-  BlockSize,
   TextVariant,
   IconColor,
 } from '../../../helpers/constants/design-system';
@@ -17,9 +19,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   AvatarToken,
   AvatarTokenSize,
-  Button,
-  ButtonSize,
-  ButtonVariant,
   Icon,
   IconName,
   IconSize,
@@ -104,19 +103,19 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             <Button
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
-              width={BlockSize.Full}
-              marginRight={2}
-              disabled
+              isFullWidth
+              className="mr-2"
+              isDisabled
             >
               {t('back')}
             </Button>
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
-              width={BlockSize.Full}
-              marginLeft={2}
-              disabled
-              loading
+              isFullWidth
+              className="ml-2"
+              isDisabled
+              isLoading
             />
           </Box>
         </Box>
