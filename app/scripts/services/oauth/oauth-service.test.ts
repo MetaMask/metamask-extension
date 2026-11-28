@@ -839,6 +839,8 @@ describe('OAuthService - getNewRefreshToken', () => {
 
     expect(result).toEqual({
       idTokens: ['MOCK_NEW_JWT_TOKEN'],
+      refreshToken: 'MOCK_NEW_REFRESH_TOKEN',
+      revokeToken: 'MOCK_NEW_REVOKE_TOKEN',
     });
 
     expect(fetch).toHaveBeenCalledWith(
@@ -890,14 +892,67 @@ describe('OAuthService - getNewRefreshToken', () => {
       trackEvent: mockTrackEvent,
     });
 
-    await expect(
-      oauthService.getNewRefreshToken({
+    const error = await oauthService
+      .getNewRefreshToken({
         connection: AuthConnection.Google,
         refreshToken: 'MOCK_REFRESH_TOKEN',
-      }),
-    ).rejects.toThrow(
+      })
+      .catch((e) => e);
+
+    expect(error.message).toContain(
       OAuthErrorMessages.FAILED_TO_GET_AUTH_TOKEN_REFRESH_ERROR,
     );
+    expect(error.name).toBe('RefreshTokenHttpError');
+    expect(error.statusCode).toBe(401);
+  });
+
+  it('omits refreshToken and revokeToken unless the response has both', async () => {
+    const incompleteResponses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      refresh_token?: string;
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revoke_token?: string;
+    }[] = [
+      {},
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { refresh_token: 'MOCK_NEW_REFRESH_TOKEN' },
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      { revoke_token: 'MOCK_NEW_REVOKE_TOKEN' },
+    ];
+
+    const oauthService = new OAuthService({
+      messenger,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      trackEvent: mockTrackEvent,
+    });
+
+    for (const rotatedTokens of incompleteResponses) {
+      jest.spyOn(global, 'fetch').mockImplementation(
+        jest.fn(() =>
+          Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              id_token: 'MOCK_NEW_JWT_TOKEN',
+              ...rotatedTokens,
+            }),
+            status: 200,
+            ok: true,
+          }),
+        ) as jest.Mock,
+      );
+
+      const result = await oauthService.getNewRefreshToken({
+        connection: AuthConnection.Google,
+        refreshToken: 'MOCK_REFRESH_TOKEN',
+      });
+
+      expect(result).toStrictEqual({
+        idTokens: ['MOCK_NEW_JWT_TOKEN'],
+        accessToken: undefined,
+        metadataAccessToken: undefined,
+      });
+    }
   });
 
   describe('OAuthService:getNewRefreshToken action', () => {
@@ -933,6 +988,8 @@ describe('OAuthService - getNewRefreshToken', () => {
 
       expect(result).toEqual({
         idTokens: ['MOCK_NEW_JWT_TOKEN'],
+        refreshToken: 'MOCK_NEW_REFRESH_TOKEN',
+        revokeToken: 'MOCK_NEW_REVOKE_TOKEN',
       });
     });
   });

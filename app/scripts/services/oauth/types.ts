@@ -281,7 +281,12 @@ export type OAuthLoginResult = {
 export type OAuthRefreshTokenResult = Pick<
   OAuthLoginResult,
   'idTokens' | 'accessToken' | 'metadataAccessToken'
->;
+> & {
+  /** Rotated refresh token. Set only together with `revokeToken`. */
+  refreshToken?: string;
+  /** Rotated revoke token. Set only together with `refreshToken`. */
+  revokeToken?: string;
+};
 
 /**
  * The user's information extracted from the JWT Token.

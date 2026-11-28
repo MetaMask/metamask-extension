@@ -234,6 +234,11 @@ export abstract class BaseLoginHandler {
         ? OAuthErrorMessages.FAILED_TO_GET_AUTH_TOKEN_REFRESH_ERROR
         : OAuthErrorMessages.FAILED_TO_GET_AUTH_TOKEN_ERROR;
       const error = await createErrorFromNetworkRequest(res, errorPrefix);
+      if (tokenRefresh) {
+        // SeedlessOnboardingController maps this name + 401 to InvalidRefreshToken.
+        error.name = 'RefreshTokenHttpError';
+        Object.assign(error, { statusCode: res.status });
+      }
       throw error;
     }
 
