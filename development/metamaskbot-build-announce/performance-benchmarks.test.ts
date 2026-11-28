@@ -706,6 +706,80 @@ describe('buildBenchmarkSection', () => {
     expect(html).not.toContain(`${COMPARISON_SEVERITY.Regression.icon} 1`);
   });
 
+  // A firefox user-journey entry resolves its baseline under a platform-qualified
+  // key (`userJourney*/firefox-<buildType>-<benchmark>`) that the stats commit does
+  // not write, so it never has one. Without a marker that entry contributes no
+  // delta rows, which is indistinguishable from an entry whose deltas were all
+  // under the 10% floor.
+  const JOURNEY_CHROME = makeEntry({
+    benchmarkName: 'swapFlow',
+    presetName: 'userJourneySwap',
+    platform: 'chrome',
+    p75: { swapFlow: 660 },
+    p95: { swapFlow: 700 },
+  });
+  const JOURNEY_FIREFOX = makeEntry({
+    benchmarkName: 'swapFlow',
+    presetName: 'userJourneySwap',
+    platform: 'firefox',
+    p75: { swapFlow: 505 },
+    p95: { swapFlow: 540 },
+  });
+  const JOURNEY_BASELINE_CHROME_ONLY = {
+    'userJourneySwap/swapFlow': {
+      swapFlow: { mean: 480, stdDev: 20, p75: 500, p95: 520 },
+    },
+  };
+  const DELTA_HEADING = 'Results compared to the previous 5 runs on main';
+
+  it('marks an entry the baseline does not cover, and still compares the rest', () => {
+    const html = buildBenchmarkSection(
+      withEntries([JOURNEY_CHROME, JOURNEY_FIREFOX]),
+      'Test',
+      JOURNEY_BASELINE_CHROME_ONLY,
+    );
+
+    expect(html).toContain('No baseline:');
+    expect(html).toContain('swapFlow [firefox/webpack]');
+    expect(html).not.toContain('swapFlow [chrome/webpack]');
+    expect(html).toContain(DELTA_HEADING);
+  });
+
+  it('omits the no-baseline marker once the baseline covers every entry', () => {
+    const html = buildBenchmarkSection(
+      withEntries([JOURNEY_CHROME, JOURNEY_FIREFOX]),
+      'Test',
+      {
+        ...JOURNEY_BASELINE_CHROME_ONLY,
+        'userJourneySwap/firefox-webpack-swapFlow': {
+          swapFlow: { mean: 480, stdDev: 20, p75: 500, p95: 520 },
+        },
+      },
+    );
+
+    expect(html).not.toContain('No baseline:');
+  });
+
+  it('shows the no-baseline marker even when no entry clears the delta floor', () => {
+    const html = buildBenchmarkSection(
+      withEntries([
+        makeEntry({
+          benchmarkName: 'swapFlow',
+          presetName: 'userJourneySwap',
+          platform: 'chrome',
+          p75: { swapFlow: 505 },
+          p95: { swapFlow: 520 },
+        }),
+        JOURNEY_FIREFOX,
+      ]),
+      'Test',
+      JOURNEY_BASELINE_CHROME_ONLY,
+    );
+
+    expect(html).toContain('swapFlow [firefox/webpack]');
+    expect(html).not.toContain(DELTA_HEADING);
+  });
+
   it('skips metrics absent from the baseline (no false positives)', () => {
     const entry = makeEntry({
       p95: { loadNewAccount: 612, otherMetric: 100 },
