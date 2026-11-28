@@ -23,6 +23,7 @@ import {
   isNativeCaipAssetId,
   isEvmChainId,
   isTronSpecialAsset,
+  toCanonicalAssetId,
 } from './asset-utils';
 
 jest.mock('@metamask/multichain-network-controller');
@@ -262,6 +263,37 @@ describe('asset-utils', () => {
           'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         ),
       ).toBe(normalizedUsdcId);
+    });
+  });
+
+  describe('toCanonicalAssetId', () => {
+    it('resolves the Arc ERC-20 USDC id to the native USDC id', () => {
+      expect(
+        toCanonicalAssetId(
+          'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
+        ),
+      ).toBe('eip155:5042/slip44:5042');
+    });
+
+    it('resolves aliases regardless of casing', () => {
+      expect(
+        toCanonicalAssetId(
+          'EIP155:5042/ERC20:0x3600000000000000000000000000000000000000',
+        ),
+      ).toBe('eip155:5042/slip44:5042');
+    });
+
+    it('returns the native Arc USDC id unchanged', () => {
+      expect(toCanonicalAssetId('eip155:5042/slip44:5042')).toBe(
+        'eip155:5042/slip44:5042',
+      );
+    });
+
+    it('returns ids without an alias unchanged', () => {
+      const assetId =
+        'eip155:5042/erc20:0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1';
+
+      expect(toCanonicalAssetId(assetId)).toBe(assetId);
     });
   });
 
